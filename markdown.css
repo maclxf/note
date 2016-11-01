@@ -1,0 +1,110 @@
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	background: #ddd;
+}
+body .markdown-body {
+	width: 48em;
+	padding: 32px 48px;
+	margin: 16px auto;
+	background: #F9F9F5;
+}
+.markdown-body,
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body p,
+.markdown-body table tr td,
+.markdown-body table tr th,
+.markdown-body ul li,
+.markdown-body a {
+	font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei";
+}
+.markdown-body code {
+	padding: 3px 4px;
+	font-size: 100%;
+	background-color: #f9f2f4;
+	color: #c7254e;
+	white-space: nowrap;
+	border-radius: 4px;
+}
+
+.markdown-body code:before, .markdown-body code:after {
+	content: '';
+}
+
+.codehilitetable {
+	border-radius: 4px;
+	border: 1px solid rgba(102, 128, 153, 0.03);
+}
+.codehilitetable .linenos .linenodiv pre {
+	background-color: rgba(102, 128, 153, 0.12);
+	color: rgba(102, 128, 153, 0.4);
+}
+.codehilitetable .code .codehilite pre {
+	background-color: rgba(102, 128, 153, 0.08);
+}
+
+@media only screen and (min-width: 768px) {
+	.toc {
+		font-size: 14px;
+	}
+}
+
+.toc {
+	border: 1px solid #ddd;
+	padding: 1em 1em 0 .5em;
+	background-color: #f8f8f8;
+	border-radius: 3px;
+}
+
+.markdown-body h1 {
+	text-align: center;
+}
+.markdown-body h2 {
+	margin-top: 1.75em;
+}
+.markdown-body h3 {
+	font-size: 1.4em;
+	margin-top: 1.5em;
+}
+.markdown-body hr {
+	background-color: #d4d4d4;
+	height: 1px;
+}
+.markdown-body table {
+	display: table;
+}
+
+.markdown-body table th {
+	background: #eee;
+	border-bottom-width: 2px;
+}
+.sub-title {
+	font-size: 0.8em;
+	text-align: center;
+	color: #999;
+}
+.markdown-body blockquote {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	margin-top: 30px;
+	background-color: #f6f6f6;
+	font-size: 90%;
+}
+.footnote hr {
+	display: none;
+}
+.footnote ol li {
+	font-size: 0.8em;
+	color: #999;
+}
+.footnote ol li > p {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+.red {
+	color: red;
+}
+
+

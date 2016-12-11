@@ -1,0 +1,17 @@
+前台取消包裹------------ok
+
+
+
+dashboard页面
+	1. 无soo类报错（add_warehouse_filter）
+		引入soo类
+			引入user_model
+
+	2. 选择分类时不能出现二级分类parent_id有但是如下报错
+		<b>Warning</b>:  include(application/views\errors\html\error_php.php): failed to open stream: No such file or directory in <b>D:\projects\adi_v3\system\core\Exceptions.php</b> on line <b>268</b><br />
+	控制台报错：
+	添加
+	valued_service_model
+		get_count
+	pending_package_model
+		get_stat

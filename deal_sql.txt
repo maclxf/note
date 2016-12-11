@@ -1,0 +1,59 @@
+SELECT id,email,refer_id,refer_name FROMadi_customer ORDER BY id DESC LIMIT 10;
+
+SELECT id,pid,invitee_id,invite_code,status_name from adi_package order by id desc limit 10;
+
+SELECT id,tid,invitee_id,invite_code,status from adi_transfer order by id desc limit 10;
+
+SELECT id,invitee_name,invited_name,transfer_tid,is_released from adi_commission_history order by id desc limit 10;
+
+// 各项增值服务使用次数统计
+SELECT tvs.service_id, tvs.service_name, COUNT( tvs.service_id )
+FROM  `adi_transfer` t
+INNER JOIN  `adi_transfer_valued_service` tvs ON t.id = tvs.transfer_id
+WHERE t.status_id NOT
+IN ( 120, 200, 201 )
+GROUP BY tvs.service_id
+ORDER BY  `tvs`.`service_id` DESC
+
+---------------------------------------------------------------------------------------------------------------
+
+2016年12月2日14:17:10 HIVE添加字段
+
+ALTER TABLE `hi_product` ADD `standard` VARCHAR(64) NULL DEFAULT NULL COMMENT '产品规格' AFTER `weight`;
+
+ALTER TABLE `hi_supplier` ADD `is_car` TINYINT NOT NULL DEFAULT '0' ;
+
+ALTER TABLE `hi_supplier` ADD `area` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '供应商所属区域' AFTER `description`, ADD `supplier_category` TINYINT NOT NULL DEFAULT '0' COMMENT '供应商类型' AFTER `area`;
+
+ALTER TABLE  `hi_product` ADD  `suggest_b2c_price` DECIMAL( 12, 2 ) NULL DEFAULT NULL AFTER  `b2c_price` ;
+
+
+ALTER TABLE `hi_product` ADD `suggest_b2c_price` DECIMAL NOT NULL AFTER `b2c_price`;
+ALTER TABLE `hi_product` CHANGE `suggest_b2c_price` `suggest_b2c_price` DECIMAL(12,2) NOT NULL;
+ALTER TABLE `hi_product` CHANGE `suggest_b2c_price` `suggest_b2c_price` DECIMAL(12,2) NULL DEFAULT NULL;
+
+define('IMAGEPATH', '/'.trim(substr_replace((trim(BASEPATH, '/')),'assets', '-6' ,6)).'/images/');
+define('IMAGEPATH', '../../assets/images/');
+---------------------------------------------------------------------------------------------------------------
+
+2016年12月2日14:18:57 adi_fr新增字段
+ALTER TABLE `adi_batch_transfer` ADD `export_mark` TINYINT NOT NULL DEFAULT '0' COMMENT '是否导出' AFTER `postal_mark`;
+2016年12月6日14:18:57 adi_fr新增表
+--
+-- 表的结构 `adi_tracking_no`
+--
+
+CREATE TABLE IF NOT EXISTS `adi_tracking_no` (
+  `order_no` varchar(32) NOT NULL COMMENT '订单号',
+  `tracking_no` varchar(64) NOT NULL COMMENT '跟踪号',
+  `src` varchar(128) DEFAULT NULL COMMENT '该跟踪号来自哪个文件',
+  `added_user_id` int(11) NOT NULL COMMENT '该跟踪号的添加人ID',
+  `added_user_name` varchar(32) NOT NULL COMMENT '该跟踪号的添加人姓名',
+  `added_date` datetime NOT NULL COMMENT '添加时间',
+  `added_ip` varchar(16) DEFAULT NULL COMMENT '添加时的IP',
+  `updated` tinyint(4) DEFAULT NULL COMMENT '状态标识，表明是否已更新到转运订单表',
+  `updated_date` datetime DEFAULT NULL COMMENT '更新到转运订单表的时间',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '该条数据的状态。1：有效；0：无效。自动任务将只处理有效的数据',
+  UNIQUE KEY `order_no` (`order_no`),
+  UNIQUE KEY `tracking_no` (`tracking_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='跟踪号数据表，本表的数据将更新到转运订单表的「tracking_no」字段';

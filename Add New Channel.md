@@ -44,3 +44,11 @@
         - ```intro/html``` 添加静态页面（静态页面必须以intro-开头）
         - ```intro```控制器添加```_titles```配置
     2. 在```common/footer```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
+
+## 添加QQ号
+* views/dashboard/index
+* views/static/contact_us
+* views/index
+* views/email/common/footer
+* views/common/contact(只有法国QQ群才改)
+* views/intro/warehouse_fr_footer(只有法国QQ群才改)

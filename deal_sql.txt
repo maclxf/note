@@ -38,6 +38,8 @@ define('IMAGEPATH', '../../assets/images/');
 
 2016年12月2日14:18:57 adi_fr新增字段
 ALTER TABLE `adi_batch_transfer` ADD `export_mark` TINYINT NOT NULL DEFAULT '0' COMMENT '是否导出' AFTER `postal_mark`;
+
+---------------------------------------------------------------------------------------------------------------
 2016年12月6日14:18:57 adi_fr新增表
 --
 -- 表的结构 `adi_tracking_no`

@@ -45,3 +45,5 @@ Temporary Items
 *.sublime-project
 *.sublime-workspace
 *.html
+
+base_table.sql

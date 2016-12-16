@@ -59,3 +59,11 @@ CREATE TABLE IF NOT EXISTS `adi_tracking_no` (
   UNIQUE KEY `order_no` (`order_no`),
   UNIQUE KEY `tracking_no` (`tracking_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='跟踪号数据表，本表的数据将更新到转运订单表的「tracking_no」字段';
+
+
+-------------------------------------------------------------------------------------------------
+2016年12月16日 .com新增字段
+adi_warehouse表
+  ALTER TABLE `adi_warehouse` ADD `using_in_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `using_type`;
+adi_channel表
+  ALTER TABLE `adi_channel` ADD `using_in_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `channel_supplier`;

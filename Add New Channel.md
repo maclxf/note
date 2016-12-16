@@ -31,18 +31,20 @@
     1. 渠道是否需要证件信息配置```config/channel```
     2. 体积附加费的配置```config/channel```
     3. 奶粉渠道的配置```config/channel```
-    4. 渠道数据导出设置的配置```config/channel```
+    4. 渠道简称```config/channel```
+    5. 渠道数据导出设置的配置```config/channel```
         - 若需要导出需要导出模板
         - 根据模板编写导出代码
         - 导出权限配置```config/oprt_privilege```
 
-    5. 点击更新状态配置```config/transporting_status_msg```
-    6. 渠道对应的快递公司配置```config/kuaidi100_status```
+    6. 点击更新状态配置```config/transporting_status_msg```
+    7. 渠道对应的快递公司配置```config/kuaidi100_status```
 
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
-        - ```intro/html``` 添加静态页面（静态页面必须以intro-开头）
+        - ```intro/html``` 添加静态页面链接（静态页面必须以intro-开头）
         - ```intro```控制器添加```_titles```配置
+        - _titles对应的那个键值需要和静态页面链接intro-后相同
     2. 在```common/footer```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
 
 ## 添加QQ号

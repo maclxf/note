@@ -5,6 +5,20 @@
  * #### 价格不支持小数
 
 ## adi
+ * 后台adi_v3_admin登录到前台adi_v3的功能（优先）
+
+
+
+
+
+
+
+
+
+
+
+
+
  * ##### 前台显示奶粉附加信息
  * ##### 后台修改重量取消对重量录入的限制（取消intger_require的class）
  * ##### 台后台地址完全展示(print_address_page,print_order_addresses_page)

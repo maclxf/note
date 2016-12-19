@@ -71,5 +71,29 @@ PS:此时订单处于已称重，由于有优惠券停在选择渠道的阶段
 -------------------------------------------
 INSERT INTO `adi`.`adi_transfer_valued_service` (`id`, `transfer_id`, `service_id`, `service_name`, `service_price`, `service_cost`, `qty`, `comments`) VALUES (NULL, '19137', '8', '标准加固【2】', '37.5', NULL, '1', NULL);
 
+-------------------------------------------
+王冬梅  13:27:18
+AT3143807329------------增加7kg的箱子
+PS:此时订单处于已付款，等待出库
+-------------------------------------------
+1.transfer_valued_service +3.75
+
+    19923  18549  22  【3公斤】5层纸箱  7.5  NULL  1  NUL
+                    |
+    19923  18549  27  【7公斤】5层纸箱  11.25  NULL  1  NUL
+
+2.transfer_totals +3.75
+
+    74535  18549  valued_service_fee  增值服务费  24.00 -> 27.75
+
+3.transfer +3.75
+    18549  2455  吴尚颖  309.00->312.75
+
+4.transaction -3.75
+    INSERT INTO  `adi`.`adi_transaction` (`id` ,`related_id` ,`customer_id` ,`trans_no` ,`trans_name` ,`trans_type` ,`order_id` ,`amount` ,`currency` ,`amount_rmb` ,`payment` ,`flag` ,`comment` ,`status` ,`trans_start_date` ,`trans_complete_date`) VALUES (NULL , NULL ,  '2455', NULL ,  '补增值服务差价',  '5',  'AT3143807329',  '3.75',  'RMB',  '3.75', '账户余额',  '0',  '【3公斤】5层纸箱改为【7公斤】5层纸箱 差价3.75元',  'Completed', '2016-12-19 14:35:42',  '2016-12-19 14:35:42');
+
+5.customer -3.75
+    2455  吴尚颖  4305.00->4301.25
+
 
 

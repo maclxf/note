@@ -64,6 +64,6 @@ CREATE TABLE IF NOT EXISTS `adi_tracking_no` (
 -------------------------------------------------------------------------------------------------
 2016年12月16日 .com新增字段
 adi_warehouse表
-  ALTER TABLE `adi_warehouse` ADD `using_in_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `using_type`;
+  ALTER TABLE `adi_warehouse` ADD `only_for_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `using_type`;
 adi_channel表
-  ALTER TABLE `adi_channel` ADD `using_in_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `channel_supplier`;
+  ALTER TABLE `adi_channel` ADD `only_for_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `channel_supplier`;

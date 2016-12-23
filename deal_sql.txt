@@ -19,8 +19,7 @@ ORDER BY  `tvs`.`service_id` DESC
 
 2016年12月2日14:17:10 HIVE添加字段
 
-ALTER TABLE `hi_product` ADD `standard` VARCHAR(64) NULL DEFAULT NULL COMMENT '产品规格' AFTER `weight`;
-
+ALTER TABLE `hi_product` ADD `standard` VARCHAR(64) NULL DEFAULT NULL COMMENT '产品规格' AFTER `weight
 ALTER TABLE `hi_supplier` ADD `is_car` TINYINT NOT NULL DEFAULT '0' ;
 
 ALTER TABLE `hi_supplier` ADD `area` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '供应商所属区域' AFTER `description`, ADD `supplier_category` TINYINT NOT NULL DEFAULT '0' COMMENT '供应商类型' AFTER `area`;
@@ -67,3 +66,5 @@ adi_warehouse表
   ALTER TABLE `adi_warehouse` ADD `only_for_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `using_type`;
 adi_channel表
   ALTER TABLE `adi_channel` ADD `only_for_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `channel_supplier`;
+
+-------------------------------------------------------------------------------------------------

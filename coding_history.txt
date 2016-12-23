@@ -1,0 +1,6 @@
+
+// 通过包裹编号查订单
+SELECT t.tid FROM  `adi_package` p
+LEFT JOIN  `adi_transfer_package` tp ON tp.package_id = p.id
+LEFT JOIN  `adi_transfer` t ON tp.transfer_id = t.id
+WHERE p.pid =  '2095674728'

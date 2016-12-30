@@ -1,0 +1,20 @@
+
+// 通过包裹编号查订单
+SELECT t.tid FROM  `adi_package` p
+LEFT JOIN  `adi_transfer_package` tp ON tp.package_id = p.id
+LEFT JOIN  `adi_transfer` t ON tp.transfer_id = t.id
+WHERE p.pid =  '2095674728'
+
+// FR查询10月保险记录
+SELECT bt.id, bt.tid, bt.tracking_no, bt.insurance, bt.customer_id, bt.customer_name, bt.status_code, bt.status_name, bth.add_date FROM `adi_batch_transfer` bt
+LEFT JOIN `adi_batch_transfer_history` bth ON bth.status_id = bt.status_code AND bt.id = bth.batch_transfer_id
+WHERE bt.status_code IN (300,740) AND bt.insurance IS NOT NULL AND bth.add_date >= '2016-10-01 00:00:00' AND bth.add_date <= '2016-10-31 23:59:59' GROUP BY bt.insurance
+
+//每人保险订单查询SQL：每天2点将查询结果发给张琳，注意不要有重复,这里查询的是当时到昨天的这个时间
+SELECT t.tid AS '订单号', t.channel_name, t.warehouse_name,  t.status, th.add_date AS '出库时间', t.status_id
+FROM `adi_transfer` t
+INNER JOIN `adi_transfer_valued_service` tvs ON t.id = tvs.transfer_id
+INNER JOIN `adi_transfer_history` th ON t.id = th.transfer_id AND th.status_id IN (220, 300)
+WHERE tvs.service_id > 150 AND tvs.service_id < 181 AND date_sub(curdate(), INTERVAL 1 DAY) <= date(th.add_date)
+
+

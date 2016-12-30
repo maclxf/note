@@ -68,3 +68,6 @@ adi_channel表
   ALTER TABLE `adi_channel` ADD `only_for_mall` TINYINT NOT NULL DEFAULT '0' COMMENT '只用于商城' AFTER `channel_supplier`;
 
 -------------------------------------------------------------------------------------------------
+2016年12月30日11:57:41 .com新增字段
+adi_transfer表
+  ALTER TABLE `adi_transfer` ADD `tracking_url` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '跟踪号查询URL' AFTER `tracking_no`;

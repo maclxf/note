@@ -1,3 +1,66 @@
+******************************************待提交包裹回退一步到待入库********************************************
+adi_package
+    30631
+    'ori_weight' => $ori_weight,             700                                NULL
+    'shelf' => $shelf,                       Y1738                              NULL
+    'shelf_id' => $shelf_id,                 NULL                               NULL
+    'status_code' => $status_code,           110                                100
+    'status_name' => $status_name,           已全部入库，等待提交回国订单       已预报，等待收货
+    'delivery_status' => 2 //                2                                  0
+
+adi_package_product
+    65101 30631 'is_arrived' => 1-> 0
+
+adi_package_history
+    95570 30631  110  已全部入库，等待提交回国订单  2016-12-21 00:50:29  90.63.209.84  19  peienzhu
+
+adi_package_shelf
+    30631  Y1738  2016-12-21 00:50:29
+*******************************************************************************************************************
+
+******************************************已付款，取消增值服务*****************************************************
+1.transfer_valued_service -16.5
+    19906  18549  151  海淘转运保险：海淘被税包+货损包体验版（奶粉专线请勿选择此项）  16.50  NULL  1 -> del
+
+2.transfer_totals -16.5
+    74535  18549  valued_service_fee  增值服务费  [27.75] -> [11.25]
+
+3.transfer -16.5
+    18549  2455  吴尚颖  312.75->296.75
+
+4.transaction +16.5
+    INSERT INTO `adi`.`adi_transaction` (`id`, `related_id`, `customer_id`, `trans_no`, `trans_name`, `trans_type`, `order_id`, `amount`, `currency`, `amount_rmb`, `payment`, `flag`, `comment`, `status`, `trans_start_date`, `trans_complete_date`) VALUES (NULL, NULL, '2455', '', '订单退款：取消增值服务', '4', 'AT3143807329', '16.5', 'RMB', '16.5', '系统', '1', '取消海淘被税包+货损包体验版增值服务', 'Completed', '2016-12-20 15:01:01', '2016-12-20 15:01:01');
+
+5.customer +16.5
+    2455  吴尚颖  4301.25->4317.75
+******************************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ------------------------------------------
 王冬梅  10:08:57
 AT3143824906这个箱子去掉下
@@ -164,6 +227,131 @@ adi_package_shelf
 
 3.transfer -7.5
     19594  AT3143921936  梁巍巍  [169.50] -> 162
+---------------------------------------------------------------------
+APIBRAIN  14:54:05
+AT3143869843 这个订单  加一个标准加固，同时从用户账户余额扣取相应的费用
+订单状态：打包称重完成，等待付款
+-----------------------------------------------------------------------
+1.transfer_valued_service +30
+    19073  6  标准加固【1】  30  NULL  1  NULL 添加一条增值服务
+
+2.transfer_totals +30
+    75201  19073  valued_service_fee  增值服务费  0.00 -> 30
+
+3.transfer +30
+    19073  AT3143869843  202.50 -> 232.5
+--------------------------------------------------------------------
+王冬梅  16:43:49
+包裹编号：2096898127
+包裹重量：8.70 KG
+这个包裹输入重量数据时错误，应为9.70kg，请后台修改
+---------------------------------------------------------------------
+1.package
+    32532  2096898127  S3050  4944  孙颖  8700 -> 9700
+2.transfer
+    19895  AT3143952098  S3050  4944  孙颖  8700 -> 9700
+---------------------------------------------------------------------
+王冬梅  9:34:24
+AT3143951134这个订单的保险去掉下
+订单状态：打包称重完成，等待付款
+---------------------------------------------------------------------
+1.transfer_valued_service
+21386  19886  151  海淘转运保险：海淘被税包+货损包体验版（奶粉专线请勿选择此项）  16.50  NULL  1 -> [del]
+
+2.transfer_totals -16.50
+75625  19886  valued_service_fee  增值服务费  24.00 -> 7.5
+
+3.transfer -16.5
+19886  AT3143951134  谌英  202.5 -> 186.00
+---------------------------------------------------------------------
+王冬梅  9:49:28
+待提交包裹号2096614669里面有54罐奶粉，重量应为65kg，希望国内同时予以改正，谢谢
+---------------------------------------------------------------------
+1.package
+32388  2096614669  850  沈玉香  12650 -> 65000
+--------------------------------------------------------------------
+2016年12月29日09:47:45
+王冬梅  9:40:38
+请把原待提交包裹2095021840后退一步
+--------------------------------------------------------------------
+adi_package
+    30631
+    'ori_weight' => $ori_weight,             1000                                NULL
+    'shelf' => $shelf,                       Y5084                              NULL
+    'shelf_id' => $shelf_id,                 NULL                               NULL
+    'status_code' => $status_code,           110                                100
+    'status_name' => $status_name,           已全部入库，等待提交回国订单       已预报，等待收货
+    'delivery_status' => 2 //                2                                  0
+
+adi_package_product
+    65101 30631 'is_arrived' => 1-> 0
+
+adi_package_history
+    97139  30631  110  已全部入库，等待提交回国订单  2016-12-27 01:35:19  90.63.209.84  19  peienzhu
+
+adi_package_shelf
+    30631  Y1738  2016-12-27 01:35:19
+
+******************************************************************************************
+//日本香港邮政EMS小包 id = 21 11月对账订单id
+SELECT `t`.`id`FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` WHERE `th`.`status_id` IN (220, 300) AND `t`.`channel_id` = 21 AND `th`.`add_date` >= "2016-11-01 00:00:00" AND `th`.`add_date` < "2016-11-30 23:59:59" ORDER BY `id` DESC
+//result
+18281,18161,18151,17717,17671,17669,17541,17540,17306,17297,17296,17263,17262,17261,17210,17181
+
+//日本香港邮政EMS小包 id = 21 11月对账数据
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight" LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee" LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund" LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost" LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost" WHERE `t`.`id` IN (18281,18161,18151,17717,17671,17669,17541,17540,17306,17297,17296,17263,17262,17261,17210,17181) AND `th`.`status_id` IN (220, 300) ORDER BY `t`.`id` DESC
+
+******************************************************************************************
+
+//日本香港邮政EMS小包 id = 21 12月对账订单id
+SELECT `t`.`id`FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` WHERE `th`.`status_id` IN (220, 300) AND `t`.`channel_id` = 21 AND `th`.`add_date` >= "2016-12-01 00:00:00" AND `th`.`add_date` < "2016-12-31 23:59:59" ORDER BY `id` DESC
+
+19499,19488,19435,19076,19024,19003,18940,18822,18814,18800,18790,18789,18788,18787,18604,18603,18438,17673,17672
+
+//日本香港邮政EMS小包 id = 21 12月对账数据
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight" LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee" LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund" LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost" LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost" WHERE `t`.`id` IN (19499,19488,19435,19076,19024,19003,18940,18822,18814,18800,18790,18789,18788,18787,18604,18603,18438,17673,17672) AND `th`.`status_id` IN (220, 300) ORDER BY `t`.`id` DESC
+
+******************************************************************************************
+//意大利经济小包 id = 19 11月对账订单id
+
+SELECT `t`.`id`FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` WHERE `th`.`status_id` IN (220, 300) AND `t`.`channel_id` = 19 AND `th`.`add_date` >= "2016-11-01 00:00:00" AND `th`.`add_date` < "2016-11-30 23:59:59" ORDER BY `id` DESC
+
+18469,17791,17721,17631,17558,17556,17428,17367,17206
 
 
+//意大利经济小包 id = 19 11月对账数据
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight" LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee" LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund" LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost" LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost" WHERE `t`.`id` IN (18469,17791,17721,17631,17558,17556,17428,17367,17206) AND `th`.`status_id` IN (220, 300) ORDER BY `t`.`id` DESC
 
+******************************************************************************************
+//意大利经济小包 id = 19 12月对账订单id
+
+SELECT `t`.`id`FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` WHERE `th`.`status_id` IN (220, 300) AND `t`.`channel_id` = 19 AND `th`.`add_date` >= "2016-12-01 00:00:00" AND `th`.`add_date` < "2016-12-31 23:59:59" ORDER BY `id` DESC
+
+19284,19203,19199,19124,18954,18889,18815,18601
+
+
+//意大利经济小包 id = 19 12月对账数据
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost FROM `adi_transfer` `t` LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id` LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight" LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee" LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund" LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost" LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost" WHERE `t`.`id` IN (19284,19203,19199,19124,18954,18889,18815,18601) AND `th`.`status_id` IN (220, 300) ORDER BY `t`.`id` DESC
+
+
+---------------------------------------------------------------------------
+王冬梅  13:47:47
+AT3143958572----这个箱子取消下
+订单状态：已付款，等待发运回国
+---------------------------------------------------------------------------
+1.transfer_valued_service -7.5
+    21535  19960  22  【3公斤】5层纸箱  7.50  NULL  1  在打包称重时生成 -> del
+
+2.transfer_totals -7.5
+    75860  19960  valued_service_fee  增值服务费  [37.50] -> [30]
+
+
+3.transfer -7.5
+    19960  AT3143958572  3586  徐晓薇  [202.50] -> [195]
+
+
+4.transaction -7.5
+    39612  NULL  3586  转运消费  2  AT3143958572  [202.50] -> [195]  RMB  [202.50] -> [195]
+
+5.customer +7.5
+    3586  徐晓薇  2762.88 -> [2770.38]

@@ -26,6 +26,7 @@
 10月订单记录说明
     10月共计法邮反馈共计买了69个保险，.fr数据统计10月共计81个保险
     SELECT bt.id, bt.tid, bt.tracking_no, bt.insurance, bt.customer_id, bt.customer_name, bt.status_code, bt.status_name, bth.add_date FROM `adi_batch_transfer` bt LEFT JOIN `adi_batch_transfer_history` bth ON bth.status_id = bt.status_code AND bt.id = bth.batch_transfer_id WHERE bt.status_code IN (300,740) AND bt.insurance IS NOT NULL AND bth.add_date >= '2016-10-01 00:00:00' AND bth.add_date <= '2016-10-31 23:59:59' and receiver_country_code in ('CN', 'HK', 'SG', 'KR')
+正常:'EY165466580FR',
 
 法国本地客户共计25个
     买了保险但是没得反馈值：EY157998136FR EY159319392FR EY159319582FR EY161296390FR EY163794335FR EY166416806FR
@@ -35,26 +36,33 @@
     买了保险但是没得反馈值 EY168301647FR
     法邮账单无信息：EY153895604FR
 
-正常:BT1519389883
+
 
 
 无反馈值
-'EY165466580FR', 'EY157998136FR', 'EY159319392FR', 'EY159319582FR', 'EY161296390FR', 'EY163794335FR', 'EY166416806FR', 'EY168301647FR'
+'EY159319392FR'(门店开单), 'EY159319582FR'(门店开单), 'EY161296390FR'(门店开单), 'EY163794335FR'(门店开单), 'EY166416806FR'(门店开单), 'EY168301647FR'(自助开单)
 
 法邮账单无信息
-'EY165466580FR', 'EY153895462FR', 'EY160333003FR', 'EY160333184FR', 'EY160333799FR', 'EY153895604FR'
+'EY153895462FR', 'EY160333003FR', 'EY160333184FR', 'EY160333799FR', 'EY153895604FR'
 
 -----------------------------------------------------------------------------------------
 
 11月订单记录说明
     11月共计法邮反馈共计买了60个保险，.fr数据统计10月共计77个保险
 
+正常：EY177215133FR
 
 法国本地客户共计9个
-    正常：EY177215133F
     买了保险但是没得反馈值：EY169667729FR EY169919215FR EY170461355FR EY173405432FR EY175054478FR
     法邮账单无信息：EY160333873FR EY169889972FR EY169890088FR
 
 小蜜蜂共计6个
     买了保险但是没得反馈值 EY170461506FR
     法邮账单无信息：EY179575050FR CP691060586FR CP691060590FR CP691060609FR CP691060612FR
+
+'EY177215133FR', 'EY169667729FR', 'EY169919215FR'
+------------------------------------------------------------------------
+12月订单记录说明
+    12月共计法邮反馈共计买了36个保险，.fr数据统计12月共计26个保险
+SELECT bt.id, bt.tid, bt.tracking_no, bt.insurance, bt.customer_id, bt.customer_name, bt.status_code, bt.status_name, bth.add_date FROM `adi_batch_transfer` bt LEFT JOIN `adi_batch_transfer_history` bth ON bth.status_id = bt.status_code AND bt.id = bth.batch_transfer_id WHERE bt.status_code IN (300,740) AND bt.insurance IS NOT NULL AND bth.add_date >= '2016-12-01 00:00:00' AND bth.add_date <= '2016-12-31 23:59:59' and receiver_country_code in ('CN', 'HK', 'SG', 'KR')
+

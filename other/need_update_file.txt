@@ -11,7 +11,6 @@
 + application/models/admin/order_model.php
 + application/models/product_model.php
 + application/models/transfer_model.php
-+ application/views/js/christmas_2016.event.js
 + application/views/js/common.js
 + application/views/mall/detail.php
 + application/views/mall/index.php

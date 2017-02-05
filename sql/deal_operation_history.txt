@@ -41,7 +41,7 @@
 
 3.transfer
 
-    SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where id = 20802
+    SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where tid = ''
 
 4.transaction
 
@@ -121,6 +121,8 @@
 
 // 6、adi_transfer_shelf 恢复订单货位号
     20967 COLI-4-740
+-------------------------------修改跟踪号--------------------------------------------------------
+    SELECT id,tid,customer_id,customer_name,status_id,status,tracking_no FROM `adi_transfer` where tid = 'AT3145413319'
 
 
 
@@ -841,3 +843,39 @@ AT3145449240这个取消的订单麻烦恢复下
 
 // 6、adi_transfer_shelf 恢复订单货位号
     20967 COLI-4-740 2017-01-19 22:36:41 -> [insert]
+----------------------------------------------------------------------------------
+张琳  10:26:39
+AT3145413319===晓峰，麻烦把这个包裹的运单号改为9738899251999
+----------------------------------------------------------------------------------
+
+20608  AT3145413319  9300  郭占峰  300  包裹已发运回国  9738898141499 -> 9738899251999
+
+---------------------------------------------------------------------------------
+张琳  10:49:40
+AT3145433916===晓峰，这个订单的运单号麻烦在改为9734045706699
+----------------------------------------------------------------------------------
+SELECT id,tid,customer_id,customer_name,status_id,status,tracking_no FROM `adi_transfer` where tid = 'AT3145433916'
+
+20814 AT3145433916 9300 郭占峰 300 包裹已发运回国 9738899251999 -> 9734045706699
+
+----------------------------------------------------------------------------------
+王冬梅  14:41:04
+AT3145487522-------------增加一个标准加固
+订单状态：打包称重完成，等待付款
+----------------------------------------------------------------------------------
+1.transfer_valued_service +37.5
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21350
+    id 21350  8  标准加固【2】  37.50  NULL  1
+
+
+2.transfer_totals +37.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 21350
+    21350  valued_service_fee  增值服务费  37.5
+
+3.transfer +37.5
+
+    SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where tid = 'AT3145487522'
+
+    21350  AT3145487522  5396  高殿栋  200  打包称重完成，等待付款  352.50 -> 352.50+37.5

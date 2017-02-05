@@ -95,3 +95,10 @@ application/controllers/transfer.php
 
 application/controllers/admin/order_entry.php
 
+-----------------------------------------------------------------
+//adi-v3-admin测试(上传合并)
++ application/views/email/ship.php
++ application/views/email/take_inventory.php
++ application/views/email/take_split.php
++ application/views/order/entry/list.php
+

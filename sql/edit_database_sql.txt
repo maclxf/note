@@ -71,3 +71,10 @@ adi_channel表
 2016年12月30日11:57:41 .com新增字段
 adi_transfer表
   ALTER TABLE `adi_transfer` ADD `tracking_url` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '跟踪号查询URL' AFTER `tracking_no`;
+-------------------------------------------------------------------------------------------------
+2017年1月18日14:35:30
+
+SELECT * FROM `adi_package` WHERE parent_id IS NOT NULL
+
+UPDATE `adi_package` SET type = 5 WHERE parent_id IS NOT NULL
+

@@ -6,6 +6,40 @@
 
 ## adi
  * 商品金额及运费，使用人民币；前台展示也用人民币
+
+
+ - 有价格的有商品的费用，直邮的费用，运费，商家供应的费用，成本
+
+ - 购物车（存储价格）
+
+- 转运
+  - adi_package
+  - adi_package_product中有
+  - adi_package_total
+  - adi_customer
+  - adi_package_total
+  - adi_transaction
+  - adi_package_total
+
+- 直邮
+
+- 产品销售统计
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     - 展示页面mall/supplier 有价格显示的地方
       ``` <?php echo $product->direct_mail_status == 1 ? $product->direct_mail_price : $product->price; ?> ```
     - 产品详情页面mall/detail 有价格显示的地方

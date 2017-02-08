@@ -32,7 +32,22 @@
 
 
 
+$config['vip_free_vs'] = array(
+  'time _area' => array(
+    'area1' => array(
+      'start_time' => '2017-02-08 00:00:00'，
+      'end_time' => '2017-02-08 23:59:59'，
+    ),
+    'area2' => array(
+      'start_time' => '2017-02-08 00:00:00'，
+      'end_time' => '2017-02-08 23:59:59'，
+    ),
+  )，
+  'free_vs_ids' => array(1,2,3,6,9,18,23)
 
+
+
+);
 
 
 

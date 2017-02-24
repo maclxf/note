@@ -127,3 +127,4 @@ ALTER TABLE `adi_transfer` CHANGE `weight_mark` `weight_mark` TINYINT(4) NULL DE
 
 INSERT INTO `adi_fr`.`adi_country` (`id`, `name`, `name_fr`, `code`, `sub_type`, `sub_pattern`, `sub_pattern_fr`, `status`) VALUES (NULL, '荷兰', 'Hollande', 'NL', '3', '城市', 'Ville', '1'),(NULL, '英国', 'Angleterre', 'UK', '3', '城市', 'Ville', '1'),(NULL, '西班牙', 'Espagne', 'ES', '3', '城市', 'Ville', '1'),(NULL, '葡萄牙', 'Portugal', 'PT', '3', '城市', 'Ville', '1'),(NULL, '瑞典', 'Suède', 'SE', '3', '城市', 'Ville', '1'),(NULL, '匈牙利', 'Hongrie', 'HU', '3', '城市', 'Ville', '1'),(NULL, '德国', 'Allemagne', 'GER', '3', '城市', 'Ville', '1'),(NULL, '丹麦', 'Danemark', 'DK', '3', '城市', 'Ville', '1'),(NULL, '奥地利', 'Autriche', 'AT', '3', '城市', 'Ville', '1'),(NULL, '意大利', 'Italie', 'IT', '3', '城市', 'Ville', '1'),(NULL, '瑞士', 'Suisse', 'CH', '3', '城市', 'Ville', '1');
 
+git push local_branch:remote_branch

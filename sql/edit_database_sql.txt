@@ -117,3 +117,13 @@ ALTER TABLE `adi_product_price` COMMENT = '批发价';
 ALTER TABLE `adi_transfer` CHANGE `weight_mark` `weight_mark` TINYINT(4) NULL DEFAULT NULL COMMENT '订单称重打印状态:0表示待打印称重，1表示已称重，2表示已打包';
 
 
+
+
+
+
+--------------------------------------------------------------------------------------------
+2017年2月24日17:39:37
+.fr
+
+INSERT INTO `adi_fr`.`adi_country` (`id`, `name`, `name_fr`, `code`, `sub_type`, `sub_pattern`, `sub_pattern_fr`, `status`) VALUES (NULL, '荷兰', 'Hollande', 'NL', '3', '城市', 'Ville', '1'),(NULL, '英国', 'Angleterre', 'UK', '3', '城市', 'Ville', '1'),(NULL, '西班牙', 'Espagne', 'ES', '3', '城市', 'Ville', '1'),(NULL, '葡萄牙', 'Portugal', 'PT', '3', '城市', 'Ville', '1'),(NULL, '瑞典', 'Suède', 'SE', '3', '城市', 'Ville', '1'),(NULL, '匈牙利', 'Hongrie', 'HU', '3', '城市', 'Ville', '1'),(NULL, '德国', 'Allemagne', 'GER', '3', '城市', 'Ville', '1'),(NULL, '丹麦', 'Danemark', 'DK', '3', '城市', 'Ville', '1'),(NULL, '奥地利', 'Autriche', 'AT', '3', '城市', 'Ville', '1'),(NULL, '意大利', 'Italie', 'IT', '3', '城市', 'Ville', '1'),(NULL, '瑞士', 'Suisse', 'CH', '3', '城市', 'Ville', '1');
+

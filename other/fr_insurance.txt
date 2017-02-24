@@ -66,3 +66,13 @@
     12月共计法邮反馈共计买了36个保险，.fr数据统计12月共计26个保险
 SELECT bt.id, bt.tid, bt.tracking_no, bt.insurance, bt.customer_id, bt.customer_name, bt.status_code, bt.status_name, bth.add_date FROM `adi_batch_transfer` bt LEFT JOIN `adi_batch_transfer_history` bth ON bth.status_id = bt.status_code AND bt.id = bth.batch_transfer_id WHERE bt.status_code IN (300,740) AND bt.insurance IS NOT NULL AND bth.add_date >= '2016-12-01 00:00:00' AND bth.add_date <= '2016-12-31 23:59:59' and receiver_country_code in ('CN', 'HK', 'SG', 'KR')
 
+****************************************************************************************
+EY205059255FR
+1月26日修改后数据
+
+
+
+EY205552350FR 6
+EY205552845FR 2
+EY207201047FR 1
+EY207201210FR 2

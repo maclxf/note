@@ -78,3 +78,42 @@ SELECT * FROM `adi_package` WHERE parent_id IS NOT NULL
 
 UPDATE `adi_package` SET type = 5 WHERE parent_id IS NOT NULL
 
+-------------------------------------------------------------------------------------------------
+2017年2月8日14:35:30
+
+CREATE TABLE `adi_register_reward_history` (
+  `id` int(11) NOT NULL COMMENT '自增ID',
+  `customer_id` int(11) NOT NULL COMMENT '用户ID',
+  `customer_email` varchar(256) NOT NULL COMMENT '用户邮箱',
+  `reg_date` datetime NOT NULL COMMENT '用户注册时间',
+  `amount` decimal(12,2) NOT NULL COMMENT '奖励金额',
+  `currency_id` int(11) NOT NULL COMMENT '货币ID',
+  `currency_name` varchar(32) NOT NULL COMMENT '货币名称',
+  `currency_symbol` varchar(8) NOT NULL COMMENT '货币符号',
+  `reward_date` datetime NOT NULL COMMENT '奖励时间',
+  `rule` varchar(32) NOT NULL COMMENT '奖励规则名称',
+  `status` tinyint(4) NOT NULL COMMENT '状态标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='新用户注册奖励历史记录表';
+
+
+ALTER TABLE `adi_register_reward_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+
+ALTER TABLE `adi_register_reward_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+--------------------------------------------------------------------------------------------
+2017年2月8日16:35:44
+ALTER TABLE `adi_product` ADD `price_rmb` DECIMAL(12,2) NULL DEFAULT NULL COMMENT '产品的人民币价格' AFTER `price`;
+
+ALTER TABLE `adi_product_supplier_price` COMMENT = '供应商价格';
+
+ALTER TABLE `adi_product_price` COMMENT = '批发价';
+
+--------------------------------------------------------------------------------------------
+2017年2月23日15:23:26
+ALTER TABLE `adi_transfer` CHANGE `weight_mark` `weight_mark` TINYINT(4) NULL DEFAULT NULL COMMENT '订单称重打印状态:0表示待打印称重，1表示已称重，2表示已打包';
+
+

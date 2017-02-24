@@ -17,4 +17,35 @@ INNER JOIN `adi_transfer_valued_service` tvs ON t.id = tvs.transfer_id
 INNER JOIN `adi_transfer_history` th ON t.id = th.transfer_id AND th.status_id IN (220, 300)
 WHERE tvs.service_id > 150 AND tvs.service_id < 181 AND date_sub(curdate(), INTERVAL 1 DAY) <= date(th.add_date)
 
+// 通过交易表查询默认的支持收入是否匹配
+SELECT SUM(CASE flag WHEN 1 THEN amount_rmb ELSE amount_rmb * -1 END) as balance
+FROM `adi_transaction`
+WHERE customer_id = 103;
 
+
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost, (select GROUP_CONCAT(service_name, " ", service_price, "*", qty separator " ; ") from adi_transfer_valued_service where transfer_id = t.id group by transfer_id) as vs_str
+FROM `adi_transfer` `t`
+LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id`
+LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id`
+LEFT JOIN `adi_transfer_valued_service` `tvs` ON `tvs`.`transfer_id` = `t`.`id`
+LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight"
+LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee"
+LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund"
+LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost"
+LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost"
+WHERE `th`.`status_id` IN (220, 300)
+AND `tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181
+AND `th`.`add_date` >= "2017-01-01 00:00:00" AND `th`.`add_date` < "2017-01-31 23:59:59"
+ORDER BY `t`.`id` DESC
+
+
+
+AT3145574008
+AT3145569048
+AT3145584309
+AT3145574104
+AT3145578379
+AT3145570552
+AT3145587124
+AT3145569542
+AT3145598976

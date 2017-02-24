@@ -1,7 +1,7 @@
 ******************************************待提交包裹回退一步到待入库********************************************
 1.adi_package
 
-    SELECT id,pid,ori_weight,shelf,shelf_id,status_code,status_name,delivery_status FROM `adi_package` where pid = '2098138812'
+    SELECT id,pid,ori_weight,shelf,shelf_id,status_code,status_name,delivery_status FROM `adi_package` where pid = ''
 
     30631
     'ori_weight' => $ori_weight,             700                                NULL
@@ -13,19 +13,19 @@
 
 2.adi_package_product
 
-    SELECT id,package_id,is_arrived FROM `adi_package_product` where package_id = 33670
+    SELECT id,package_id,is_arrived FROM `adi_package_product` where package_id =
 
     65101 30631 'is_arrived' => 1-> 0
 
 3.adi_package_history
 
-    SELECT * FROM `adi_package_history` WHERE package_id =33670
+    SELECT * FROM `adi_package_history` WHERE package_id =
 
     95570 30631  110  已全部入库，等待提交回国订单  2016-12-21 00:50:29  90.63.209.84  19  peienzhu
 
 4.adi_package_shelf
 
-    SELECT * FROM `adi_package_shelf` WHERE package_id =33670
+    SELECT * FROM `adi_package_shelf` WHERE package_id =
 
     30631  Y1738  2016-12-21 00:50:29
 *******************************************************************************************************************
@@ -33,23 +33,23 @@
 ******************************************已付款，增加/取消增值服务*****************************************************
 1.transfer_valued_service
 
-    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =20969
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =
 
 2.transfer_totals
 
-    SELECT * FROM `adi_transfer_total` where transfer_id = 20462
+    SELECT * FROM `adi_transfer_total` where transfer_id =
 
 3.transfer
 
-    SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where tid = ''
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = ''
 
 4.transaction
 
-    SELECT * FROM `adi_transaction`  WHERE order_id =  'AT3145398771'
+    SELECT * FROM `adi_transaction`  WHERE order_id = ''
 
 5.customer
 
-    SELECT id,name,balance FROM `adi_customer` where id = 6045
+    SELECT id,name,balance FROM `adi_customer` where id =
 ******************************************************************************************************************
 
 ***************************************待称重订单修改渠道*********************************************************
@@ -126,6 +126,72 @@
 
 
 
+------------------------------出库后要改渠道---------------------------------------------------------
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+                                                                                         0
+23810  22212  151  海淘转运保险：海淘被税包+货损包体验版（奶粉专线请勿选择此项）  0.00   16.50  1  2017元宵+情人节活动免费赠送
+
+23809  22212  6    标准加固【1】                                                  30.00  11.25  1  null
+                                                                                         0
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EL254181686HK         => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 185.25                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 11
+    'channel_name        = 法国仓-经济小包       => 比利时邮政
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+
+    22212 AT3145583417 77 张哲 EL254181686HK http://www.ems.com.cn 185.25 1 220 航空运输途中 14 法国仓-经济小包 null null null null null null
+
+
+// 3、删除成本明细 adi_transfer_cost
+
+    32219  22212  vs_cost  增值服务成本  27.75 -> del
+    32218  22212  shipping_cost  运输成本  157.50 -> del
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    102434  22212  220  航空运输途中  2017-02-23 09:42:48  41  zhangjunming  null -> del
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145583417'
+
+
+//7.transfer_totals
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 22212
+
+
+
+//8.transaction
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145583417'
+
+
+//9.customer
+
+    SELECT id,name,balance FROM `adi_customer` where id = 77
 
 
 
@@ -879,3 +945,884 @@ AT3145487522-------------增加一个标准加固
     SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where tid = 'AT3145487522'
 
     21350  AT3145487522  5396  高殿栋  200  打包称重完成，等待付款  352.50 -> 352.50+37.5
+--------------------------------------------------------------------------------------------
+张琳  10:55:51
+AT3145478078===麻烦把这个订单的运单号改为EK842304883GB
+--------------------------------------------------------------------------------------------
+    AT3145478078  21255  5186  董璐辰子  300  包裹已发运回国  EK871679035GB -> EK842304883GB
+
+--------------------------------------------------------------------------------------------
+王冬梅 2017/2/8 11:28:25
+ AT3145521731 收货地址中陵水黎族自治县几个字去掉
+--------------------------------------------------------------------------------------------
+    陵水黎族自治县 LingShuiLiZuZiZhiXian -> 崖州区 YaZhouQu
+
+--------------------------------------------------------------------------------------------
+王冬梅  11:38:06
+拆分包裹2100338538改成拆分3个包裹
+--------------------------------------------------------------------------------------------
+
+1384  36055  2100338538  1791  邱晨  2 -> 3
+
+--------------------------------------------------------------------------------------------
+张琳 2017/2/10 9:41:41
+英国渠道发生变化，新的渠道不再支持保险需要将这些已选保险的订单的保险删除并退款
+AT3145468976  AT3145526154  AT3145525088   AT3145534008  AT3145538976  AT3145544200  AT3145546359    AT3145550853  AT3145546956
+
+
+--------------------------------------------------------------------------------------------
+AT3145546956 21847
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service -32.25
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21847
+
+    23451  21847  160  海淘转运保险：海淘被税包+货损包豪华版  26.25  null  1  NULL  -> del
+    23452  21847  164  海淘转运保险：海淘丢件包  6.00  null  1  NULL  -> del
+
+2.transfer_totals -32.25
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21847
+
+    79712 21847 valued_service_fee 增值服务费 32.25 -> del
+
+3.transfer -32.25
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145546956'
+
+    21847  AT3145546956  9640  林滔  201  已付款，等待发运回国  190.80 -> 158.55
+
+4.transaction -32.25
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145546956'
+
+    43615  null  9640  转运消费  2  AT3145546956  190.80  RMB  190.80  账户余额  0  null  Completed  null  2017-02-09 15:49:46
+                                                  158.55       158.55
+
+5.customer +32.25
+
+    SELECT id,name,balance FROM `adi_customer` where id =9640
+
+    9640  林滔  0.20 -> 32.45
+*************************************************************
+AT3145550853 21886
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service -6
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21886
+
+    23495  21886  163  海淘转运保险：海淘退运包  6.00  null  1  null -> del
+
+2.transfer_totals -6
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21886
+
+    79818  21886  valued_service_fee  增值服务费  36.00 -> 30
+
+3.transfer -6
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145550853'
+
+    21886  AT3145550853  10175  吕惠之  201  已付款，等待发运回国  268.95 -> 262.95
+
+4.transaction -6
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145550853'
+
+    43597  null  10175  转运消费  2  AT3145550853  268.95  RMB  268.95  账户余额  0  null  Completed  null  2017-02-09 12:12:40
+                                                   262.95       262.95
+
+5.customer +6
+
+    SELECT id,name,balance FROM `adi_customer` where id = 10175
+
+    10175  吕惠之  0.05 -> 6.05
+*****************************************************
+AT3145546359 21841
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service -26.25
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21841
+
+    23443  21841  160  海淘转运保险：海淘被税包+货损包豪华版  26.25  null  1  null -> del
+
+2.transfer_totals -26.25
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21841
+
+    79706  21841  valued_service_fee  增值服务费  78.75 -> 52.5
+
+3.transfer -26.25
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145546359'
+
+    21841  AT3145546359  9448  张贝旎  201  已付款，等待发运回国  143.85 -> 117.6
+
+
+4.transaction -26.25
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145546359'
+
+    43489  null  9448  转运消费  2  AT3145546359  143.85  RMB  143.85  账户余额  0  null  Completed  null  2017-02-08 16:50:47
+                                                  117.6        117.6
+
+5.customer +26.25
+
+    SELECT id,name,balance FROM `adi_customer` where id = 9448
+
+    9448 张贝旎 3696.15 -> 3722.4
+
+*******************************************************
+AT3145544200 21820
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service -16.50
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21820
+
+    23423 21820 158 海淘转运保险：海淘被税包+货损包体验版 16.50 null 1 null -> del
+
+2.transfer_totals -16.50
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21820
+
+    79693  21820  valued_service_fee  增值服务费  16.50  -> del
+
+3.transfer -16.50
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145544200'
+
+    21820  AT3145544200  9753  刘虹穗  201  已付款，等待发运回国  196.50 -> 180
+
+
+4.transaction -16.50
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145544200'
+
+    43449  null  9753  转运消费  2  AT3145544200  196.50  RMB  196.50  账户余额  0  null  Completed  null  2017-02-08 10:26:29
+                                                  180          180
+
+5.customer +16.50
+
+    SELECT id,name,balance FROM `adi_customer` where id =9753
+
+    9753  刘虹穗  103.50 -> 120
+********************************
+AT3145538976 21767
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service -16.5
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21767
+
+    23367  21767  158  海淘转运保险：海淘被税包+货损包体验版  16.50  null  1  null -> del
+
+2.transfer_totals -16.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21767
+
+    79687  21767  valued_service_fee  增值服务费  16.50  -> del
+
+
+3.transfer -16.5
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145538976'
+
+    21767  AT3145538976  9653  杨秀春  201  已付款，等待发运回国  226.50 -> 210
+
+4.transaction -16.5
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145538976'
+
+    43447  null  9653  转运消费  2  AT3145538976  226.50  RMB  226.50  账户余额  0  null  Completed  null  2017-02-08 10:22:27
+                                                  210          210
+
+5.customer +16.5
+
+    SELECT id,name,balance FROM `adi_customer` where id =9653
+
+    9653  杨秀春  81.15 -> 97.65
+***************************************************************************************************************
+AT3145534008 21718
+订单状态：已付款，等待发运回国
+
+1.transfer_valued_service
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =21718
+
+    23323  21718  158  海淘转运保险：海淘被税包+货损包体验版  16.50  null  1 -> del
+
+2.transfer_totals -16.50
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =21718
+
+    79523  21718  valued_service_fee  增值服务费  54.00 -> 37.5
+
+3.transfer -16.50
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145534008'
+
+    21718  AT3145534008  8732  鲁荻  201  已付款，等待发运回国  233.25 -> 216.75
+
+
+4.transaction -16.50
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145534008'
+
+    43353  null  8732  转运消费  2  AT3145534008  233.25  RMB  233.25  账户余额  0  null  Completed  null  2017-02-07 14:55:59
+                                                  216.75       216.75
+
+5.customer +16.50
+
+    SELECT id,name,balance FROM `adi_customer` where id =8732
+
+    8732  鲁荻  20.70 -> 37.2
+*********************************************
+AT3145525088 21628
+包裹已发运回国 (跟踪号：9734045821799)
+
+1.transfer_valued_service -16.5
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id = 21628
+
+    23278 21628 158 海淘转运保险：海淘被税包+货损包体验版 16.50 16.50 1 -> del
+
+2.transfer_totals -16.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 21628
+
+    79417  21628  valued_service_fee  增值服务费  39.00 -> 22.5
+
+3.transfer -16.5
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145525088'
+
+    21628  AT3145525088  7808  王曼丽  300  包裹已发运回国  349.50 -> 333
+
+4.transaction -16.5
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145525088'
+
+    43196 null 7808 转运消费 2 AT3145525088 349.50 RMB 349.50 账户余额 0 null Completed null 2017-02-05 16:15:16
+                                            333        333
+
+
+5.customer +16.5
+
+    SELECT id,name,balance FROM `adi_customer` where id = 7808
+
+    7808  王曼丽  0.65 -> 17.15
+**********************************************************************
+AT3145526154 21639
+订单状态：包裹已发运回国 (跟踪号：9734045823499)
+
+1.transfer_valued_service -16.5
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id = 21639
+
+    23283  21639  158  海淘转运保险：海淘被税包+货损包体验版  16.50  16.50  1 -> del
+
+
+2.transfer_totals -16.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 21639
+
+    79443  21639  valued_service_fee  增值服务费  46.50 -> 30
+
+3.transfer -16.5
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145526154'
+
+    21639  AT3145526154  9824  林丽  300  包裹已发运回国  126.75 -> 110.25
+
+4.transaction -16.5
+
+    SELECT * FROM `adi_transaction`  WHERE order_id =  'AT3145526154'
+
+    43185  null  9824  转运消费  2  AT3145526154  126.75  RMB  126.75  账户余额  0  null  Completed  null  2017-02-05 15:26:57
+                                                  110.25       110.25
+
+5.customer +16.5
+
+    SELECT id,name,balance FROM `adi_customer` where id = 9824
+
+    9824  林丽  0.25 -> 16.75
+*************************************************************
+AT3145468976
+订单状态：包裹已发运回国 (跟踪号：1102368021396)
+
+1.transfer_valued_service
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id = 21164
+
+    22723  21164  163  海淘转运保险：海淘退运包  6.00  6.00  1 -> del
+
+
+2.transfer_totals -6
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 21164
+
+    78601 21164 valued_service_fee 增值服务费 6.00 -> del
+
+3.transfer -6
+
+    SELECT id,tid, customer_id,customer_name,total,status_id,status FROM `adi_transfer` where tid = 'AT3145468976'
+
+    21164  AT3145468976  3680  黄文娟  300  包裹已发运回国  187.65 -> 181.65
+
+4.transaction -6
+
+    SELECT * FROM `adi_transaction`  WHERE order_id =  'AT3145468976'
+
+    42580  null  3680  转运消费  2  AT3145468976  187.65  RMB  187.65  账户余额  0  null  Completed  null  2017-01-25 23:28:04
+                                                  181.65       181.65
+5.customer +6
+
+    SELECT id,name,balance FROM `adi_customer` where id = 3680
+
+    3680  黄文娟  0.35 -> 6.35
+*************************************************************
+喻刚秋  17:24:37
+2100784491
+晓峰这个给客户改一下数据吧
+产品数量改为5
+包裹状态：已全部入库，等待提交回国订单
+*************************************************************
+1.package_product
+    75595  36651  null  boiron creme  31.00  null  106->5
+
+**************************************************************
+王冬梅  14:04:59
+订单号：AT3145578270 标准加固换成箱子
+订单状态：打包称重完成，等待付款
+包裹重量：6.65 公斤
+**************************************************************
+AT3145578270 22160
+
+1.transfer_valued_service
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =22160
+
+    23904  22160  8  标准加固【2】      37.50    null    1    null
+                  27 【7公斤】5层纸箱   11.5
+
+2.transfer_totals -26
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =22160
+
+    80463  22160  valued_service_fee  增值服务费  60.00
+
+
+3.transfer -26
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145578270'
+
+    22160  AT3145578270  7242  吉鑫  200  打包称重完成，等待付款  367.50
+
+**************************************************************************************
+
+王冬梅  11:15:28
+订单号：AT3145573615，取消一个箱子
+订单状态：已付款，等待发运回国
+说明：只删除了一条增值服务数据，因为其中一条并未收钱
+****************************to be continue***************************************************
+AT3145573615 22114
+
+1.transfer_valued_service -7.5
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =22114
+
+    24012  22114  21  【2公斤】5层纸箱  7.50  null  1  null -> del
+
+
+************************************************************************************
+张俊明  15:43:46
+孙清获得两个礼包，只去其中一个
+
+***********************************************************************************
+1889  1125  539  2017-02-14 10:26:32  112.80.35.222  null  null  0  null  null -> del
+
+************************************************************************************
+王冬梅  11:04:55
+AT3145593711这个麻烦改成比利时邮政未出单状态
+AT3145593711 22315
+
+订单状态：包裹已发运回国 (跟踪号：EY217394625FR)
+VIP
+************************************************************************************
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+    23970  22315  6  标准加固【1】      30.00  11.25  1  null
+                                               0.00
+
+    23969  22315  4  合并包裹【1-5个】  0.00   0.00   1  null
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EY217394625FR => NULL
+    'tracking_url'       = http://www.colissimo.fr => NULL
+    'total_cost'         = 297.45 => 0
+    'is_box'             = 1 => 0
+    'status_id'          = 300 => 201
+    'status'             = 包裹已发运回国 => 已付款，等待发运回国
+    'channel_id          = 10 => 11
+    'channel_name        = 法国邮政La Poste => 比利时邮政
+    'api_message_id      = 0 => NULL
+    'api_message_content = La requête a été traitée avec succès => NULL
+    'api_message_type    = INFOS => NULL
+    'api_parcel_number   = EY217394625FR => NULL
+    'api_pdf_url         = https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY21739462  FR&includeCustomsDeclarations=true&x=0&y=0&signature=7c54b3d4d5  8684fa12d388d0833a4e2149948139b846382856d5a9b768d1d6e => NULL
+    'pdf_url_md5         = d86123498700cc8566656aee8e39b0fa => NULL
+
+
+
+    22315  AT3145593711  103  张晶  EY217394625FR  http://www.colissimo.fr  297.45  1  300  包裹已发运回国
+    10  法国邮政La Poste  0  La requête a été traitée avec succès  INFOS  EY217394625FR  https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY21739462  FR&includeCustomsDeclarations=true&x=0&y=0&signature=7c54b3d4d5  8684fa12d388d0833a4e2149948139b846382856d5a9b768d1d6e  d86123498700cc8566656aee8e39b0fa
+
+
+// 3、插入成本明细adi_transfer_cost
+
+    31789  22315  vs_cost  增值服务成本  11.25 -> del
+    31788  22315  shipping_cost  运输成本  286.20 -> del
+
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    101026  22315  300  包裹已发运回国  2017-02-17 18:52:24  21  xiongjin  null -> del
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer -75
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145593711'
+
+    22315  AT3145593711  103  张晶 300  包裹已发运回国 367.50 -> 292.5
+
+//7.transfer_totals -75
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 22315
+
+    81071  22315  valued_service_fee  增值服务费  30.00
+    81070  22315  freight  物流费用  337.50 -> 262.5
+
+
+//8.transaction -75
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145593711'
+
+    44656  null  103  转运消费  2  AT3145593711  367.50  RMB  367.50  账户余额  0  null  Completed  null  2017-02-17 18:34:33
+                                                 292.5        292.5
+//9.customer +75
+
+    SELECT id,name,balance FROM `adi_customer` where id = 103
+
+    103  张晶  931.51 -> 1006.51
+
+************************************************************************************
+喻刚秋 2017/2/21 10:14:49
+晓峰麻烦改下这个吧，我运单号填错了正确的应该是：BE784002055UK
+AT3145539048 21768
+
+************************************************************************************
+
+21768  AT3145539048  9653  杨秀春  BE784000837UK  300  包裹已发运回国
+                                   BE784002055UK
+************************************************************************************
+王冬梅 2017/2/21 9:57:45
+待提交包裹2100994341退回到未入库状态
+2100994341 36953
+************************************************************************************
+1.adi_package
+
+    SELECT id,pid,ori_weight,shelf,shelf_id,status_code,status_name,delivery_status FROM `adi_package` where pid = '2100994341'
+
+    'ori_weight' => $ori_weight,             1190                               NULL
+    'shelf' => $shelf,                       L0587                              NULL
+    'shelf_id' => $shelf_id,                 null                               NULL
+    'status_code' => $status_code,           110                                100
+    'status_name' => $status_name,           已全部入库，等待提交回国订单       已预报，等待收货
+    'delivery_status' => 2 //                2                                  0
+
+
+2.adi_package_product
+
+    SELECT id,package_id,is_arrived FROM `adi_package_product` where package_id = 36953
+
+    76080  36953  1  -> 0
+
+3.adi_package_history
+
+    SELECT * FROM `adi_package_history` WHERE package_id = 36953
+
+    111002  36953  110  已全部入库，等待提交回国订单  2017-02-14 10:08:47  58.17.246.234  9  may -> del
+
+
+4.adi_package_shelf
+
+    SELECT * FROM `adi_package_shelf` WHERE package_id = 36953
+
+    36953  L0587  2017-02-14 10:08:48 -> del
+
+***************************************************************************************************
+王冬梅  15:20:53
+AT3145623813  22616
+AT3145623711  22615----这两个改成比邮
+
+***************************************************************************************************
+
+22616  14  法国仓-经济小包  2017-02-19 00:37:49  125.86.92.36
+
+       11  法国仓-比利时邮政
+
+22615  14  法国仓-经济小包  2017-02-19 00:35:19  125.86.92.36
+
+***************************************************************************************************
+张俊明  12:07:18
+2101098810
+入库重量：1.8
+运单号：6291277,6291276
+***************************************************************************************************
+                                                                1800
+37063  2101098810  null  null  3039  陈双燕  40154378  6291277  800  1  110  已全部入库，等待提交回国订单
+                                                       6291277,6291276
+
+***************************************************************************************************
+王冬梅  16:36:05
+AT3145583417这个麻烦改成比利时邮政 未出单状态
+AT3145583417  22212
+
+VIP
+***************************************************************************************************
+
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+                                                                                         0
+23810  22212  151  海淘转运保险：海淘被税包+货损包体验版（奶粉专线请勿选择此项）  0.00   16.50  1  2017元宵+情人节活动免费赠送
+
+23809  22212  6    标准加固【1】                                                  30.00  11.25  1  null
+                                                                                         0
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EL254181686HK         => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 185.25                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 11
+    'channel_name        = 法国仓-经济小包       => 比利时邮政
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+
+    22212 AT3145583417 77 张哲 EL254181686HK http://www.ems.com.cn 185.25 1 220 航空运输途中 14 法国仓-经济小包 null null null null null null
+
+
+// 3、删除成本明细 adi_transfer_cost
+
+    32219  22212  vs_cost  增值服务成本  27.75 -> del
+    32218  22212  shipping_cost  运输成本  157.50 -> del
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    102434  22212  220  航空运输途中  2017-02-23 09:42:48  41  zhangjunming  null -> del
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer +7.5
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145583417'
+
+    22212  AT3145583417  77  张哲  220  航空运输途中  285.00 -> 292.5
+
+
+
+//7.transfer_totals +7.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 22212
+
+    80627  22212  freight  物流费用  255.00 -> 262.5
+
+    80628 22212 valued_service_fee 增值服务费 30.00
+
+
+//8.transaction +7.5
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145583417'
+
+    44331  null  77  转运消费  2  AT3145583417  285.00  RMB  285.00  账户余额  0  null  Completed  null  2017-02-16 01:33:09
+                                                292.5        292.5
+
+//9.customer -7.5
+
+    SELECT id,name,balance FROM `adi_customer` where id = 77
+
+    77  张哲  2322.00 -> 2314.5
+
+
+***************************************************************************************************
+王冬梅  16:40:28
+AT3145563210这个改成比利时邮政、未出单
+AT3145563210 22010
+
+非 VIP
+***************************************************************************************************
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+    23582  22010  6  标准加固【1】  30.00  11.25  1  null
+                                            0
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EL254182307HK         => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 153.75                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 11
+    'channel_name        = 法国仓-经济小包       => 法国仓-比利时邮政
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+    22010  AT3145563210  10061  索婉星  EL254182307HK  http://www.ems.com.cn  153.75  1  220  航空运输途中  14  法国仓-经济小包  null  null  null  null  null  null
+
+// 3、删除成本明细 adi_transfer_cost
+
+    32158  22010  vs_cost  增值服务成本  11.25 -> del
+
+    32157  22010  shipping_cost  运输成本  142.50 -> del
+
+
+// 4、删除一条“已发货”状态adi_transfer_history
+
+    102395  22010  220  航空运输途中  2017-02-23 09:38:24  9  may  null -> del
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer +27
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145563210'
+
+    22010  AT3145563210  10061  索婉星  220  航空运输途中  280.50 -> 307.5
+
+
+
+//7.transfer_totals +27
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 22010
+
+    80368  22010  freight  物流费用  250.50 -> 277.5
+    80369  22010  valued_service_fee  增值服务费  30.00
+
+//8.transaction +27
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145563210'
+
+    44081  null  10061  转运消费  2  AT3145563210  280.50  RMB  280.50  账户余额  0  null  Completed  null  2017-02-14 05:46:22
+                                                   307.5        307.5
+
+//9.customer -27
+
+    SELECT id,name,balance FROM `adi_customer` where id = 10061
+
+    10061  索婉星  27.50 -> 0.5
+***********************************************************************************
+王冬梅  16:40:28 （不能在所有订单中查询？）
+AT3145393114改成比利时邮政，未出单
+
+AT3145393114 20406
+非VIP
+***********************************************************************************
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+21952  20406  23  【5公斤】5层纸箱  11.25  6.00  1  null
+                                           0
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EL254182179HK         => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 148.50                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 11
+    'channel_name        = 法国仓-经济小包       => 法国仓-比利时邮政
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+    20406  AT3145393114  8413  杨晨  EL254182179HK  http://www.ems.com.cn  148.50  1  220  航空运输途中  14  法国仓-经济小包  null  null  null  null  null  null
+
+// 3、删除成本明细 adi_transfer_cost
+
+    32179  20406  vs_cost  增值服务成本  6.00 -> del
+
+    32178  20406  shipping_cost  运输成本  142.50 -> del
+
+
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    102408  20406  220  航空运输途中  2017-02-23 09:39:52  9  may  null -> del
+
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer +27
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3145393114'
+
+    20406  AT3145393114  8413  杨晨  220  航空运输途中  261.75 -> 288.75
+
+
+
+//7.transfer_totals +27
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 20406
+
+    76825  20406  freight  物流费用  250.50 -> 277.5
+
+    76826  20406  valued_service_fee  增值服务费  11.25
+
+
+
+
+//8.transaction +27
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3145393114'
+
+    44152  null  8413  转运消费  2  AT3145393114  261.75  RMB  261.75  账户余额  0  null  Completed  null  2017-02-14 16:32:32
+                                                  288.75       288.75
+
+//9.customer -27
+
+    SELECT id,name,balance FROM `adi_customer` where id = 8413
+
+    8413  杨晨  27.75 -> 0.75
+**************************************************************************************************
+张俊明  9:52:17
+AT3145635088 返回待出库
+
+订单状态：航空运输途中 (跟踪号：610009292671)
+AT3145635088 22728
+**************************************************************************************************
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+    无
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = 610009292671          => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 75.00                 => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 14
+    'channel_name        = 法国仓-经济小包       => 法国仓-经济小包
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+    22728  AT3145635088  8933  賴忠儀  610009292671  http://www.ems.com.cn  75.00  1  220  航空运输途中  14  法国仓-经济小包  null  null  null  null  null  null
+
+// 3、删除成本明细 adi_transfer_cost
+
+    32363  22728  shipping_cost  运输成本  75.00 -> del
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    102782  22728  220  航空运输途中  2017-02-24 09:35:48 -> del
+
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+    37927 uc348 2-21 4:49:44
+
+
+**************************************************************************************************
+张俊明  10:31:28
+AT3145585389 确定这个要撤回上一步
+
+订单状态：航空运输途中 (跟踪号：610009292671)
+
+AT3145585389 22231
+**************************************************************************************************
+
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+    无
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = 610009292671          => NULL
+    'tracking_url'       = http://www.ems.com.cn => NULL
+    'total_cost'         = 105.00                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 220                   => 201
+    'status'             = 航空运输途中          => 已付款，等待发运回国
+    'channel_id          = 14                    => 14
+    'channel_name        = 法国仓-经济小包       => 法国仓-经济小包
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+
+   22231  AT3145585389  8933  賴忠儀  610009292671  http://www.ems.com.cn  105.00  1  220  航空运输途中  14  法国仓-经济小包  null  null  null  null  null  null  null  L2261
+
+// 3、删除成本明细 adi_transfer_cost
+
+    31810  22231  shipping_cost  运输成本  105.00 -> del
+
+
+// 4、插入一条“已发货”状态adi_transfer_history
+
+    101437  22231  220  航空运输途中  2017-02-20 10:10:51  41  zhangjunming  null -> del
+
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+    36661 L2261 2017-02-14 04:57:16

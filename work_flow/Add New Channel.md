@@ -42,6 +42,7 @@
 
     6. 点击更新状态配置```config/transporting_status_msg```
     7. 渠道对应的快递公司配置```config/kuaidi100_status```
+    8. 渠道限制的配置```config/channel```
 
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】

@@ -127,4 +127,22 @@ ALTER TABLE `adi_transfer` CHANGE `weight_mark` `weight_mark` TINYINT(4) NULL DE
 
 INSERT INTO `adi_fr`.`adi_country` (`id`, `name`, `name_fr`, `code`, `sub_type`, `sub_pattern`, `sub_pattern_fr`, `status`) VALUES (NULL, '荷兰', 'Hollande', 'NL', '3', '城市', 'Ville', '1'),(NULL, '英国', 'Angleterre', 'UK', '3', '城市', 'Ville', '1'),(NULL, '西班牙', 'Espagne', 'ES', '3', '城市', 'Ville', '1'),(NULL, '葡萄牙', 'Portugal', 'PT', '3', '城市', 'Ville', '1'),(NULL, '瑞典', 'Suède', 'SE', '3', '城市', 'Ville', '1'),(NULL, '匈牙利', 'Hongrie', 'HU', '3', '城市', 'Ville', '1'),(NULL, '德国', 'Allemagne', 'GER', '3', '城市', 'Ville', '1'),(NULL, '丹麦', 'Danemark', 'DK', '3', '城市', 'Ville', '1'),(NULL, '奥地利', 'Autriche', 'AT', '3', '城市', 'Ville', '1'),(NULL, '意大利', 'Italie', 'IT', '3', '城市', 'Ville', '1'),(NULL, '瑞士', 'Suisse', 'CH', '3', '城市', 'Ville', '1');
 
-git push local_branch:remote_branch
+--------------------------------------------------------------------------------------------
+2017年2月27日14:06:32
+
+UPDATE `adi`.`adi_product` SET `sort_order` = '999' where `status` = 1
+
+
+--------------------------------------------------------------------------------------------
+
+
+ALTER TABLE `adi_notice` CHANGE `last_update_user_id` `last_update_user_id` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `adi_notice` CHANGE `last_update_date` `last_update_date` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `adi_notice` CHANGE `status` `status` TINYINT(4) NULL DEFAULT NULL;
+
+--------------------------------------------------------------------------------------------
+
+
+ALTER TABLE `adi_transfer_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '产品品牌' AFTER `sub_category_id`;
+
+ALTER TABLE `adi_package_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '商品品牌' AFTER `sub_category_id`;

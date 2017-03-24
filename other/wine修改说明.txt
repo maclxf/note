@@ -1,0 +1,52 @@
+1. 修改项目名称----------------------------------------------------------------------OK
+    system/setting
+
+2. 首页图片----------------------------------------------------------------------OK
+Wine-Theme-Index-big-img-1
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_01.jpg" style="width: 1200px; height: 700px;"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_01.jpg" style="width: 1200px; height: 700px;"></p>
+Wine-Theme-Index-small-img-1
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_06.jpg" style="width: 1200px; height: 78px;"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_06.jpg" style="width: 1200px; height: 78px;"></p>
+
+Wine-Theme-Index-big-img-2
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_02.jpg" style="width: 1200px;height:700px"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_02.jpg" style="width: 1200px;height:700px"></p>
+Wine-Theme-Index-small-img-2
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_07.jpg" style="width: 1200px;height:78px"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_07.jpg" style="width: 1200px;height:78px"></p>
+
+Wine-Theme-Index-big-img-3
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_03.jpg" style="width: 1200px; height: 700px;"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_03.jpg" style="width: 1200px; height: 700px;"></p>
+Wine-Theme-Index-small-img-3
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_08.jpg" style="width: 1200px;height:78px"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_08.jpg" style="width: 1200px;height:78px"></p>
+
+
+
+Wine-Theme-Index-big-img-4
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_04.jpg" style="width: 1200px; height: 700px;"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_04.jpg" style="width: 1200px; height: 700px;"></p>
+Wine-Theme-Index-small-img-4
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_09.jpg" style="width: 1200px;height:78px"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_09.jpg" style="width: 1200px;height:78px"></p>
+
+
+Wine-Theme-Index-big-img-5
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_cn/linger_img_cn_05.jpg" style="width: 1200px; height: 700px;"></p>
+    <p style="text-align: center;margin:0 auto"><img src="http://wine.dev/image/catalog/linger_en/linger_img_en_05.jpg" style="width: 1200px; height: 700px;"></p>
+
+
+*************************************************************************************************************************************
+
+3. 首页category分类
+    后台Catalog
+    categories 针对每条一级分类删除即可删除下面的小类
+
+4. 首页底部的information
+    后台Catalog
+    information 删除不要的信息
+
+5. 首页底部的information(部分不是在后台Catalog information 设置)需要手动删除
+    views/theme/OPC025_02/templete/common/footer.tpl

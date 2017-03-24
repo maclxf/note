@@ -843,3 +843,7 @@ ok- 后台修改订单渠道、重量、收货人 - 收货人
 52 18 这一条是不存在源文件
 
 50 18
+
+
+$this->db->select_sum('service_price * qty', 'total');
+$this->db->select('SUM(service_price * qty) AS total');

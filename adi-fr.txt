@@ -35,6 +35,21 @@
     增值服务添加（未测）
     提交（价格正常，门店价格）
 
+4.商城
+    Filename: core/Lang.php
+    Line Number: 124
+    Message: Array to string conversion
+
+
+5. 问题包裹 OK
+    前台提交要求拍照时
+        传入business_transaction_model
+        status,trans_start_date,trans_end_date没有默认数据
+    后台上传照片时
+        end函数接受穿引用的变量，所以只能接受变量
+
+6. 出库时报错
+    order_model存在select_sum()
 
 
 

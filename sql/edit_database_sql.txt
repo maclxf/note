@@ -146,3 +146,32 @@ ALTER TABLE `adi_notice` CHANGE `status` `status` TINYINT(4) NULL DEFAULT NULL;
 ALTER TABLE `adi_transfer_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '产品品牌' AFTER `sub_category_id`;
 
 ALTER TABLE `adi_package_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '商品品牌' AFTER `sub_category_id`;
+
+
+
+ALTER TABLE `adi_package` ADD `operate_box` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '序列化的数组包含：name:对原箱的操作，name_en:操作的英文' AFTER `split_comment`;
+
+
+------------------------------------------------------------------------------------
+
+
+
+投票奖励发放
+ALTER TABLE `adi_event_vote` ADD `reward_status` TINYINT NOT NULL DEFAULT '0' COMMENT '是否已发放奖励：0表示没有， 1表示已发放' AFTER `added_ip`;
+
+
+
+------------------------------------------------------------------------------------
+
+退款申请
+ALTER TABLE `adi_refund` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '添加来源：1表示后台添加，2表示前台用户添加' AFTER `added_user_name`;
+
+ALTER TABLE `adi_emar` ADD `type` TINYINT NOT NULL DEFAULT '1' COMMENT '推送给亿起发时该订单属于类型：1.新增订单，2.更新的订单' AFTER `pid`;
+
+
+
+
+
+
+
+

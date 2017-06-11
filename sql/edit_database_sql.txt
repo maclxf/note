@@ -146,3 +146,66 @@ ALTER TABLE `adi_notice` CHANGE `status` `status` TINYINT(4) NULL DEFAULT NULL;
 ALTER TABLE `adi_transfer_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '产品品牌' AFTER `sub_category_id`;
 
 ALTER TABLE `adi_package_product` ADD `product_brand` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '商品品牌' AFTER `sub_category_id`;
+
+
+
+ALTER TABLE `adi_package` ADD `operate_box` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '序列化的数组包含：name:对原箱的操作，name_en:操作的英文' AFTER `split_comment`;
+
+
+------------------------------------------------------------------------------------
+
+
+
+投票奖励发放
+ALTER TABLE `adi_event_vote` ADD `reward_status` TINYINT NOT NULL DEFAULT '0' COMMENT '是否已发放奖励：0表示没有， 1表示已发放' AFTER `added_ip`;
+
+
+
+------------------------------------------------------------------------------------
+
+退款申请
+ALTER TABLE `adi_refund` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '添加来源：1表示后台添加，2表示前台用户添加' AFTER `added_user_name`;
+
+ALTER TABLE `adi_emar` ADD `type` TINYINT NOT NULL DEFAULT '1' COMMENT '推送给亿起发时该订单属于类型：1.新增订单，2.更新的订单' AFTER `pid`;
+
+
+------------------------------------------------------------------------------------
+.fr集货
+ALTER TABLE `adi_country` ADD `country_type` TINYINT NOT NULL COMMENT '国家类型：1表示法国本身，2表示欧盟国家，3表示非欧盟国家' AFTER `code`;
+
+
+ALTER TABLE `adi_batch_transfer` ADD `is_collection` TINYINT NOT NULL DEFAULT '0' COMMENT '是否是集货：0表示不是，1表示是' AFTER `customer_email`;
+
+
+
+
+'batch_transfer_id'   => $batch_transfer->id,
+'tracking_no'         => $gl['tracking_no'],
+'api_message_id'      => $gl['api_message_id'],
+'api_message_content' => $gl['api_message_content'],
+'api_message_type'    => $gl['api_message_type'],
+'api_parcel_number'   => $gl['api_parcel_number'],
+'api_pdf_url'         => $gl['api_pdf_url'],
+'pdf_url_md5'         => $gl['pdf_url_md5']
+
+
+api_message_id  int(11)     是 NULL  API返回的消息ID
+
+api_message_content varchar(1024) utf8_general_ci   是 NULL  API返回的消息内容
+
+api_message_type  varchar(16) utf8_general_ci   是 NULL  API返回的消息类型：ERROR、INFO、WARNING
+
+api_parcel_number varchar(128)  utf8_general_ci   是 NULL  API返回的包裹号（跟踪号也是用的这个）
+
+api_pdf_url varchar(256)  utf8_general_ci   是 NULL  API返回的包裹对应的PDF文件链接
+
+pdf_url_md5 varchar(32) utf8_general_ci   是 NULL  PDF文件链接的MD5编码表示
+
+added_user_id int(11)     是 NULL  订单添加的用户ID（用于门店系统）
+  90  added_user_name varchar(32) utf8_general_ci   是 NULL  订单添加的用户名（用于门店系统）
+  91  added_user_realname varchar(32) utf8_general_ci   是 NULL  订单添加的用户真实姓名（用于门店系统）
+  92  added_date  datetime      是 NULL  发起转运需求的时间
+  93  added_ip  varchar(15) utf8_general_ci   是 NULL  发起转运需求的IP
+
+
+

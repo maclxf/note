@@ -26,16 +26,73 @@ WHERE customer_id = 103;
 SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost, (select GROUP_CONCAT(service_name, " ", service_price, "*", qty separator " ; ") from adi_transfer_valued_service where transfer_id = t.id group by transfer_id) as vs_str
 FROM `adi_transfer` `t`
 LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id`
-LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id` AND th.status_id IN (220, 300)
+LEFT JOIN `adi_transfer_history` `th` ON `t`.`id` = `th`.`transfer_id`
 LEFT JOIN `adi_transfer_valued_service` `tvs` ON `tvs`.`transfer_id` = `t`.`id`
 LEFT JOIN `adi_transfer_total` `tt1` ON `t`.`id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight"
 LEFT JOIN `adi_transfer_total` `tt2` ON `t`.`id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee"
 LEFT JOIN `adi_transfer_total` `tt3` ON `t`.`id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund"
 LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost"
 LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost"
-AND `tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181
-AND `th`.`add_date` >= "2017-02-01 00:00:00" AND `th`.`add_date` < "2017-03-2 23:59:59"
+WHERE  th.status_id IN (220, 300)
+AND t.status_id not IN (401)
+AND ((`tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181) or (`tvs`.`service_id` IN (213,214)))
+AND `th`.`add_date` >= "2017-04-01 00:00:00"
+AND `th`.`add_date` < "2017-04-30 23:59:59"
 ORDER BY `t`.`id` DESC
+
+//1-3月（出库时间）保险订单
+SELECT t.tid AS '订单号', t.tracking_no AS '跟踪号' , (SELECT GROUP_CONCAT(tvs.service_name SEPARATOR ',') FROM adi_transfer_valued_service tvs WHERE tvs.transfer_id = t.id AND tvs.service_id > 150 AND tvs.service_id < 181 GROUP BY t.id)  AS '险种', t.`total` AS '交易金额', th.add_date AS '付款时间', ch.`coupon_code` AS '优惠码'
+FROM `adi_transfer` t
+INNER JOIN `adi_transfer_valued_service` tvs ON t.id = tvs.transfer_id
+INNER JOIN `adi_transfer_history` th ON t.id = th.transfer_id AND th.status_id = 201
+LEFT JOIN `adi_coupon_history` ch ON t.id = ch.transfer_id AND ch.`coupon_code` IN ('SDVS-SRNS-FREE','LANTERN-SRNS-FREE-2017')
+WHERE tvs.service_id > 150 AND tvs.service_id < 181 AND th.add_date >= '2017-04-01 00:00:00' AND th.add_date <= '2017-04-30 23:59:59'
+GROUP BY t.id
+
+
+
+// 1-3月扣款数据
+select `id`,`customer_email`,`customer_name`,`order_id`,`type_id`,`type_name`,`comment`,`amount`,`approved_date`,`approved_user_name`,`status`,`added_date`,`added_user_name`,`currency_name`
+from `adi`.`adi_withholding`
+where  `approved_date` >='2017-01-01 00:00:00'
+and `approved_date` <='2017-03-31 23:59:59'
+order by `id` desc
+
+// 1-3月退款数据
+select `customer_email`,`customer_name`,`order_id`,`type_id`,`type_name`,`comment`,`amount`,`currency_name`,`added_user_name`,`approved_date`,`approved_user_name`,`status`,`added_date`,`id`
+from `adi`.`adi_refund`
+where  `approved_date` >='2017-01-01 00:00:00'
+and `approved_date` <='2017-03-31 23:59:59'
+order by `id` desc
+
+
+// 4月份4月15---4月25走的经济小包和奶粉包税渠道订单量并且享受了货损服务的订单
+SELECT t.tid AS '订单号', t.tracking_no AS '跟踪号' , (SELECT GROUP_CONCAT(tvs.service_name SEPARATOR ',') FROM adi_transfer_valued_service tvs WHERE tvs.transfer_id = t.id AND ((tvs.service_id > 150 AND tvs.service_id < 181) or (tvs.service_id in (213,214))) GROUP BY t.id)  AS '险种', t.`total` AS '交易金额', th.add_date AS '提交订单时间'
+FROM `adi_transfer` t
+INNER JOIN `adi_transfer_valued_service` tvs ON t.id = tvs.transfer_id
+INNER JOIN `adi_transfer_history` th ON t.id = th.transfer_id AND th.status_id = 120
+WHERE th.add_date >= '2017-04-15 00:00:00' AND th.add_date <= '2017-04-25 23:59:59'
+and ((tvs.service_id > 150 AND tvs.service_id < 181) or (tvs.service_id in (213,214)))
+and t.`channel_id` IN (14,16,17)
+GROUP BY t.id
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

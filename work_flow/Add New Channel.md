@@ -39,10 +39,12 @@
         - 若需要导出需要导出模板
         - 根据模板编写导出代码
         - 导出权限配置```config/oprt_privilege```
+        - 若订单导出的渠道支持转运支持直邮，那么导出页面要做导出的限制（详情参考奶粉导出页面）
 
     6. 点击更新状态配置```config/transporting_status_msg```
     7. 渠道对应的快递公司配置```config/kuaidi100_status```
     8. 渠道限制的配置```config/channel```
+    9. 渠道不支持的增值服务```config/channel```
 
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
@@ -58,3 +60,18 @@
 * views/email/common/footer
 * views/common/contact(只有法国QQ群才改)
 * views/intro/warehouse_fr_footer(只有法国QQ群才改)
+
+
+
+## 添加澳洲仓或者澳洲这种渠道时（一般是吴平提需求是一种外部供货行为）
+
+1. 仓库配置``` config/warehouse```（注意前后台都要有）
+
+1. 仓库信息
+    - 若是只支持商城需要修改字段```only_for_mall```
+
+1. 渠道信息
+    - 渠道供应商需要直接修改数据库字段```channel_supplier```
+    - 若是只支持商城需要修改字段```only_for_mall```
+    - 与仓库进行绑定
+

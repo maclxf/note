@@ -45,6 +45,7 @@
     7. 渠道对应的快递公司配置```config/kuaidi100_status```
     8. 渠道限制的配置```config/channel```
     9. 渠道不支持的增值服务```config/channel```
+    10. 渠道国家限制信息```config/channel```
 
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】

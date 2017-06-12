@@ -38,6 +38,7 @@ AND t.status_id not IN (401)
 AND ((`tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181) or (`tvs`.`service_id` IN (213,214)))
 AND `th`.`add_date` >= "2017-04-01 00:00:00"
 AND `th`.`add_date` < "2017-04-30 23:59:59"
+group by t.tid
 ORDER BY `t`.`id` DESC
 
 //1-3月（出库时间）保险订单

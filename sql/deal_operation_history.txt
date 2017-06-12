@@ -4276,3 +4276,93 @@ transfer
     SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2110895542'
 
     47944  2110895542  null  3418  易会  110  已全部入库，等待提交回国订单  1200 -> 850
+
+--------------------------------------------------------
+王冬梅  13:57:18
+AT3146150956这个订单号可以修改成走经济小包未出单吗？
+
+AT3146150956 27584
+
+转运渠道： 法国仓-比利时邮政
+
+订单状态：包裹已发运回国 (跟踪号：EA132472335BE)
+
+
+---------------------------------------------------------
+****************** 处理出库
+// 1. adi_transfer_valued_service表的service_cost字段恢复成0
+
+    29391  27584  13  奶粉加固【专用气柱】  3.75  1.88  1  null
+                                                  0
+
+
+// 2、更新adi_transfer包裹跟踪号、订单状态、总成本，以及is_box属性
+
+    'tracking_no'        = EA132472335BE         => NULL
+    'tracking_url'       = http://www.landmarkglobal.com => NULL
+    'total_cost'         = 208.13                => 0
+    'is_box'             = 1                     => 0
+    'status_id'          = 300                   => 201
+    'status'             = 包裹已发运回国        => 已付款，等待发运回国
+    'channel_id          = 11                    => 14
+    'channel_name        = 比利时邮政            => 法国仓-经济小包
+    'api_message_id      = NULL                  => NULL
+    'api_message_content = NULL                  => NULL
+    'api_message_type    = NULL                  => NULL
+    'api_parcel_number   = NULL                  => NULL
+    'api_pdf_url         = NULL                  => NULL
+    'pdf_url_md5         = NULL                  => NULL
+    'postal_mark'        = 1                     => 0
+
+
+    27584  AT3146150956  EA132472335BE  http://www.landmarkglobal.com  208.13  1  300  包裹已发运回国  11  法国仓-比利时邮政  null  null  null  null  null  null
+
+
+
+// 3、删除成本明细 adi_transfer_cost
+
+    40341  27584  vs_cost  增值服务成本  1.88        -> del
+    40340  27584  shipping_cost  运输成本  206.25    -> del
+
+
+// 4、删除一条“已发货”状态adi_transfer_history
+
+    129999  27584  300  包裹已发运回国  2017-06-06 09:31:07  9  may  null -> del
+
+// 5、删除该订单里面包裹所占用的货位号adi_package_shelf
+
+    系统已删除无法处理
+
+****************** 重新计算运费
+
+// 6. 因为更新了渠道要重新计算运费adi_transfer -7.5
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3146150956'
+
+    27584  AT3146150956  835  刘晨  300  包裹已发运回国  266.25 -> 258.75
+
+
+
+//7.transfer_totals -7.5
+
+    SELECT * FROM `adi_transfer_total` where transfer_id = 27584
+
+    91033  27584  freight  物流费用  262.50               -> 255
+    91034  27584  valued_service_fee  增值服务费  3.75
+
+
+
+
+//8.transaction -7.5
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3146150956'
+
+    55818  null  835  转运消费  2  AT3146150956  266.25  RMB  266.25  账户余额  0  null  Completed  null  2017-05-26 21:40:03
+                                                 258.75       258.75
+
+//9.customer +7.5
+
+    SELECT id,name,balance FROM `adi_customer` where id = 835
+
+    835  刘晨  3198.93 -> 3206.43
+

@@ -12,10 +12,104 @@
 2、收件人信息有中文名但无lastname的，仓库保留30天，30天后收取每天1欧的仓储费用，90天后按无人认领弃货处理
     当匹配到用户后：
         * 包裹在提交回国订单时，获取每个包裹的入库（状态：110）日期，跟支付日期匹配每个包裹超过30天的天数的和 X 7.5作为该订单的超期费
-            5.1入库--->6.3 超期数为4天
+            如：5.1入库--->6.3 超期数为4天
+            * 那么这里就限定了要么称重的时候加一条超期的VS，
+            * 要么在付款的时候加条VS并改totals，transfer的total也要改
         * 系统只能对匹配到了用户的包裹收取超期费
         * 在新增增值服务时，超期费应该是可以修改数量的（那么在添加/删除增值服务时也应该有）
         * 如果是在修改重量和修改渠道时，这个增值服务是否重新算？（不再重复计算，已经付款了）
+
+
+        1. 提交页面应当根据当时日期展示，本次提交订单是30天内面超期费，还是90天内收超期费
+
+            /************************submitting页面构造包裹的超期数据**********************************/
+            在提交包裹页面应构造如此数据
+
+            new package package_id
+
+            // 获取超期的天数
+            get_package_overdue_days($packages) {
+                $overdue_days = 0;
+                $now;
+
+                strtotime(format_date($now, 'd'));
+                foreach ($packages as $package) {
+                    if (($now - $status_110_date) >= 30) {
+                        $overdue_days += ($now - $status_110_date);
+                    }
+                }
+
+                return $overdue_days;
+            }
+
+
+            // 获取包裹的超期费
+            get_packages_overdue_vs() {
+
+                $packges = $this->package_modle->get_packages($ids);
+
+                int $overdue_days = get_package_overdue_days(arr $packges)
+
+                // 延伸 --------------------------------> $config['overdue_vs_by_days'] = array(
+                                                                array(
+                                                                    'start' => 0
+                                                                    'end' => 30
+                                                                    'id'  => 196
+                                                                ),
+                                                                array(
+                                                                    'start' => 30
+                                                                    'end' => 90
+                                                                    'id'  => 198
+                                                                )
+                                                           )
+                // 默认不超期费为30天内免费
+                $overdue_vs_id = 196
+                if ($overdue_days > 0) {
+                    $overdue_vs_id = 198
+                }
+
+                vs_model->get_vs($overdue_vs_id)
+
+                // 构造我要的vs的数据
+                return $array(
+                    ["package_id"] => string(3) "965"
+                    ["service_id"] => string(2) "92"
+                    ["service_name"] => string(12) "包裹拍照"
+                    ["service_price"] => string(5) "22.50"
+                    ["comments"] => NULL
+                    ["qty"] => string(1) $overdue_days
+                )
+            }
+
+
+
+
+
+
+
+            new transfer
+
+
+
+
+        2. 提交到服务器端应当验证获取一次该值，再将该值插入到tvs中
+        3. 称重时，根据当时日期调整tvs中的超期增值服务
+        4. 马上付款时根据当时日期调整tvs中的超期增值服务
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     没匹配到用户：
         * 这种包裹是待认领中没有匹配到用户的包裹 ------------------- 页面需要一个搜索页面
         * 90天后按无人认领弃货处理

@@ -1,0 +1,28 @@
+1. 查看重复跟踪号：91页有临界点，5708的跟踪号重复，5709的跟踪号不重复
+    SELECT id,channel_id, tracking_no, count(id) as count, added_date FROM `adi_batch_transfer` group by tracking_no HAVING count > 1
+
+2.  EY099965913FR----------5708   15-12-28 16:26:48
+                        |__36249  17-06-22 17:46:21
+
+    EY100761945FR----------5709   15-12-28 17:42:04
+
+
+
+
+
+
+
+
+
+3. SELECT * FROM `adi_batch_transfer` where api_pdf_url is not NULL
+
+
+select * from adi_batch_transfer where tracking_no in (SELECT tracking_no FROM `adi_overweight` where batch_transfer_id < 10000) order by tracking_no
+
+
+SELECT batch_transfer_id, order_no,tracking_no,customer_name,amount FROM `adi_overweight` where batch_transfer_id < 10000 ORDER by customer_id
+
+
+SELECT customer_name,SUM(amount) FROM `adi_overweight` where batch_transfer_id < 10000 group by customer_id ORDER by customer_id
+
+

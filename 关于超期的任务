@@ -22,78 +22,8 @@
 
         1. 提交页面应当根据当时日期展示，本次提交订单是30天内面超期费，还是90天内收超期费
 
-            /************************submitting页面构造包裹的超期数据**********************************/
-            在提交包裹页面应构造如此数据
-
-            new package package_id
-
-            // 获取超期的天数
-            get_package_overdue_days($packages) {
-                $overdue_days = 0;
-                $now;
-
-                strtotime(format_date($now, 'd'));
-                foreach ($packages as $package) {
-                    if (($now - $status_110_date) >= 30) {
-                        $overdue_days += ($now - $status_110_date);
-                    }
-                }
-
-                return $overdue_days;
-            }
-
-
-            // 获取包裹的超期费
-            get_packages_overdue_vs() {
-
-                $packges = $this->package_modle->get_packages($ids);
-
-                int $overdue_days = get_package_overdue_days(arr $packges)
-
-                // 延伸 --------------------------------> $config['overdue_vs_by_days'] = array(
-                                                                array(
-                                                                    'start' => 0
-                                                                    'end' => 30
-                                                                    'id'  => 196
-                                                                ),
-                                                                array(
-                                                                    'start' => 30
-                                                                    'end' => 90
-                                                                    'id'  => 198
-                                                                )
-                                                           )
-                // 默认不超期费为30天内免费
-                $overdue_vs_id = 196
-                if ($overdue_days > 0) {
-                    $overdue_vs_id = 198
-                }
-
-                vs_model->get_vs($overdue_vs_id)
-
-                // 构造我要的vs的数据
-                return $array(
-                    ["package_id"] => string(3) "965"
-                    ["service_id"] => string(2) "92"
-                    ["service_name"] => string(12) "包裹拍照"
-                    ["service_price"] => string(5) "22.50"
-                    ["comments"] => NULL
-                    ["qty"] => string(1) $overdue_days
-                )
-            }
-
-
-
-
-
-
-
-            new transfer
-
-
-
-
         2. 提交到服务器端应当验证获取一次该值，再将该值插入到tvs中
-        3. 称重时，根据当时日期调整tvs中的超期增值服务
+        //3. 称重时，根据当时日期调整tvs中的超期增值服务
         4. 马上付款时根据当时日期调整tvs中的超期增值服务
 
 

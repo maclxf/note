@@ -169,12 +169,76 @@ ALTER TABLE `adi_refund` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '
 ALTER TABLE `adi_emar` ADD `type` TINYINT NOT NULL DEFAULT '1' COMMENT '推送给亿起发时该订单属于类型：1.新增订单，2.更新的订单' AFTER `pid`;
 
 
+---------------------------------------------------------------------------------------
+
+ALTER TABLE `adi_refund` ADD `refund_to` TINYINT NOT NULL DEFAULT '1' COMMENT '退款类型1:退到用户账户余额,2:退到支付宝账户' AFTER `order_id`,
+ADD `finance_approved_date` DATETIME NULL DEFAULT NULL AFTER `refund_to`,
+ADD `finance_approved_ip` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `finance_approved_date`,
+ADD `finance_approved_user_id` INT NULL DEFAULT NULL AFTER `finance_approved_ip`,
+ADD `finance_approved_user_name` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `finance_approved_user_id`;
+
 ------------------------------------------------------------------------------------
 .fr集货
+1. 优先添加字段和表
+2. 字段添加后，完善各个值
+3. 上传各个配置freight_by_country,colissimo(config)
+4. 部署文件
+
+
 ALTER TABLE `adi_country` ADD `country_type` TINYINT NOT NULL COMMENT '国家类型：1表示法国本身，2表示欧盟国家，3表示非欧盟国家' AFTER `code`;
 
-
 ALTER TABLE `adi_batch_transfer` ADD `is_collection` TINYINT NOT NULL DEFAULT '0' COMMENT '是否是集货：0表示不是，1表示是' AFTER `customer_email`;
+
+INSERT INTO `adi_status` (`id`, `code`, `next_code`, `name`, `description`, `display`) VALUES (NULL, '600', '610', '已提交数据，但未开单', '在前台【巴黎中转】填报时，已生成订单，但在开法国境内段面单时失败的状态', '1'), (NULL, '610', '620', '包裹发往巴黎中心仓，等待称重', '法国境内段开单成功，等待仓库称重的状态', '1'), (NULL, '620', '630', '已称重，等待补足差价', '中心仓已进行称重，仓库称重记录与用户称重存在差异，等待用户补足差价', '1'), (NULL, '630', '640', '已付款，等待发运回国', '客户认可差价，系统自动扣款，等待发运回国', '1'), (NULL, '640', NULL, '包裹已发运回国', '中心仓开单完成后的状态', '1')
+关闭
+
+ALTER TABLE `adi_batch_transfer` ADD `customer_total_weight` INT(11) NULL DEFAULT NULL COMMENT '用户称重的包裹总重量，单位为克' AFTER `total_weight`, ADD `customer_total` DECIMAL(12,2) NULL DEFAULT NULL COMMENT '用户称重后计算的费用' AFTER `total`;
+
+--
+-- 表的结构 `adi_local_tracking_data`
+--
+
+CREATE TABLE `adi_local_tracking_data` (
+  `id` int(11) NOT NULL,
+  `batch_transfer_id` int(11) NOT NULL COMMENT '订单表id',
+  `tracking_no` varchar(128) DEFAULT NULL COMMENT '订单跟踪号',
+  `api_message_id` int(11) DEFAULT NULL COMMENT 'API返回的消息ID',
+  `api_message_content` varchar(1024) DEFAULT NULL COMMENT 'API返回的消息内容',
+  `api_message_type` varchar(16) DEFAULT NULL COMMENT 'API返回的消息类型：ERROR、INFO、WARNING',
+  `api_parcel_number` varchar(128) DEFAULT NULL COMMENT 'API返回的包裹号（跟踪号也是用的这个）',
+  `api_pdf_url` varchar(256) DEFAULT NULL COMMENT 'API返回的包裹对应的PDF文件链接',
+  `pdf_url_md5` varchar(32) DEFAULT NULL COMMENT 'PDF文件链接的MD5编码表示',
+  `added_user_id` int(11) NOT NULL COMMENT '订单添加的用户ID（用于门店系统',
+  `added_user_name` varchar(32) NOT NULL COMMENT '订单添加的用户名（用于门店系统）',
+  `added_date` datetime NOT NULL COMMENT '发起转运需求的时间',
+  `added_ip` varchar(16) NOT NULL COMMENT '发起转运需求的'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='记录异地包裹邮寄至机场的开单信息';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_local_tracking_data`
+--
+ALTER TABLE `adi_local_tracking_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `batch_transfer_id_index` (`batch_transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_local_tracking_data`
+--
+ALTER TABLE `adi_local_tracking_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;COMMIT;
+
+
+--------------------------------------------------------------------------
+ALTER TABLE `adi_transfer` ADD `keep_box` TINYINT NULL DEFAULT NULL COMMENT '保留原箱：0不保留，1保留' AFTER `purchase_mark`;
+
 
 
 

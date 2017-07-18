@@ -1,0 +1,23 @@
+SELECT COUNT(*) AS `numrows`
+FROM `adi_package`
+WHERE `status_code` IN(100, 101)
+AND   (
+`website_order_no` = '直邮商品'
+OR `website_tracking_no` = ''
+ )
+ 查看包裹表中是否有status_code在100和101，并且website_order_no是XX或者website_tracking_no是XX
+
+
+ SELECT COUNT(*) AS `numrows`
+FROM `adi_package`
+WHERE `status_code` IN(100, 101)
+OR `website_order_no` = '直邮商品'
+OR `website_tracking_no` = ''
+ 查看包裹表中是否有status_code在100和101，或者website_order_no是XX或者website_tracking_no是XX
+
+SELECT COUNT(*) AS `numrows`
+FROM `adi_package`
+WHERE `status_code` IN(100, 101)
+AND `website_order_no` = '直邮商品'
+AND `website_tracking_no` = ''
+ 查看包裹表中是否有status_code在100和101，并且website_order_no是XX并且website_tracking_no是XX

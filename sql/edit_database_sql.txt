@@ -241,7 +241,7 @@ ALTER TABLE `adi_transfer` ADD `keep_box` TINYINT NULL DEFAULT NULL COMMENT '保
 
 
 
-
+test
 
 
 

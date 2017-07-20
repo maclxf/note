@@ -239,7 +239,7 @@ ALTER TABLE `adi_local_tracking_data`
 --------------------------------------------------------------------------
 ALTER TABLE `adi_transfer` ADD `keep_box` TINYINT NULL DEFAULT NULL COMMENT '保留原箱：0不保留，1保留' AFTER `purchase_mark`;
 
-
+123
 
 test
 

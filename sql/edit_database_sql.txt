@@ -239,9 +239,11 @@ ALTER TABLE `adi_local_tracking_data`
 --------------------------------------------------------------------------
 ALTER TABLE `adi_transfer` ADD `keep_box` TINYINT NULL DEFAULT NULL COMMENT '保留原箱：0不保留，1保留' AFTER `purchase_mark`;
 
-123
+--------------------------------------------------------------------------
+ALTER TABLE `adi_transfer` ADD `stop_mark` TINYINT NOT NULL DEFAULT '0' COMMENT '是否暂停订单流程：0 不暂停，1暂停' AFTER `purchase_mark`;
 
-test
+
+CREATE TABLE `adi`.`adi_suspended_transfer` ( `id` INT NOT NULL AUTO_INCREMENT COMMENT '自增id' , `transfer_id` INT NOT NULL COMMENT '订单id' , `comment` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '暂停订单的说明' , `added_user_id` INT NOT NULL COMMENT '设置暂停人的id' , `added_user_name` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设置暂停人姓名' , `added_date` DATETIME NOT NULL COMMENT '设置暂停时间' , `added_ip` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设置暂停人的ip' , `restored_user_id` INT NULL DEFAULT NULL COMMENT '恢复人的id' , `restored_user_name` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '恢复人姓名' , `restored_date` DATETIME NULL DEFAULT NULL COMMENT '恢复时间' , `restored_ip` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '恢复人的ip' , `status` TINYINT NOT NULL DEFAULT '1' COMMENT '该条暂停状态是否有效：0失效，1有效' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 
 

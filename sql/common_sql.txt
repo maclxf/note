@@ -77,10 +77,53 @@ and ((tvs.service_id > 150 AND tvs.service_id < 181) or (tvs.service_id in (213,
 and t.`channel_id` IN (14,16,17)
 GROUP BY t.id
 
+//导一份法国小包数据，只要bt单号和对应的运单号，时间：201610-201612
+SELECT bt.tid, bt.tracking_no, bt.channel_name, th.add_date FROM `adi_batch_transfer` `bt` LEFT JOIN `adi_batch_transfer_history` `th` ON `bt`.`id` = `th`.`batch_transfer_id` WHERE bt.channel_id = 16 AND th.status_id IN (220, 300, 640, 740) AND bt.status_code not IN (401) AND `th`.`add_date` >= "2016-09-15 00:00:00" AND `th`.`add_date` < "2017-01-15 23:59:59" ORDER BY `bt`.`id` DESC
+
+// 指定月份扣款记录
+SELECT customer_email,
+       customer_name,
+       order_id,
+       type_name,
+       comment,
+       currency_name,
+       amount,
+       approved_date
+  FROM `adi_withholding`
+ WHERE `status`!= 0
+   and `approved_date`>= '2017-06-01 00:00:00'
+   and `approved_date`< '2017-06-30 23:59:59'
 
 
+// 指定月份修改渠道的记录
+SELECT `user_name`, `added_date` , `content`   FROM `adi_admin_log` where log_type = 6 and `added_date` >= '2017-06-01 00:00:00' and `added_date`  < '2017-07-31 23:59:59'
 
 
+// 法国仓回国订单出库的订单
+SELECT `t`.`id`,
+       `t`.`tid`,
+       `th`.`add_date` as `status_updated_date`,COUNT(`t`.`id`) as abs
+  FROM `adi_transfer` `t`
+  INNER JOIN `adi_transfer_history` `th` ON `th`.`transfer_id`= `t`.`id`
+   AND `th`.`status_id`= `t`.`status_id`
+ WHERE `t`.`status_id` IN(220, 230, 231, 240, 241, 250, 251, 300)
+   AND `t`.`warehouse_id`= 1
+   AND `th`.`add_date`>= "2017-06-01 00:00:00"
+   AND `th`.`add_date`< "2017-07-31 23:59:59"
+GROUP BY  `t`.`id`
+ORDER BY  `t`.`id`
+
+// 法国仓统计概览出库的订单
+SELECT `t`.`id`,
+       `t`.`tid`
+FROM `adi_transfer` `t`
+LEFT JOIN `adi_transfer_history` `h` ON `h`.`transfer_id` = `t`.`id`
+WHERE `h`.`status_id` IN(220, 300)
+AND `t`.`status_id` NOT IN(401)
+AND `h`.`add_date` >= "2017-06-01 00:00:00"
+AND `h`.`add_date` < "2017-07-31 23:59:59"
+AND `warehouse_id` = '1'
+ORDER BY `t`.`id`
 
 
 

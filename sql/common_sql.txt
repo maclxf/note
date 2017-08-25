@@ -128,6 +128,44 @@ ORDER BY `t`.`id`
 
 
 
+//6月晒单返现金额
+select sum(amount_rmb) as '6月晒单返现金额' FROM `adi_cashback` WHERE add_date >= '2017-06-01 00:00:00' and add_date <= '2017-06-30 23:59:59'
+
+//近3个月订单详情（含订单号、申报类目、申报金额）
+SELECT add_date as '提交日期', tid as '订单编号', (select group_concat(p.pid) from adi_package p left join adi_transfer_package tp on tp.package_id = p.id where tp.transfer_id = t.id) as '包裹编号' , (SELECT GROUP_CONCAT(c.name, ' * ', c1.name, ' * ',tp.product_brand, ' ',tp.product_name, ' * ', tp.currency_symbol, tp.price, ' * ', tp.qty , ' = ', tp.price * tp.qty SEPARATOR ' | ')FROM adi_transfer_product AS tp LEFT JOIN adi_category as c on c.id = tp.category_id LEFT join adi_category as c1 on c1.id = tp.sub_category_id WHERE t.id=tp.transfer_id) AS '申报类目' FROM `adi_transfer` as t where warehouse_id = 1 and add_date >= '2017-05-01 00:00:00' and add_date <= '2017-05-31 23:59:59'
+
+
+
+
+
+
+
+SELECT add_date as '提交日期',
+       tid as '订单编号',
+       (
+select group_concat(p.pid SEPARATOR ' | ')
+  from adi_package p
+  left join adi_transfer_package tp on tp.package_id= p.id
+ where tp.transfer_id= t.id) as '包裹编号',
+       (
+SELECT GROUP_CONCAT(c.name, ' * ', c1.name, ' * ', tp.product_brand, ' ', tp.product_name, ' * ', tp.currency_symbol, tp.price, ' * ', tp.qty, ' = ', tp.price * tp.qty SEPARATOR ' | ')
+  FROM adi_transfer_product AS tp
+  LEFT JOIN adi_category as c on c.id= tp.category_id
+  LEFT join adi_category as c1 on c1.id= tp.sub_category_id
+ WHERE t.id= tp.transfer_id) AS '申报类目',
+ (
+SELECT GROUP_CONCAT(SUM(tp.price * tp.qty))
+  FROM adi_transfer_product AS tp
+ WHERE t.id= tp.transfer_id GROUP BY tp.transfer_id) AS '申报总价值'
+  FROM `adi_transfer` as t
+ where warehouse_id= 1
+   and add_date>= '2017-07-01 00:00:00'
+   and add_date<= '2017-07-31 23:59:59'
+
+
+
+
+
 
 
 

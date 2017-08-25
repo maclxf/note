@@ -247,3 +247,23 @@ CREATE TABLE `adi`.`adi_suspended_transfer` ( `id` INT NOT NULL AUTO_INCREMENT C
 
 
 
+---------------------------------------------
+CREATE TABLE `adi_batch_transfer_shelf` (
+  `transfer_id` int(11) DEFAULT NULL COMMENT '订单ID',
+  `shelf` varchar(20) NOT NULL COMMENT '货位号',
+  `added_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单货位号关联表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_batch_transfer_shelf`
+--
+ALTER TABLE `adi_batch_transfer_shelf`
+  ADD UNIQUE KEY `shelf` (`shelf`);
+
+
+ALTER TABLE `adi_batch_transfer` ADD `transfer_shelf` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单货位号' AFTER `shelf`;
+

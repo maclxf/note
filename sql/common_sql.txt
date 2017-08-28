@@ -77,9 +77,90 @@ and ((tvs.service_id > 150 AND tvs.service_id < 181) or (tvs.service_id in (213,
 and t.`channel_id` IN (14,16,17)
 GROUP BY t.id
 
+//导一份法国小包数据，只要bt单号和对应的运单号，时间：201610-201612
+SELECT bt.tid, bt.tracking_no, bt.channel_name, th.add_date FROM `adi_batch_transfer` `bt` LEFT JOIN `adi_batch_transfer_history` `th` ON `bt`.`id` = `th`.`batch_transfer_id` WHERE bt.channel_id = 16 AND th.status_id IN (220, 300, 640, 740) AND bt.status_code not IN (401) AND `th`.`add_date` >= "2016-09-15 00:00:00" AND `th`.`add_date` < "2017-01-15 23:59:59" ORDER BY `bt`.`id` DESC
+
+// 指定月份扣款记录
+SELECT customer_email,
+       customer_name,
+       order_id,
+       type_name,
+       comment,
+       currency_name,
+       amount,
+       approved_date
+  FROM `adi_withholding`
+ WHERE `status`!= 0
+   and `approved_date`>= '2017-06-01 00:00:00'
+   and `approved_date`< '2017-06-30 23:59:59'
+
+
+// 指定月份修改渠道的记录
+SELECT `user_name`, `added_date` , `content`   FROM `adi_admin_log` where log_type = 6 and `added_date` >= '2017-06-01 00:00:00' and `added_date`  < '2017-07-31 23:59:59'
+
+
+// 法国仓回国订单出库的订单
+SELECT `t`.`id`,
+       `t`.`tid`,
+       `th`.`add_date` as `status_updated_date`,COUNT(`t`.`id`) as abs
+  FROM `adi_transfer` `t`
+  INNER JOIN `adi_transfer_history` `th` ON `th`.`transfer_id`= `t`.`id`
+   AND `th`.`status_id`= `t`.`status_id`
+ WHERE `t`.`status_id` IN(220, 230, 231, 240, 241, 250, 251, 300)
+   AND `t`.`warehouse_id`= 1
+   AND `th`.`add_date`>= "2017-06-01 00:00:00"
+   AND `th`.`add_date`< "2017-07-31 23:59:59"
+GROUP BY  `t`.`id`
+ORDER BY  `t`.`id`
+
+// 法国仓统计概览出库的订单
+SELECT `t`.`id`,
+       `t`.`tid`
+FROM `adi_transfer` `t`
+LEFT JOIN `adi_transfer_history` `h` ON `h`.`transfer_id` = `t`.`id`
+WHERE `h`.`status_id` IN(220, 300)
+AND `t`.`status_id` NOT IN(401)
+AND `h`.`add_date` >= "2017-06-01 00:00:00"
+AND `h`.`add_date` < "2017-07-31 23:59:59"
+AND `warehouse_id` = '1'
+ORDER BY `t`.`id`
 
 
 
+
+//6月晒单返现金额
+select sum(amount_rmb) as '6月晒单返现金额' FROM `adi_cashback` WHERE add_date >= '2017-06-01 00:00:00' and add_date <= '2017-06-30 23:59:59'
+
+//近3个月订单详情（含订单号、申报类目、申报金额）
+SELECT add_date as '提交日期', tid as '订单编号', (select group_concat(p.pid) from adi_package p left join adi_transfer_package tp on tp.package_id = p.id where tp.transfer_id = t.id) as '包裹编号' , (SELECT GROUP_CONCAT(c.name, ' * ', c1.name, ' * ',tp.product_brand, ' ',tp.product_name, ' * ', tp.currency_symbol, tp.price, ' * ', tp.qty , ' = ', tp.price * tp.qty SEPARATOR ' | ')FROM adi_transfer_product AS tp LEFT JOIN adi_category as c on c.id = tp.category_id LEFT join adi_category as c1 on c1.id = tp.sub_category_id WHERE t.id=tp.transfer_id) AS '申报类目' FROM `adi_transfer` as t where warehouse_id = 1 and add_date >= '2017-05-01 00:00:00' and add_date <= '2017-05-31 23:59:59'
+
+
+
+
+
+
+
+SELECT add_date as '提交日期',
+       tid as '订单编号',
+       (
+select group_concat(p.pid SEPARATOR ' | ')
+  from adi_package p
+  left join adi_transfer_package tp on tp.package_id= p.id
+ where tp.transfer_id= t.id) as '包裹编号',
+       (
+SELECT GROUP_CONCAT(c.name, ' * ', c1.name, ' * ', tp.product_brand, ' ', tp.product_name, ' * ', tp.currency_symbol, tp.price, ' * ', tp.qty, ' = ', tp.price * tp.qty SEPARATOR ' | ')
+  FROM adi_transfer_product AS tp
+  LEFT JOIN adi_category as c on c.id= tp.category_id
+  LEFT join adi_category as c1 on c1.id= tp.sub_category_id
+ WHERE t.id= tp.transfer_id) AS '申报类目',
+ (
+SELECT GROUP_CONCAT(SUM(tp.price * tp.qty))
+  FROM adi_transfer_product AS tp
+ WHERE t.id= tp.transfer_id GROUP BY tp.transfer_id) AS '申报总价值'
+  FROM `adi_transfer` as t
+ where warehouse_id= 1
+   and add_date>= '2017-07-01 00:00:00'
+   and add_date<= '2017-07-31 23:59:59'
 
 
 

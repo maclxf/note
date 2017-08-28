@@ -4704,3 +4704,46 @@ package_shelf
 如果是合并的包裹还要该
 transfer
     package_count
+
+--------------------------------------------------------------------------
+王冬梅 2017/7/19 9:27:41
+订单号AT3146418572改成5kg的箱子，不是标准加固
+AT3146418572 30060
+订单状态：包裹已发运回国 (跟踪号：EY315814282FR)
+
+--------------------------------------------------------------------------
+1.transfer_valued_service
+
+    SELECT * FROM `adi_transfer_valued_service` WHERE transfer_id =30060
+
+    33951 30060 4  合并包裹【免费】 0.00  0.00  1 null
+    33952 30060 15 30天内仓储费用   0.00  0.00  1 null
+    34224 30060 6  标准加固【1】    32.00 12.00 1 在打包称重时生成
+                23 【5公斤】5层纸箱 12    6.4
+
+2.transfer_totals -20
+
+    SELECT * FROM `adi_transfer_total` where transfer_id =30060
+
+    95840  30060  freight  物流费用  304.00
+    95841  30060  valued_service_fee  增值服务费  32.00 => 12
+
+
+3.transfer -20
+
+    SELECT id,tid, customer_id,customer_name,status_id,status,total FROM `adi_transfer` where tid = 'AT3146418572'
+    30060  AT3146418572  3122  张建楠  300  包裹已发运回国  336.00
+                                                            316
+
+4.transaction -20
+
+    SELECT * FROM `adi_transaction`  WHERE order_id = 'AT3146418572'
+    60588  null  3122  转运消费  2  AT3146418572  336.00  RMB  336.00  账户余额  0  null  Completed  null  2017-07-18 09:49:12
+                                                  316          316
+5.customer +20
+
+    SELECT id,name,balance FROM `adi_customer` where id =3122
+    3122  张建楠  5.58->25.58
+
+
+78710a7b632370c60629e688e9116f3d

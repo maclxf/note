@@ -163,9 +163,19 @@ SELECT GROUP_CONCAT(SUM(tp.price * tp.qty))
    and add_date<= '2017-07-31 23:59:59'
 
 
-
-
-
+//查看修改了渠道的订单
+SELECT t.tid,
+       t.channel_id,
+       t.channel_name,
+       t.`total_weight` ,
+       tm.channel_id as tmp_channel_id,
+       tm.channel_name as tmp_channel_name,
+       t.`ori_weight`
+  FROM `adi_transfer` t
+  LEFT JOIN adi_transfer_temp_channel tm on tm.transfer_id= t.id
+  where t.channel_id!= tm.channel_id
+    and t.tid in('AT3146658379')
+  ORDER BY `id` DESC
 
 
 

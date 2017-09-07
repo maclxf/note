@@ -35,7 +35,7 @@ LEFT JOIN `adi_transfer_cost` `tc1` ON `t`.`id` = `tc1`.`transfer_id` AND `tc1`.
 LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost"
 WHERE  th.status_id IN (220, 300)
 AND t.status_id not IN (401)
-AND ((`tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181) or (`tvs`.`service_id` IN (213,214)))
+AND ((`tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181) or (`tvs`.`service_id` IN (213,214,217)))
 AND `th`.`add_date` >= "2017-05-25 00:00:00"
 AND `th`.`add_date` < "2017-07-06 23:59:59"
 group by t.tid

@@ -316,3 +316,863 @@ ALTER TABLE `adi_internal_message`
 
 
 ALTER TABLE `adi_doushabao` ADD `transfer_detail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '可修改订单基本信息' AFTER `prescription`;
+
+-------------------------------------------------------------------
+--处理对账
+
+ALTER TABLE `adi_overweight` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '数据来源：默认是1表示由人工添加，2表示是由edi数据添加' AFTER `src`;
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-18 02:35:25
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_reconciliation_file_batch`
+--
+
+CREATE TABLE `adi_reconciliation_file_batch` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(128) NOT NULL COMMENT '需要执行读取任务的文件名',
+  `account` int(11) NOT NULL COMMENT '开单账户',
+  `ori_file_path` varchar(1024) NOT NULL COMMENT '原文件路径',
+  `dest_file_path` varchar(1024) NOT NULL COMMENT '目标路径（备份路径）',
+  `file_substance` varchar(32) NOT NULL COMMENT '文件的内容分类',
+  `file_type` varchar(64) NOT NULL COMMENT '文件类型',
+  `file_size` int(11) NOT NULL COMMENT '文件大小',
+  `file_date` datetime NOT NULL COMMENT '文件生成日期',
+  `record_count` int(11) NOT NULL DEFAULT '0' COMMENT '文件中记录的条数',
+  `added_date` datetime NOT NULL COMMENT '添加batch任务的时间',
+  `executed_date` datetime DEFAULT NULL COMMENT '完成读取文件内容的时间',
+  `executed_ip` varchar(16) DEFAULT NULL COMMENT '完成执行读取任务的ip',
+  `executed_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '读取文件内容的状态：0等待执行，1正在执行，2执行完成，10执行失败'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-18 02:36:32
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_edi_parcel_record`
+--
+
+CREATE TABLE `adi_edi_parcel_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) DEFAULT NULL COMMENT '在本条记录时包裹的重量，单位为克',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态',
+  `check_status` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '该订单是否比对：-1表示无需比对，0是等待比对，1是已比对edi数据，2是已比对发票数据',
+  `checked_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '比对结果0表示无对比结果，1表示未超重，2表示超重',
+  `checked_result_context` varchar(256) DEFAULT NULL COMMENT '比对结果描述'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_edi_parcel_record`
+--
+ALTER TABLE `adi_edi_parcel_record`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_edi_parcel_record`
+--
+ALTER TABLE `adi_edi_parcel_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-18 02:36:57
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_pending_check_parcel`
+--
+
+CREATE TABLE `adi_pending_check_parcel` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) NOT NULL COMMENT '对应订单id',
+  `customer_id` int(11) NOT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号 ',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) NOT NULL COMMENT '在本条记录时包裹的重量，单位为克 ',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码 ',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态 '
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_check_parcel`
+--
+ALTER TABLE `adi_pending_check_parcel`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_check_parcel`
+--
+ALTER TABLE `adi_pending_check_parcel`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+  // 请为batch_transfer_id创建索引
+
+  // 请为adi_batch_transfer_history,adi_batch_transfer_total创建索引batch_transfer_id创建索引
+
+
+
+
+
+
+
+=================================================================
+--处理对账
+
+
+
+ALTER TABLE `adi_overweight` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '数据来源：默认是1表示由人工添加，2表示是由edi数据添加' AFTER `src`;
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-28 07:18:44
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_pending_check_invoic_record`
+--
+
+CREATE TABLE `adi_pending_check_invoic_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id ',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id ',
+  `account` int(11) NOT NULL COMMENT '开单账户  ',
+  `parcel_number` varchar(64) NOT NULL COMMENT '包裹单号',
+  `tracking_no` varchar(64) NOT NULL COMMENT '运单号',
+  `input_data` date NOT NULL COMMENT '法邮收到包裹的日期',
+  `dest_country_code` varchar(16) NOT NULL COMMENT '目的地国家简写',
+  `dest_department_code` varchar(16) NOT NULL COMMENT '目的地收件部门简写和邮编',
+  `receiver_name` varchar(64) NOT NULL COMMENT '收件人姓名',
+  `customer_reference` varchar(64) DEFAULT NULL COMMENT '参考信息',
+  `weight_flag` varchar(16) DEFAULT NULL COMMENT '重量类型的标识：F为估计体重，V为体积重，其他的为空',
+  `weight` decimal(12,3) NOT NULL COMMENT '包裹的重量，单位为KG',
+  `freight` decimal(12,2) NOT NULL COMMENT '包裹运费',
+  `service_amount` decimal(12,2) NOT NULL COMMENT '包裹的服务费',
+  `parcel_service` varchar(16) DEFAULT NULL COMMENT '包裹的相关服务',
+  `total_amount` decimal(12,2) NOT NULL COMMENT '总计',
+  `origin_country_code` varchar(16) NOT NULL COMMENT '发件地国家简写'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_check_invoic_record`
+--
+ALTER TABLE `adi_pending_check_invoic_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `batch_transfer_id` (`batch_transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_check_invoic_record`
+--
+ALTER TABLE `adi_pending_check_invoic_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+
+  -- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-28 07:19:52
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_invoic_record`
+--
+
+CREATE TABLE `adi_invoic_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id ',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id ',
+  `account` int(11) NOT NULL COMMENT '开单账户  ',
+  `parcel_number` varchar(64) NOT NULL COMMENT '包裹单号',
+  `tracking_no` varchar(64) NOT NULL COMMENT '运单号',
+  `input_data` date NOT NULL COMMENT '法邮收到包裹的日期',
+  `dest_country_code` varchar(16) NOT NULL COMMENT '目的地国家简写',
+  `dest_department_code` varchar(16) NOT NULL COMMENT '目的地收件部门简写和邮编',
+  `receiver_name` varchar(64) NOT NULL COMMENT '收件人姓名',
+  `customer_reference` varchar(64) DEFAULT NULL COMMENT '参考信息',
+  `weight_flag` varchar(16) DEFAULT NULL COMMENT '重量类型的标识：F为估计体重，V为体积重，其他的为空',
+  `weight` decimal(12,3) NOT NULL COMMENT '包裹的重量，单位为KG',
+  `freight` decimal(12,2) NOT NULL COMMENT '包裹运费',
+  `service_amount` decimal(12,2) NOT NULL COMMENT '包裹的服务费',
+  `parcel_service` varchar(16) DEFAULT NULL COMMENT '包裹的相关服务',
+  `total_amount` decimal(12,2) NOT NULL COMMENT '总计',
+  `origin_country_code` varchar(16) NOT NULL COMMENT '发件地国家简写',
+  `check_status` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '该订单是否比对：-1表示无需比对，0是等待比对，1是已比对edi数据，2是已比对发票数据',
+  `checked_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '比对结果0表示无对比结果，1表示未超重，2表示超重',
+  `checked_result_context` varchar(256) DEFAULT NULL COMMENT '比对结果描述  '
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_invoic_record`
+--
+ALTER TABLE `adi_invoic_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `batch_transfer_id` (`batch_transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_invoic_record`
+--
+ALTER TABLE `adi_invoic_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+  -- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-28 07:20:33
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_pending_check_edi_record`
+--
+
+CREATE TABLE `adi_pending_check_edi_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) NOT NULL COMMENT '对应订单id',
+  `customer_id` int(11) NOT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号 ',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) NOT NULL COMMENT '在本条记录时包裹的重量，单位为克 ',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码 ',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态 '
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_check_edi_record`
+--
+ALTER TABLE `adi_pending_check_edi_record`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_check_edi_record`
+--
+ALTER TABLE `adi_pending_check_edi_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+  -- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-28 07:20:51
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_edi_record`
+--
+
+CREATE TABLE `adi_edi_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) DEFAULT NULL COMMENT '在本条记录时包裹的重量，单位为克',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态',
+  `check_status` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '该订单是否比对：-1表示无需比对，0是等待比对，1是已比对edi数据，2是已比对发票数据',
+  `checked_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '比对结果0表示无对比结果，1表示未超重，2表示超重',
+  `checked_result_context` varchar(256) DEFAULT NULL COMMENT '比对结果描述'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_edi_record`
+--
+ALTER TABLE `adi_edi_record`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_edi_record`
+--
+ALTER TABLE `adi_edi_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+
+
+  -- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-28 07:21:11
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_reconciliation_file_batch`
+--
+
+CREATE TABLE `adi_reconciliation_file_batch` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(128) NOT NULL COMMENT '需要执行读取任务的文件名',
+  `account` int(11) NOT NULL COMMENT '开单账户',
+  `ori_file_path` varchar(1024) NOT NULL COMMENT '原文件路径',
+  `dest_file_path` varchar(1024) NOT NULL COMMENT '目标路径（备份路径）',
+  `file_substance` varchar(32) NOT NULL COMMENT '文件的内容分类',
+  `file_type` varchar(64) NOT NULL COMMENT '文件类型',
+  `file_size` int(11) NOT NULL COMMENT '文件大小',
+  `file_date` datetime NOT NULL COMMENT '文件生成日期',
+  `record_count` int(11) NOT NULL DEFAULT '0' COMMENT '文件中记录的条数',
+  `added_date` datetime NOT NULL COMMENT '添加batch任务的时间',
+  `executed_date` datetime DEFAULT NULL COMMENT '完成读取文件内容的时间',
+  `executed_ip` varchar(16) DEFAULT NULL COMMENT '完成执行读取任务的ip',
+  `executed_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '读取文件内容的状态：0等待执行，1正在执行，2执行完成，10执行失败'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+================================================================================================
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-30 09:16:34
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr_pro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_reconciliation_file_batch`
+--
+
+CREATE TABLE `adi_reconciliation_file_batch` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(128) NOT NULL COMMENT '需要执行读取任务的文件名',
+  `account` int(11) NOT NULL COMMENT '开单账户',
+  `ori_file_path` varchar(1024) NOT NULL COMMENT '原文件路径',
+  `dest_file_path` varchar(1024) NOT NULL COMMENT '目标路径（备份路径）',
+  `file_substance` varchar(32) NOT NULL COMMENT '文件的内容分类',
+  `file_type` varchar(64) NOT NULL COMMENT '文件类型',
+  `file_size` int(11) NOT NULL COMMENT '文件大小',
+  `file_date` datetime NOT NULL COMMENT '文件生成日期',
+  `record_count` int(11) NOT NULL DEFAULT '0' COMMENT '文件中记录的条数',
+  `added_date` datetime NOT NULL COMMENT '添加batch任务的时间',
+  `executed_date` datetime DEFAULT NULL COMMENT '完成读取文件内容的时间',
+  `executed_ip` varchar(16) DEFAULT NULL COMMENT '完成执行读取任务的ip',
+  `executed_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '读取文件内容的状态：0等待执行，1正在执行，2执行完成，10执行失败'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_reconciliation_file_batch`
+--
+ALTER TABLE `adi_reconciliation_file_batch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-30 09:17:44
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr_pro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_edi_record`
+--
+
+CREATE TABLE `adi_edi_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) DEFAULT NULL COMMENT '在本条记录时包裹的重量，单位为克',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态',
+  `check_status` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '该订单是否比对：-1表示无需比对，0是等待比对，1是已比对edi数据，2是已比对发票数据',
+  `check_date` datetime DEFAULT NULL COMMENT '比对时间',
+  `checked_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '比对结果0表示无对比结果，1表示未超重，2表示超重',
+  `checked_result_context` varchar(256) DEFAULT NULL COMMENT '比对结果描述'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_edi_record`
+--
+ALTER TABLE `adi_edi_record`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_edi_record`
+--
+ALTER TABLE `adi_edi_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-30 09:18:11
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr_pro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_pending_check_edi_record`
+--
+
+CREATE TABLE `adi_pending_check_edi_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id',
+  `batch_transfer_id` int(11) NOT NULL COMMENT '对应订单id',
+  `customer_id` int(11) NOT NULL COMMENT '订单对应的用户id',
+  `parcel_type` varchar(32) NOT NULL COMMENT '包裹类型',
+  `parcel_no` varchar(32) NOT NULL COMMENT '包裹编号',
+  `tracking_no` varchar(32) NOT NULL COMMENT '包裹运单号 ',
+  `parcel_status_part1` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第一部分',
+  `parcel_status_part2` varchar(32) NOT NULL COMMENT '本条记录时包裹所处状态第二部分 ',
+  `parcel_status_date` datetime NOT NULL COMMENT '本条记录的时间',
+  `weight` int(11) NOT NULL COMMENT '在本条记录时包裹的重量，单位为克 ',
+  `zipcode` int(11) DEFAULT NULL COMMENT '在本条记录时包裹所处的邮局编码 ',
+  `parcel_status` varchar(64) DEFAULT NULL COMMENT '包裹在该条记录时所处的状态 '
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_check_edi_record`
+--
+ALTER TABLE `adi_pending_check_edi_record`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_check_edi_record`
+--
+ALTER TABLE `adi_pending_check_edi_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-30 09:18:35
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr_pro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_invoic_record`
+--
+
+CREATE TABLE `adi_invoic_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id ',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id ',
+  `account` int(11) NOT NULL COMMENT '开单账户  ',
+  `parcel_number` varchar(64) NOT NULL COMMENT '包裹单号',
+  `tracking_no` varchar(64) NOT NULL COMMENT '运单号',
+  `input_data` date NOT NULL COMMENT '法邮收到包裹的日期',
+  `dest_country_code` varchar(16) NOT NULL COMMENT '目的地国家简写',
+  `dest_department_code` varchar(16) NOT NULL COMMENT '目的地收件部门简写和邮编',
+  `receiver_name` varchar(64) NOT NULL COMMENT '收件人姓名',
+  `customer_reference` varchar(64) DEFAULT NULL COMMENT '参考信息',
+  `weight_flag` varchar(16) DEFAULT NULL COMMENT '重量类型的标识：F为估计体重，V为体积重，其他的为空',
+  `weight` decimal(12,3) NOT NULL COMMENT '包裹的重量，单位为KG',
+  `freight` decimal(12,2) NOT NULL COMMENT '包裹运费',
+  `service_amount` decimal(12,2) NOT NULL COMMENT '包裹的服务费',
+  `parcel_service` varchar(16) DEFAULT NULL COMMENT '包裹的相关服务',
+  `total_amount` decimal(12,2) NOT NULL COMMENT '总计',
+  `origin_country_code` varchar(16) NOT NULL COMMENT '发件地国家简写',
+  `check_status` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '该订单是否比对：-1表示无需比对，0是等待比对，1是已比对edi数据，2是已比对发票数据',
+  `check_date` datetime DEFAULT NULL COMMENT '比对时间',
+  `checked_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '比对结果0表示无对比结果，1表示未超重，2表示超重',
+  `checked_result_context` varchar(256) DEFAULT NULL COMMENT '比对结果描述  '
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_invoic_record`
+--
+ALTER TABLE `adi_invoic_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `batch_transfer_id` (`batch_transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_invoic_record`
+--
+ALTER TABLE `adi_invoic_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2017-09-30 09:19:06
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi_fr_pro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_pending_check_invoic_record`
+--
+
+CREATE TABLE `adi_pending_check_invoic_record` (
+  `id` int(11) NOT NULL,
+  `file_batch_id` int(11) NOT NULL COMMENT '对应edi文件表的id ',
+  `batch_transfer_id` int(11) DEFAULT NULL COMMENT '对应订单id',
+  `customer_id` int(11) DEFAULT NULL COMMENT '订单对应的用户id ',
+  `account` int(11) NOT NULL COMMENT '开单账户  ',
+  `parcel_number` varchar(64) NOT NULL COMMENT '包裹单号',
+  `tracking_no` varchar(64) NOT NULL COMMENT '运单号',
+  `input_data` date NOT NULL COMMENT '法邮收到包裹的日期',
+  `dest_country_code` varchar(16) NOT NULL COMMENT '目的地国家简写',
+  `dest_department_code` varchar(16) NOT NULL COMMENT '目的地收件部门简写和邮编',
+  `receiver_name` varchar(64) NOT NULL COMMENT '收件人姓名',
+  `customer_reference` varchar(64) DEFAULT NULL COMMENT '参考信息',
+  `weight_flag` varchar(16) DEFAULT NULL COMMENT '重量类型的标识：F为估计体重，V为体积重，其他的为空',
+  `weight` decimal(12,3) NOT NULL COMMENT '包裹的重量，单位为KG',
+  `freight` decimal(12,2) NOT NULL COMMENT '包裹运费',
+  `service_amount` decimal(12,2) NOT NULL COMMENT '包裹的服务费',
+  `parcel_service` varchar(16) DEFAULT NULL COMMENT '包裹的相关服务',
+  `total_amount` decimal(12,2) NOT NULL COMMENT '总计',
+  `origin_country_code` varchar(16) NOT NULL COMMENT '发件地国家简写'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_check_invoic_record`
+--
+ALTER TABLE `adi_pending_check_invoic_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `batch_transfer_id` (`batch_transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_check_invoic_record`
+--
+ALTER TABLE `adi_pending_check_invoic_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+// 请为batch_transfer_id创建索引
+
+// 请为adi_batch_transfer_history,adi_batch_transfer_total创建索引batch_transfer_id创建索引
+
+
+
+ALTER TABLE `adi_overweight` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '数据来源：默认是1表示由人工添加，2表示是由edi数据添加' AFTER `src`;
+
+

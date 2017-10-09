@@ -41,6 +41,38 @@ AND `th`.`add_date` < "2017-07-06 23:59:59"
 group by t.tid
 ORDER BY `t`.`id` DESC
 
+
+// 秋秋要的保险数据
+日期、运单号、发货人、收件人、保险结算金额、增值服务费明细（文字内容）这个文字内容是只要保险的还是要所有增值服务的
+8月1号-9月5号
+
+SELECT t.tid,
+       t.tracking_no,
+       t.customer_name,
+       t.receiver_name,
+       th.add_date,
+       (select SUM(service_price * qty) from adi_transfer_valued_service  tvs1 where tvs1.transfer_id = t.id AND ((`tvs1`.`service_id`> 150  AND `tvs1`.`service_id`< 181) or (`tvs1`.`service_id` IN(213, 214, 217))) group by t.id) as insurance_total_amount,
+       (select GROUP_CONCAT(service_name, " ", service_price, "*", qty separator " ; ") from adi_transfer_valued_service where transfer_id= t.id group by transfer_id) as vs_str
+  FROM `adi_transfer` `t`
+  LEFT JOIN `adi_channel` `c` ON `t`.`channel_id`= `c`.`id`
+  LEFT JOIN `adi_transfer_history` `th` ON `t`.`id`= `th`.`transfer_id`
+  LEFT JOIN `adi_transfer_valued_service` `tvs` ON `tvs`.`transfer_id`= `t`.`id`
+ WHERE th.status_id IN(220, 300)
+   AND t.status_id not IN(401)
+   AND((`tvs`.`service_id`> 150
+   AND `tvs`.`service_id`< 181)
+    or(`tvs`.`service_id` IN(213, 214, 217)))
+   AND `th`.`add_date`>= "2017-08-01 00:00:00"
+   AND `th`.`add_date`< "2017-08-15 23:59:59"
+ group by t.tid
+ ORDER BY `t`.`id` DESC
+
+
+
+30天内仓储费用 0.00*1 ; 海淘转运保险：海淘被税包+货损包豪华版（奶粉/药妆包税专线请勿选择此项） 28.00*1 ; 海淘转运保险：海淘丢件包 1.60*1 ; 海淘转运保险：海淘货损包 0.00*1
+
+
+
 //1-3月（出库时间）保险订单
 SELECT t.tid AS '订单号', t.tracking_no AS '跟踪号' , (SELECT GROUP_CONCAT(tvs.service_name SEPARATOR ',') FROM adi_transfer_valued_service tvs WHERE tvs.transfer_id = t.id AND tvs.service_id > 150 AND tvs.service_id < 181 GROUP BY t.id)  AS '险种', t.`total` AS '交易金额', th.add_date AS '付款时间', ch.`coupon_code` AS '优惠码'
 FROM `adi_transfer` t
@@ -177,15 +209,45 @@ SELECT t.tid,
     and t.tid in('AT3146658379')
   ORDER BY `id` DESC
 
+SELECT
+     t.`add_date` as '订单添加日期',
+       t.tid '订单号',
+       t.tracking_no '跟踪号',
+       t.receiver_name as '收件人',
+       c.`lastname` as '识别码',
+       CONCAT(t.`receiver_province`, t.`receiver_city`, t.`receiver_district`, t.receiver_address) as '收件人地址',
+     (SELECT SUM(tp.`price` * tp.`qty` )  FROM `adi_transfer_product` AS tp where tp.`transfer_id` = t.`id` GROUP BY tp.`transfer_id` ) as '申报总价值'
+  FROM adi_transfer t
+  LEFT JOIN adi_customer c ON c.id= t.customer_id
+ WHERE t.customer_name in('林爱军', '高明', '刘鄂', '刘佳') ;
 
 
 
-
-
-
-
-
-
-
-
-
+// 冬梅要的.fr指定时间出库的数据
+SELECT
+  bt.tid,bt.tracking_no,`bt`.receiver_name, bt.receiver_phone, bt.receiver_province, bt.receiver_city, bt.receiver_district, bt.receiver_city_name,
+  `h`.`add_date` AS `status_updated_date`,
+  (
+  SELECT
+    GROUP_CONCAT(
+      tp.product_name,
+      '',
+      tp.product_price,
+      ' X ',
+      tp.product_qty SEPARATOR ' | '
+    )
+  FROM
+    adi_batch_transfer_product AS tp
+  WHERE
+    bt.id = tp.batch_transfer_id
+) AS transfer_info_str
+FROM
+  `adi_batch_transfer` `bt`
+LEFT JOIN
+  `adi_batch_transfer_history` `h`
+ON
+  `h`.`batch_transfer_id` = `bt`.`id` AND `h`.`status_id` = `bt`.`status_code`
+WHERE
+  `bt`.`added_by` IN(2, 3) AND `bt`.`status_code` IN(220, 740) AND `h`.`add_date` >= "2017-09-25 00:00:00" AND `h`.`add_date` < "2017-09-26 23:59:59"
+ORDER BY
+  `bt`.`id`

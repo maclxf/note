@@ -251,3 +251,7 @@ WHERE
   `bt`.`added_by` IN(2, 3) AND `bt`.`status_code` IN(220, 740) AND `h`.`add_date` >= "2017-09-25 00:00:00" AND `h`.`add_date` < "2017-09-26 23:59:59"
 ORDER BY
   `bt`.`id`
+
+
+// 检查超重任务是否有重复的
+SELECT batch_transfer_id, order_no, COUNT(id) FROM `adi_overweight` WHERE added_date >= '2017-10-01 00:00:00' and status = 1 GROUP by batch_transfer_id HAVING COUNT(id) > 1 ORDER BY `id` DESC

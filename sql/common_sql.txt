@@ -36,8 +36,8 @@ LEFT JOIN `adi_transfer_cost` `tc2` ON `t`.`id` = `tc2`.`transfer_id` AND `tc2`.
 WHERE  th.status_id IN (220, 300)
 AND t.status_id not IN (401)
 AND ((`tvs`.`service_id` > 150 AND `tvs`.`service_id` < 181) or (`tvs`.`service_id` IN (213,214,217)))
-AND `th`.`add_date` >= "2017-05-25 00:00:00"
-AND `th`.`add_date` < "2017-07-06 23:59:59"
+AND `th`.`add_date` >= "2017-09-01 00:00:00"
+AND `th`.`add_date` < "2017-09-30 23:59:59"
 group by t.tid
 ORDER BY `t`.`id` DESC
 
@@ -62,14 +62,10 @@ SELECT t.tid,
    AND((`tvs`.`service_id`> 150
    AND `tvs`.`service_id`< 181)
     or(`tvs`.`service_id` IN(213, 214, 217)))
-   AND `th`.`add_date`>= "2017-08-01 00:00:00"
-   AND `th`.`add_date`< "2017-08-15 23:59:59"
+   AND `th`.`add_date`>= "2017-09-01 00:00:00"
+   AND `th`.`add_date`< "2017-09-30 23:59:59"
  group by t.tid
  ORDER BY `t`.`id` DESC
-
-
-
-30天内仓储费用 0.00*1 ; 海淘转运保险：海淘被税包+货损包豪华版（奶粉/药妆包税专线请勿选择此项） 28.00*1 ; 海淘转运保险：海淘丢件包 1.60*1 ; 海淘转运保险：海淘货损包 0.00*1
 
 
 
@@ -248,7 +244,7 @@ LEFT JOIN
 ON
   `h`.`batch_transfer_id` = `bt`.`id` AND `h`.`status_id` = `bt`.`status_code`
 WHERE
-  `bt`.`added_by` IN(2, 3) AND `bt`.`status_code` IN(220, 740) AND `h`.`add_date` >= "2017-09-25 00:00:00" AND `h`.`add_date` < "2017-09-26 23:59:59"
+  `bt`.`added_by` IN(2, 3) AND `bt`.`status_code` IN(220, 740) AND `h`.`add_date` >= "2017-10-10 00:00:00" AND `h`.`add_date` < "2017-10-13 23:59:59"
 ORDER BY
   `bt`.`id`
 

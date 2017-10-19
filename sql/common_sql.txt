@@ -166,8 +166,6 @@ SELECT add_date as '提交日期', tid as '订单编号', (select group_concat(p
 
 
 
-
-
 SELECT add_date as '提交日期',
        tid as '订单编号',
        (
@@ -217,7 +215,7 @@ SELECT
   LEFT JOIN adi_customer c ON c.id= t.customer_id
  WHERE t.customer_name in('林爱军', '高明', '刘鄂', '刘佳') ;
 
-
+-------------------------------------------------
 
 // 冬梅要的.fr指定时间出库的数据
 SELECT
@@ -249,5 +247,19 @@ ORDER BY
   `bt`.`id`
 
 
-// 检查超重任务是否有重复的
+// .fr检查超重任务是否有重复的
 SELECT batch_transfer_id, order_no, COUNT(id) FROM `adi_overweight` WHERE added_date >= '2017-10-01 00:00:00' and status = 1 GROUP by batch_transfer_id HAVING COUNT(id) > 1 ORDER BY `id` DESC
+
+// .fr查看每日返利个数
+SELECT * FROM `adi_business_transaction` where trans_type = 6 and trans_start_date > '2017-10-16 00:00:00' and trans_start_date <='2017-10-16 23:59:59'
+
+// fr发邮件
+INSERT INTO `adi_customer_email` (`customer_id`, `customer_name`, `customer_email`)
+SELECT `id`, `name`, `email`
+FROM `adi_business_customer`
+WHERE `status` = 1
+
+
+// fr有订单买过保险
+SELECT * FROM `adi_batch_transfer_valued_service` where service_id >= 105 and service_id <= 112
+

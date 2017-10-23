@@ -5580,6 +5580,18 @@ jane  17:44:18
 2787 chenahua0416@163.com  陈秋萍 2 -> 1
 
 
+-------------------------------------------------------------------------
+王贵琴  15:22:26
+2122090207 包裹的入库重量有误，应为0.75kg。请后台修改
+
+-------------------------------------------------------------------------
+SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2122090207'
 
 
+SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where in (60601, 60405, 60281, 59898, 59740)
 
+package:
+60281  2122090207  null  5584  干雯  120  已生成回国订单，等待打包称重  450 -> 750
+
+transfer:
+35471  AT3146989645  5584  干雯  120  已生成回国订单，等待打包称重  9800 -> 10100

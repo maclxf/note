@@ -263,3 +263,21 @@ WHERE `status` = 1
 // fr有订单买过保险
 SELECT * FROM `adi_batch_transfer_valued_service` where service_id >= 105 and service_id <= 112
 
+
+// 7-10月
+select tt.transfer_id, tt.value,`th`.`add_date` from adi_transfer_total as tt
+left join adi_transfer_history as th ON tt.`transfer_id` = th.`transfer_id` AND th.status_id in (220, 300)
+where `th`.`add_date` >= "2017-07-01 00:00:00"
+AND `th`.`add_date` < "2017-10-31 23:59:59"
+AND tt.code = 'coupon'
+GROUP BY tt.`transfer_id`
+
+
+// 截至到11.1走单量最大的用户
+SELECT t.customer_id, t.customer_name, c.`lastname` , c.`phone` ,c.`qq` ,c.`email`,  COUNT(t.id) as transfer_num FROM `adi_transfer` t LEFT JOIN `adi_customer` c ON c.`id` = t.`customer_id`  where t.status_id in (201,202,210,220,230,240,250,231,241,251,300,500) and add_date < '2017-11-01 00:00:00' GROUP by t.customer_id order by transfer_num desc
+
+// 截至到11.1走单金额最大的用户
+SELECT t.customer_id, t.customer_name, c.`lastname` , c.`phone` ,c.`qq` ,c.`email`, sum(t.total) as transfer_total_sum FROM `adi_transfer` t LEFT JOIN `adi_customer` c ON c.`id` = t.`customer_id` where t.status_id in (201,202,210,220,230,240,250,231,241,251,300,500) and add_date < '2017-11-01 00:00:00' GROUP by t.customer_id order by transfer_total_sum desc
+
+// 截至到11.1邀请用户最多
+SELECT t.customer_id, t.customer_name, c.`lastname` , c.`phone` ,c.`qq` ,c.`email`,  COUNT(t.invitee_id) as invitee_customer_num FROM `adi_transfer` t LEFT JOIN `adi_customer` c ON c.`id` = t.`invitee_id`  where t.status_id in (201,202,210,220,230,240,250,231,241,251,300,500) and add_date < '2017-11-01 00:00:00' GROUP by t.invitee_id order by invitee_customer_num desc

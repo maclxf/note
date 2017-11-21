@@ -1176,3 +1176,219 @@ ALTER TABLE `adi_pending_check_invoic_record`
 ALTER TABLE `adi_overweight` ADD `added_from` TINYINT NOT NULL DEFAULT '1' COMMENT '数据来源：默认是1表示由人工添加，2表示是由edi数据添加' AFTER `src`;
 
 
+-------------------------------------------------------------------------------------------------------------
+// 签到2张表
+
+// 注册奖励
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_register_reward_history_coupon`
+--
+
+CREATE TABLE `adi_register_reward_history_coupon` (
+  `id` int(11) NOT NULL COMMENT '自增ID',
+  `register_reward_history_id` int(11) NOT NULL COMMENT '注册奖励ID',
+  `coupon_id` int(11) NOT NULL COMMENT '优惠码ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='注册奖励-优惠码关联表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_register_reward_history_coupon`
+--
+ALTER TABLE `adi_register_reward_history_coupon`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_register_reward_history_coupon`
+--
+ALTER TABLE `adi_register_reward_history_coupon`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+--
+-- 表的结构 `adi_register_reward_history`
+--
+
+CREATE TABLE `adi_register_reward_history` (
+  `id` int(11) NOT NULL COMMENT '自增ID',
+  `customer_id` int(11) NOT NULL COMMENT '用户ID',
+  `customer_email` varchar(256) NOT NULL COMMENT '用户邮箱',
+  `reg_date` datetime NOT NULL COMMENT '用户注册时间',
+  `amount` decimal(12,2) NOT NULL COMMENT '奖励金额',
+  `currency_id` int(11) NOT NULL COMMENT '货币ID',
+  `currency_name` varchar(32) NOT NULL COMMENT '货币名称',
+  `currency_symbol` varchar(8) NOT NULL COMMENT '货币符号',
+  `reward_date` datetime NOT NULL COMMENT '奖励时间',
+  `rule` varchar(32) NOT NULL COMMENT '奖励规则名称',
+  `status` tinyint(4) NOT NULL COMMENT '状态标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='新用户注册奖励历史记录表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_register_reward_history`
+--
+ALTER TABLE `adi_register_reward_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_register_reward_history`
+--
+ALTER TABLE `adi_register_reward_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+  --
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_auction_history`
+--
+
+CREATE TABLE `adi_auction_history` (
+  `id` int(11) NOT NULL,
+  `event_id` tinyint(4) NOT NULL DEFAULT '0' COMMENT '活动id:默认为0表示日常拍卖 ',
+  `auction_product_id` int(11) NOT NULL COMMENT '竞拍品id',
+  `bidder_id` int(11) NOT NULL COMMENT '竞拍者id',
+  `bidder_name` varchar(64) DEFAULT NULL COMMENT '竞拍者名称',
+  `bidder_last_name` varchar(64) NOT NULL COMMENT '竞拍者在网站的识别码',
+  `bidder_price` decimal(12,2) NOT NULL COMMENT '竞拍者价格',
+  `bidder_ip` varchar(16) NOT NULL COMMENT '竞拍者ip',
+  `bidding_date` datetime NOT NULL COMMENT '竞拍日期'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_auction_history`
+--
+ALTER TABLE `adi_auction_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `auction_product_id` (`auction_product_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_auction_history`
+--
+ALTER TABLE `adi_auction_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+  --
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_auction_product`
+--
+
+CREATE TABLE `adi_auction_product` (
+  `id` int(11) NOT NULL,
+  `event_id` tinyint(4) NOT NULL DEFAULT '0' COMMENT '活动id:默认为0表示日常拍卖',
+  `auction_product_name` varchar(256) NOT NULL COMMENT '拍卖品名称',
+  `auction_product_encrypt_name` varchar(256) DEFAULT NULL COMMENT '加密的拍卖品名称',
+  `auction_start_price` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '起拍价格',
+  `auction_start` datetime NOT NULL COMMENT '拍卖起始时间',
+  `auction_end` datetime NOT NULL COMMENT '拍卖结束时间',
+  `product_image` varchar(256) DEFAULT NULL COMMENT '图片名称',
+  `effect_duration` date DEFAULT NULL COMMENT '拍卖品的有效期',
+  `reference_price` decimal(12,2) DEFAULT NULL COMMENT '参考价格',
+  `buyer_price` decimal(12,2) DEFAULT NULL COMMENT '竞得价格',
+  `buyer_id` int(11) DEFAULT NULL COMMENT '买家id',
+  `buyer_name` varchar(64) DEFAULT NULL COMMENT '买家名称',
+  `buyer_last_name` varchar(32) DEFAULT NULL,
+  `buyer_phone` varchar(16) DEFAULT NULL,
+  `buyer_email` varchar(256) DEFAULT NULL,
+  `buyer_qq` varchar(16) DEFAULT NULL,
+  `buy_date` datetime DEFAULT NULL COMMENT '买受日期',
+  `buyer_ip` varchar(16) DEFAULT NULL COMMENT '买家ip',
+  `auction_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0需要竞拍，1竞拍完成'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `adi_auction_product`
+--
+
+INSERT INTO `adi_auction_product` (`id`, `event_id`, `auction_product_name`, `auction_product_encrypt_name`, `auction_start_price`, `auction_start`, `auction_end`, `product_image`, `effect_duration`, `reference_price`, `buyer_price`, `buyer_id`, `buyer_name`, `buyer_last_name`, `buyer_phone`, `buyer_email`, `buyer_qq`, `buy_date`, `buyer_ip`, `auction_status`) VALUES
+(1, 8, 'NARS唇笔——型号：9102', 'NARS**——型号：9102', '1.00', '2017-11-21 10:00:00', '2017-11-21 11:30:00', 'auction_img_21_a01.png', NULL, '260.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(2, 8, 'lamer海蓝之谜妍塑紧致轮廓精华30ml', 'lamer海蓝之谜妍塑紧致***30ml', '299.00', '2017-11-21 10:00:00', '2017-11-21 11:30:00', 'auction_img_21_a02.png', '2019-11-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(3, 8, 'lamer海蓝之谜精华面霜/神奇经典面霜30ml', 'lamer海蓝之谜神奇***30ml', '199.00', '2017-11-21 14:00:00', '2017-11-21 16:00:00', 'auction_img_21_p01.png', '2020-03-31', '1450.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(4, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-21 14:00:00', '2017-11-21 16:00:00', 'auction_img_21_p02.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(5, 8, 'lamer海蓝之谜修护唇霜9g', 'lamer海蓝之谜***9g', '99.00', '2017-11-22 10:00:00', '2017-11-22 11:30:00', 'auction_img_22_a01.png', '2019-08-01', '500.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(6, 8, 'lamer海蓝之谜美白泡沫洗面奶125ml', 'lamer海蓝之谜美白***125ml', '99.00', '2017-11-22 10:00:00', '2017-11-22 11:30:00', 'auction_img_22_a02.png', '2019-11-01', '750.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(7, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-22 14:00:00', '2017-11-22 16:00:00', 'auction_img_22_p01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(8, 8, 'lamer海蓝之谜浓缩修护精华露30g', 'lamer海蓝之谜***30g', '299.00', '2017-11-22 14:00:00', '2017-11-22 16:00:00', 'auction_img_22_p02.png', '2020-02-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(9, 8, 'lamer海蓝之谜全新修复精粹液浓缩奇迹水150ml', 'lamer海蓝之谜全新***150ml', '199.00', '2017-11-23 10:00:00', '2017-11-23 11:30:00', 'auction_img_23_a01.png', '2019-11-01', '1000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(10, 8, 'lamer海蓝之谜精华面霜/神奇经典面霜30ml', 'lamer海蓝之谜神奇***30ml', '199.00', '2017-11-23 10:00:00', '2017-11-23 11:30:00', 'auction_img_23_a02.png', '2020-03-31', '1450.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(11, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-23 14:00:00', '2017-11-23 16:00:00', 'auction_img_23_p01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(12, 8, 'lamer海蓝之谜美白泡沫洗面奶125ml', 'lamer海蓝之谜美白***125ml', '99.00', '2017-11-23 14:00:00', '2017-11-23 16:00:00', 'auction_img_23_p02.png', '2019-02-01', '750.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(13, 8, 'lamer海蓝之谜全新修复精粹液浓缩奇迹水150ml', 'lamer海蓝之谜全新***150ml', '199.00', '2017-11-24 10:00:00', '2017-11-24 11:30:00', 'auction_img_24_a01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(14, 8, 'lamer海蓝之谜修护唇霜9g', 'lamer海蓝之谜***9g', '99.00', '2017-11-24 10:00:00', '2017-11-24 11:30:00', 'auction_img_24_a02.png', '2019-08-01', '500.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(15, 8, 'lamer海蓝之谜浓缩修护精华露30g', 'lamer海蓝之谜***30g', '299.00', '2017-11-24 14:00:00', '2017-11-24 16:00:00', 'auction_img_24_p01.png', '2019-02-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(16, 8, 'lamer海蓝之谜鎏金焕颜精华露/血清精华30g ', 'lamer海蓝之谜鎏金焕颜***30g', '499.00', '2017-11-24 14:00:00', '2017-11-24 16:00:00', 'auction_img_24_p02.png', '2019-10-01', '5500.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(17, 8, 'lamer海蓝之谜全新修复精粹液浓缩奇迹水150ml', 'lamer海蓝之谜全新***150ml', '199.00', '2017-11-27 10:00:00', '2017-11-27 11:30:00', 'auction_img_27_a01.png', '2019-11-01', '1000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(18, 8, 'lamer海蓝之谜妍塑紧致轮廓精华30ml', 'lamer海蓝之谜***30mlg', '299.00', '2017-11-27 10:00:00', '2017-11-27 11:30:00', 'auction_img_27_a02.png', '2019-08-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(19, 8, 'lamer海蓝之谜精华面霜/神奇经典面霜30ml', 'lamer海蓝之谜神奇***30ml', '199.00', '2017-11-27 14:00:00', '2017-11-27 16:00:00', 'auction_img_27_p01.png', '2020-03-31', '1450.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(20, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-27 14:00:00', '2017-11-27 16:00:00', 'auction_img_27_p02.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(25, 8, 'lamer海蓝之谜美白泡沫洗面奶125ml', 'lamer海蓝之谜美白***125ml', '99.00', '2017-11-28 10:00:00', '2017-11-28 11:30:00', 'auction_img_28_a01.png', '2019-11-01', '750.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(26, 8, 'lamer海蓝之谜浓缩修护精华露30g', 'lamer海蓝之谜***30g', '299.00', '2017-11-28 10:00:00', '2017-11-28 11:30:00', 'auction_img_28_a02.png', '2020-08-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(27, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜全新***15ml', '199.00', '2017-11-28 14:00:00', '2017-11-28 16:00:00', 'auction_img_28_p01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(28, 8, 'lamer海蓝之谜全新修复精粹液浓缩奇迹水150ml', 'lamer海蓝之谜全新***150ml', '199.00', '2017-11-28 14:00:00', '2017-11-28 16:00:00', 'auction_img_28_p02.png', '2019-11-01', '1000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(29, 8, 'lamer海蓝之谜精华面霜/神奇经典面霜30ml', 'lamer海蓝之谜神奇***30ml', '199.00', '2017-11-29 10:00:00', '2017-11-29 11:30:00', 'auction_img_29_a01.png', '2020-03-31', '1450.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(30, 8, 'lamer海蓝之谜美白泡沫洗面奶125ml', 'lamer海蓝之谜美白***125ml', '99.00', '2017-11-29 10:00:00', '2017-11-29 11:30:00', 'auction_img_29_a02.png', '2019-11-01', '750.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(31, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-29 14:00:00', '2017-11-29 16:00:00', 'auction_img_29_p01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(32, 8, '施华洛世奇项链——转运珠', '施华洛世奇项链——转运珠', '99.00', '2017-11-29 14:00:00', '2017-11-29 16:00:00', 'auction_img_29_p02.png', NULL, '500.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(37, 8, 'lamer海蓝之谜浓缩修护精华露30g', 'lamer海蓝之谜***30g', '299.00', '2017-11-30 10:00:00', '2017-11-30 11:30:00', 'auction_img_30_a01.png', '2020-02-01', '3000.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(38, 8, 'lamer海蓝之谜鎏金焕颜精华露/血清精华30g', 'lamer海蓝之谜鎏金焕颜***30g', '499.00', '2017-11-30 10:00:00', '2017-11-30 11:30:00', 'auction_img_30_a02.png', '2019-10-01', '5500.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(39, 8, 'lamer海蓝之谜浓缩修护精华经典眼霜15ml', 'lamer海蓝之谜浓缩修护***15ml', '199.00', '2017-11-30 14:00:00', '2017-11-30 16:00:00', 'auction_img_30_p01.png', '2020-02-01', '1700.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0),
+(40, 8, 'trtl睡眠枕头黑色/灰色随机发货', 'trtl睡眠枕头黑色/灰色随机发货', '9.00', '2017-11-30 14:00:00', '2017-11-30 16:00:00', 'auction_img_30_p02.png', NULL, '247.00', NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, 0);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_auction_product`
+--
+ALTER TABLE `adi_auction_product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_auction_product`
+--
+ALTER TABLE `adi_auction_product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;

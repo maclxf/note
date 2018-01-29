@@ -281,3 +281,50 @@ SELECT t.customer_id, t.customer_name, c.`lastname` , c.`phone` ,c.`qq` ,c.`emai
 
 // 截至到11.1邀请用户最多
 SELECT t.customer_id, t.customer_name, c.`lastname` , c.`phone` ,c.`qq` ,c.`email`,  COUNT(t.invitee_id) as invitee_customer_num FROM `adi_transfer` t LEFT JOIN `adi_customer` c ON c.`id` = t.`invitee_id`  where t.status_id in (201,202,210,220,230,240,250,231,241,251,300,500) and add_date < '2017-11-01 00:00:00' GROUP by t.invitee_id order by invitee_customer_num desc
+
+
+
+/************************************* 四周年统计数据 *************************************************/
+// 指定时间充值返现 充值总金额
+SELECT sum(`amount`)  FROM `adi_transaction` where  `related_id` is not null
+      and `trans_complete_date` >='2017-11-21 00:00:00'
+      and `trans_complete_date` <='2017-11-31 23:59:00'
+
+
+
+// 指定时间充值返现 返现总金额 4600
+SELECT sum(t2.`amount`)  FROM `adi_transaction` as t1
+LEFT JOIN `adi_transaction` as t2 ON t2.id = t1.related_id
+where  t1.`related_id` is not null
+and t2.`trans_complete_date` >='2017-11-21 00:00:00'
+and t2.`trans_complete_date` <='2017-11-31 23:59:00'
+
+SELECT sum(`amount`)  FROM `adi_transaction`
+where  `comment` ='安达易三周年充值返现'
+
+
+// 签到发送金额 1538.43
+SELECT sum(`reward_value`) FROM adi_customer_sign_in_history
+
+// 签到人次数 2344
+SELECT COUNT(`id`) FROM adi_customer_sign_in_history
+
+// 参与人数 740
+SELECT COUNT(`id`) FROM adi_customer_sign_log
+
+// 注册返现10元
+SELECT sum(`amount`) FROM adi_transaction where  `trans_name` ='新用户注册奖励'
+
+
+// 满减
+select * from adi_transfer_total where code = 'channel_reduction'
+
+select sum(value) from adi_transfer_total where code = 'channel_reduction'
+
+// 换购
+select * from adi_transfer_total where code = 'exchangeable_fee'
+
+select sum(value) from adi_transfer_total where code = 'exchangeable_fee'
+
+
+37360, 37491, 37540, 37524, 37520

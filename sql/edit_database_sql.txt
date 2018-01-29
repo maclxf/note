@@ -1392,3 +1392,121 @@ ALTER TABLE `adi_auction_product`
 --
 ALTER TABLE `adi_auction_product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+
+// 添加原始价格和零售价格形成对比
+ALTER TABLE `adi_product` ADD `original_price` DECIMAL(12,2) NOT NULL DEFAULT '0' COMMENT '原始价格，原始价格只是用于促销时进行展示，表示与零售价格比零售价的优惠' AFTER `price_rmb`, ADD `is_show_original_price` TINYINT(10) NOT NULL DEFAULT '0' COMMENT '是否启用原始价格（0未启用 1启用）' AFTER `original_price`;
+ALTER TABLE `adi_product` ADD `original_price_rmb` DECIMAL(12,2) NOT NULL DEFAULT '0' COMMENT '产品原始的人民币价格' AFTER `original_price`
+
+
+// 换购
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_exchangeable_product`
+--
+
+CREATE TABLE `adi_exchangeable_product` (
+  `id` int(11) NOT NULL,
+  `event_id` tinyint(4) NOT NULL DEFAULT '0' COMMENT '活动id:默认为0表示日常换购',
+  `exchangeable_product_name` varchar(256) NOT NULL COMMENT '拍卖品名称',
+  `exchangeable_product_image` varchar(256) NOT NULL COMMENT '图片名称',
+  `currency_id` int(11) DEFAULT NULL COMMENT '货币ID  ',
+  `currency_name` varchar(32) DEFAULT NULL COMMENT '货币名称  ',
+  `currency_symbol` varchar(8) DEFAULT NULL COMMENT '货币符号 ',
+  `limit_price` decimal(12,2) NOT NULL COMMENT '限定价格',
+  `exchangeable_price` decimal(12,2) NOT NULL COMMENT '换购价格',
+  `reference_price` decimal(12,2) NOT NULL COMMENT '参考价格',
+  `qty` int(11) DEFAULT NULL COMMENT '如果为空时表明商品数量足够无限制，商品剩余数量',
+  `start_time` datetime NOT NULL COMMENT '活动开始时间',
+  `end_time` datetime NOT NULL COMMENT '活动结束时间',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '换购商品状态：默认1是正常换购'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `adi_exchangeable_product`
+--
+
+INSERT INTO `adi_exchangeable_product` (`id`, `event_id`, `exchangeable_product_name`, `exchangeable_product_image`, `currency_id`, `currency_name`, `currency_symbol`, `limit_price`, `exchangeable_price`, `reference_price`, `qty`, `start_time`, `end_time`, `status`) VALUES
+(1, 9, '澳洲LINGER香槟(一瓶)', 'exchangeable_product_img_01.jpg', 1, '人民币', '￥', '222.00', '68.00', '85.00', NULL, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1),
+(2, 9, '澳洲LINGER香槟(二瓶)', 'exchangeable_product_img_02.jpg', 1, '人民币', '￥', '222.00', '128.00', '170.00', NULL, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1),
+(3, 9, '拉菲进口红酒', 'exchangeable_product_img_03.jpg', 1, '人民币', '￥', '360.00', '138.00', '285.00', NULL, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1),
+(4, 9, '海蓝之谜美白泡沫洁面一瓶(限5个)', 'exchangeable_product_img_04.jpg', 1, '人民币', '￥', '420.00', '400.00', '750.00', 5, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1),
+(5, 9, '获得海蓝之谜浓缩奇迹水(限2个)', 'exchangeable_product_img_05.jpg', 1, '人民币', '￥', '420.00', '500.00', '1000.00', 2, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1),
+(6, 9, '海蓝之谜浓缩修护精华眼霜(限2个)', 'exchangeable_product_img_06.jpg', 1, '人民币', '￥', '420.00', '800.00', '1700.00', 2, '2017-12-06 00:00:00', '2018-01-01 23:59:59', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_exchangeable_product`
+--
+ALTER TABLE `adi_exchangeable_product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_exchangeable_product`
+--
+ALTER TABLE `adi_exchangeable_product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_exchangeable_history`
+--
+
+CREATE TABLE `adi_exchangeable_history` (
+  `id` int(11) NOT NULL,
+  `event_id` tinyint(4) NOT NULL DEFAULT '0' COMMENT '活动id:默认为0表示日常换购',
+  `exchangeable_product_id` int(11) NOT NULL COMMENT '换购商品id',
+  `exchangeable_product_name` varchar(128) NOT NULL COMMENT '换购商品名称',
+  `transfer_id` int(11) NOT NULL COMMENT '订单id',
+  `currency_id` int(11) DEFAULT NULL COMMENT '货币ID  ',
+  `currency_name` varchar(32) DEFAULT NULL COMMENT '货币名称  ',
+  `currency_symbol` varchar(8) DEFAULT NULL COMMENT '货币符号 ',
+  `exchangeable_product_price` decimal(12,2) NOT NULL COMMENT '换购商品id',
+  `exchangeable_product_qty` int(11) NOT NULL COMMENT '换购商品数量',
+  `buyer_id` int(11) NOT NULL COMMENT '换购者id',
+  `buyer_name` varchar(64) DEFAULT NULL COMMENT '换购者名称',
+  `buyer_last_name` varchar(64) NOT NULL COMMENT '换购者在网站的识别码',
+  `buyer_ip` varchar(16) NOT NULL COMMENT '换购者ip',
+  `buy_date` datetime NOT NULL COMMENT '换购日期',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '联系状态：0等待联系用户，1联系用户'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_exchangeable_history`
+--
+ALTER TABLE `adi_exchangeable_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `exchangeable_product_id` (`exchangeable_product_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_exchangeable_history`
+--
+ALTER TABLE `adi_exchangeable_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

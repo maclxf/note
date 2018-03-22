@@ -22,7 +22,7 @@ SELECT SUM(CASE flag WHEN 1 THEN amount_rmb ELSE amount_rmb * -1 END) as balance
 FROM `adi_transaction`
 WHERE customer_id = 103;
 
-// 指定月份保险订单数据
+// 贾静要的指定月份保险订单数据
 SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, th.add_date, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost, (select GROUP_CONCAT(service_name, " ", service_price, "*", qty separator " ; ") from adi_transfer_valued_service where transfer_id = t.id group by transfer_id) as vs_str
 FROM `adi_transfer` `t`
 LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id`
@@ -45,7 +45,6 @@ ORDER BY `t`.`id` DESC
 // 秋秋要的保险数据
 日期、运单号、发货人、收件人、保险结算金额、增值服务费明细（文字内容）这个文字内容是只要保险的还是要所有增值服务的
 8月1号-9月5号
-
 SELECT t.tid,
        t.tracking_no,
        t.customer_name,
@@ -66,6 +65,25 @@ SELECT t.tid,
    AND `th`.`add_date`< "2017-09-30 23:59:59"
  group by t.tid
  ORDER BY `t`.`id` DESC
+
+
+
+ // 最新保险指定购买保险的信息,不用贾静那个了
+SELECT t.tid, t.tracking_no, t.customer_name, t.receiver_name, t.total_weight, t.volume_weight, t.total, c.volume_weight_supported, tt1.value as freight, tt3.value as refund, tt2.value as valued_service_fee, (select SUM(value) from adi_transfer_total where transfer_id = t.id and `code` in ( "remission", "coupon", "discount")) as reduction, tc1.value as vs_cost, tc2.value as shipping_cost, t.total_cost, (select GROUP_CONCAT(service_name, " ", service_price, "*", qty separator " ; ") from adi_transfer_valued_service where transfer_id = t.id group by transfer_id) as vs_str
+FROM `adi_doushabao` `d`
+LEFT JOIN `adi_transfer` `t` ON `t`.`id` = `d`.`transfer_id`
+LEFT JOIN `adi_channel` `c` ON `t`.`channel_id` = `c`.`id`
+LEFT JOIN `adi_transfer_total` `tt1` ON `d`.`transfer_id` = `tt1`.`transfer_id` AND `tt1`.`code` = "freight"
+LEFT JOIN `adi_transfer_total` `tt2` ON `d`.`transfer_id` = `tt2`.`transfer_id` AND `tt2`.`code` = "valued_service_fee"
+LEFT JOIN `adi_transfer_total` `tt3` ON `d`.`transfer_id` = `tt3`.`transfer_id` AND `tt3`.`code` = "refund"
+LEFT JOIN `adi_transfer_cost` `tc1` ON `d`.`transfer_id` = `tc1`.`transfer_id` AND `tc1`.`code` = "vs_cost"
+LEFT JOIN `adi_transfer_cost` `tc2` ON `d`.`transfer_id` = `tc2`.`transfer_id` AND `tc2`.`code` = "shipping_cost"
+WHERE t.status_id not IN (401)
+AND `d`.`add_date` >= "2017-12-01 00:00:00"
+AND `d`.`add_date` < "2017-12-31 23:59:59"
+AND `d`.`return_code` = 'SUCCESS'
+group by t.tid
+ORDER BY `d`.`transfer_id` DESC
 
 
 
@@ -259,6 +277,8 @@ SELECT `id`, `name`, `email`
 FROM `adi_business_customer`
 WHERE `status` = 1
 
+INSERT INTO `adi_customer_email` (`customer_id`, `customer_name`, `customer_email`) VALUES ('1', 'lxf', '46905313@qq.com'), ('2', 'wdm', '283364786@qq.com');
+
 
 // fr有订单买过保险
 SELECT * FROM `adi_batch_transfer_valued_service` where service_id >= 105 and service_id <= 112
@@ -328,3 +348,83 @@ select sum(value) from adi_transfer_total where code = 'exchangeable_fee'
 
 
 37360, 37491, 37540, 37524, 37520
+
+
+// 所有账户金额
+SELECT SUM(balance) FROM adi_customer WHERE id NOT IN (2, 3746, 98, 108, 109, 143, 230, 691, 702, 748, 1207, 1375, 2558, 2583, 5413, 5540, 8595, 8596, 9644, 9645, 10137, 10152, 10153, 10156, 10158, 10194, 10244, 10246, 10247, 10248, 10249, 10250, 12281, 13571, 13572, 13573, 13695, 15119, 20046, 20455, 20457, 20458, 20556, 21925, 23352, 23356)
+
+
+
+
+// 指定月份发往非中国的其他国家的订单
+SELECT t.id, t.tid, t.`tracking_no`, t.`receiver_country_code` , t.`receiver_country_name`,`th`.`add_date` as `status_updated_date`
+  FROM `adi_transfer` `t`
+  INNER JOIN `adi_transfer_history` `th` ON `th`.`transfer_id`= `t`.`id`
+   AND `th`.`status_id`= `t`.`status_id`
+ WHERE `t`.`status_id` IN(220, 230, 231, 240, 241, 250, 251, 300)
+   AND `t`.`receiver_country_code` not IN ('CN', 'HK', 'MAC', 'TW')
+   AND `th`.`add_date`>= "2017-12-01 00:00:00"
+   AND `th`.`add_date`< "2018-01-31 23:59:59"
+ ORDER BY `status_updated_date` ASC
+
+
+-----------------------年底大查询----------------------------
+// 按商城商品销量排序
+SELECT pp.product_id,
+       pp.product_brand,
+       pp.product_name,
+       COUNT(pp.product_id),
+       sum(pp.qty) AS sum_qty
+  FROM `adi_package_product` as pp
+  LEFT JOIN adi_package as p on p.id = pp.`package_id`
+ WHERE p.`added_date`>= '2017-01-01 00:00:00'
+   and p.`added_date`<= '2017-12-31 23:59:00'
+   and product_id IS NOT NULL
+ GROUP BY product_id
+ order by sum_qty DESC
+
+
+// 11-12月晒单反现金额 510.5
+SELECT sum(`amount`)  FROM `adi_transaction`
+where  `trans_name` like'%晒单返现%'
+      and `trans_complete_date` >='2017-11-01 00:00:00'
+      and `trans_complete_date` <='2017-12-31 00:00:00'
+
+
+// 11-12月充值返现金额 16550
+SELECT sum(t2.`amount`)  FROM `adi_transaction` as t1
+LEFT JOIN `adi_transaction` as t2 ON t2.id = t1.related_id
+where  t1.`related_id` is not null
+and t2.`trans_complete_date` >='2017-11-01 00:00:00'
+and t2.`trans_complete_date` <='2017-12-31 23:59:00'
+
+
+// 7-12月邀请奖励 3715.00（1585（邀请新用户下单奖励） + 2130（新用户注册奖励））
+SELECT sum(`amount`)  FROM `adi_transaction`
+where  (`trans_name` ='邀请新用户下单奖励' OR `trans_name` ='新用户注册奖励')
+      and `trans_complete_date` >='2017-07-01 00:00:00'
+      and `trans_complete_date` <='2017-12-31 00:00:00'
+
+// 1-12月优惠券减免 43751.56
+SELECT sum(`amount_rmb`)  FROM `adi_coupon_history`
+where  `added_date` >='2017-01-01 00:00:00'
+      and `added_date` <='2017-12-01 23:59:59'
+
+
+// 指定时间称重个数
+SELECT COUNT(t.id) FROM adi_transfer t LEFT JOIN adi_transfer_history th ON th.transfer_id = t.id AND th.`status_id` = 200 WHERE th.add_date >= '2018-02-02 02:00:00' AND th.add_date <= '2018-02-03 02:00:00'
+
+// 指定时间签收个数
+SELECT COUNT(id) FROM `adi_signin_package` WHERE `added_date` >= '2018-02-02 02:00:00' AND added_date <= '2018-02-03 02:00:00'
+
+
+
+// 用户拥有卡片的数量
+SELECT `customer_id` ,`event_id` ,COUNT(`customer_id`) AS card_num FROM `adi_event_customer_card` WHERE `event_id` = 10 GROUP BY `customer_id` ORDER BY card_num DESC
+
+// 用户拥有回答正确的数量
+SELECT `customer_id` ,`event_id` ,COUNT(`question_id`) AS question_num FROM `adi_event_customer_question` WHERE `event_id` = 10 and `answered_result` = 1 GROUP BY `customer_id` ORDER BY question_num DESC
+
+
+// 可以的卡的用户
+SELECT `customer_id` ,`event_id` ,COUNT(`question_id`) AS question_num FROM `adi_event_customer_question` WHERE `event_id` = 10 and `answered_result` = 1 GROUP BY `customer_id` HAVING  question_num >= 3 ORDER BY question_num DESC, `customer_id`  DESC

@@ -47,6 +47,7 @@
     9. 渠道不支持的增值服务```config/channel```
     10. 渠道国家限制信息```config/channel```
     11. 开单信息设置：后台```config/channel```，issue/colib 的 channel_id
+    12. 退税信息设置：前台 后台```config/channel```，issue/colib 的 channel_id
 
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】

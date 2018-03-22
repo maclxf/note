@@ -1510,3 +1510,633 @@ ALTER TABLE `adi_exchangeable_history`
 --
 ALTER TABLE `adi_exchangeable_history`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-----------------------------------------------------------货架信息------------------------------------------------------------------------
+  --
+  -- 表的结构 `adi_storage_shelf_floor_cell`
+  --
+
+  CREATE TABLE `adi_storage_shelf_floor_cell` (
+    `id` int(11) NOT NULL,
+    `warehouse_id` int(11) NOT NULL DEFAULT '1',
+    `warehouse_name` varchar(32) NOT NULL DEFAULT '法国仓库',
+    `storage_shelf_id` int(11) NOT NULL COMMENT '货架id',
+    `storage_shelf_name` varchar(64) NOT NULL COMMENT '货架名称',
+    `storage_shelf_floor` tinyint(4) NOT NULL COMMENT '第几层',
+    `order_type` varchar(64) NOT NULL COMMENT '存储货物的类型：1：包裹（package），2：认领包裹（pending_package），3：订单(transfer)，4：指定商品(product 等待扩展)',
+    `order_id` int(11) NOT NULL COMMENT '根据存储货物类型对应的表的id',
+    `order_no` varchar(32) DEFAULT NULL COMMENT '存储货物的编号（认领包裹是没有编号的）',
+    `shelf_code` varchar(512) NOT NULL COMMENT '存储货物所占据的货位号',
+    `take_postion` tinyint(4) NOT NULL DEFAULT '1' COMMENT '货物占用位置（备用）',
+    `comment` varchar(1024) DEFAULT NULL COMMENT '货物备注',
+    `add_user_id` int(11) NOT NULL COMMENT '添加人id',
+    `add_user_name` varchar(32) NOT NULL COMMENT '添加人的名字',
+    `add_date` datetime NOT NULL COMMENT '添加日期',
+    `add_ip` varchar(16) NOT NULL COMMENT '添加人的ip',
+    `last_update_user_id` int(11) DEFAULT NULL COMMENT '修改人id',
+    `last_update_user_name` varchar(32) DEFAULT NULL COMMENT '修改人名称',
+    `last_update_date` datetime DEFAULT NULL COMMENT '修改日期',
+    `last_update_ip` varchar(16) DEFAULT NULL COMMENT '修改ip',
+    `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否在加上：0不在加上，默认1在加上'
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='货架存储物品信息表';
+
+  --
+  -- Indexes for dumped tables
+  --
+
+  --
+  -- Indexes for table `adi_storage_shelf_floor_cell`
+  --
+  ALTER TABLE `adi_storage_shelf_floor_cell`
+    ADD PRIMARY KEY (`id`),
+    ADD KEY `storage_shelf_id` (`storage_shelf_id`);
+
+  --
+  -- 在导出的表使用AUTO_INCREMENT
+  --
+
+  --
+  -- 使用表AUTO_INCREMENT `adi_storage_shelf_floor_cell`
+  --
+  ALTER TABLE `adi_storage_shelf_floor_cell`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- 表的结构 `adi_storage_shelf`
+--
+
+CREATE TABLE `adi_storage_shelf` (
+  `id` int(11) NOT NULL,
+  `warehouse_id` int(11) NOT NULL DEFAULT '1',
+  `warehouse_name` varchar(32) NOT NULL DEFAULT '法国仓库',
+  `shelf_zone` varchar(16) NOT NULL COMMENT '货架区域',
+  `shelf_zone_no` varchar(32) NOT NULL COMMENT '货架区域编号',
+  `shelf_name` varchar(64) NOT NULL COMMENT '货架号',
+  `storage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '货架总层数',
+  `storage_cell` int(11) DEFAULT NULL COMMENT '货架总格数（用于扩展）',
+  `show_storage_shelf_name` varchar(256) NOT NULL COMMENT '货架展示的名称',
+  `add_user_id` int(11) NOT NULL COMMENT '添加人id',
+  `add_user_name` varchar(32) NOT NULL COMMENT '添加人名称',
+  `add_date` datetime NOT NULL COMMENT '添加时间',
+  `add_ip` varchar(16) NOT NULL COMMENT '添加人ip',
+  `storage_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '货架状态:默认是1在用，0停用'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='货架表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_storage_shelf`
+--
+ALTER TABLE `adi_storage_shelf`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_storage_shelf`
+--
+ALTER TABLE `adi_storage_shelf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+---------------------------------------------------出库批次修改------------------------------------------------
+ALTER TABLE `adi_outbatch_transfer` ADD `receiver_city_name` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `receiver_address_pinyin`;
+
+
+---------------------------------------------------- fr对账 -------------------------------------------------
+ALTER TABLE `adi_edi_record` ADD `extra_amount` DECIMAL(12,2) NOT NULL DEFAULT '0' COMMENT '补款金额' AFTER `checked_result`;
+
+
+ALTER TABLE `adi_invoic_record` ADD `extra_amount` DECIMAL(12,2) NOT NULL DEFAULT '0' COMMENT '补款金额' AFTER `checked_result`;
+
+----------------------------------------------------com 对total和cost表添加索引--------------------------------------------------
+未上线
+ALTER TABLE `adi_transfer_total` ADD INDEX(`transfer_id`);
+ALTER TABLE `adi_transfer_cost` ADD INDEX(` transfer_id `);
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO `adi_country` (`id`, `name`, `code`, `sub_type`, `sub_pattern`, `status`) VALUES
+(11, '泰国', 'TH', 3, '城市', 0),
+(12, '俄罗斯', 'RU', 3, '城市', 0),
+(13, '越南', 'VN', 3, '城市', 0),
+(14, '印度', 'IN', 3, '城市', 0),
+(15, '以色列', 'IL', 3, '城市', 0),
+(16, '荷兰', 'NL', 3, '城市', 0),
+(17, '英国', 'GB', 3, '城市', 1),
+(18, '西班牙', 'ES', 3, '城市', 0),
+(19, '葡萄牙', 'PT', 3, '城市', 0),
+(20, '瑞典', 'SE', 3, '城市', 0),
+(21, '匈牙利', 'HU', 3, '城市', 0),
+(22, '德国', 'DE', 3, '城市', 1),
+(23, '丹麦', 'DK', 3, '城市', 1),
+(24, '奥地利', 'AT', 3, '城市', 0),
+(25, '意大利', 'IT', 3, '城市', 1),
+(26, '瑞士', 'CH', 3, '城市', 1),
+(27, '法国', 'FR', 3, '城市', 1),
+(28, '比利时', 'BE', 3, '城市', 1);
+
+----------------------------------------------------------------
+ALTER TABLE `adi_haitao_deal` ADD `valid_date` DATETIME NOT NULL DEFAULT '2018-02-11 00:00:00' COMMENT '优惠信息的有效期' AFTER `link`;
+ALTER TABLE `adi_haitao_deal` CHANGE `valid_date` `valid_date` DATETIME NULL COMMENT '优惠信息的有效期';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+--
+-- 表的结构 `adi_event_question`
+--
+
+CREATE TABLE `adi_event_question` (
+  `id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL COMMENT '活动id',
+  `content` varchar(256) NOT NULL COMMENT '灯谜迷面',
+  `answer` varchar(256) NOT NULL COMMENT '灯谜谜底',
+  `add_date` datetime NOT NULL,
+  `add_ip` varchar(15) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `adi_event_question`
+--
+
+INSERT INTO `adi_event_question` (`id`, `event_id`, `content`, `answer`, `add_date`, `add_ip`) VALUES
+(1, 10, '水落石出（猜一字）', '泵', '2018-02-27 00:00:00', '127.0.0.1'),
+(2, 10, '眼看田上长青草（猜一字）', '瞄', '2018-02-27 00:00:00', '127.0.0.1'),
+(3, 10, '两人十四个心（猜一字）', '德', '2018-02-27 00:00:00', '127.0.0.1'),
+(4, 10, '上上下下，不上不下（猜一字）', '卡', '2018-02-27 00:00:00', '127.0.0.1'),
+(5, 10, '金乌西坠白头看（打河南一地名）', '洛阳', '2018-02-27 00:00:00', '127.0.0.1'),
+(6, 10, '西瓜地裏散步（打一成语）', '左右逢源', '2018-02-27 00:00:00', '127.0.0.1'),
+(7, 10, '走遍了东南西北（打一成语）', '面面俱到', '2018-02-27 00:00:00', '127.0.0.1'),
+(8, 10, '中国人民站起来了（灯会活动）', '龙抬头', '2018-02-27 00:00:00', '127.0.0.1'),
+(9, 10, '一对明月，完整无缺，落在山下，四分五裂（打一字）', '崩', '2018-02-27 00:00:00', '127.0.0.1'),
+(10, 10, '哑巴打手势（打一成语）', '不言而喻', '2018-02-27 00:00:00', '127.0.0.1'),
+(11, 10, '说它小，下边大，说它大，上边小（打一字）', '尖 ', '2018-02-27 00:00:00', '127.0.0.1'),
+(12, 10, '差一点六斤（猜一字）', '兵', '2018-02-27 00:00:00', '127.0.0.1'),
+(13, 10, '全面开荒（打一成语）', '不留余地', '2018-02-27 00:00:00', '127.0.0.1'),
+(14, 10, '一人一张口，下面长只手（猜一字）', '拿', '2018-02-27 00:00:00', '127.0.0.1'),
+(15, 10, '十五的月亮(打一成语)', '正大光明', '2018-02-27 00:00:00', '127.0.0.1'),
+(16, 10, '左有十八,右有十八,二四得八,一八得八（猜一字）', '樊 ', '2018-02-27 00:00:00', '127.0.0.1'),
+(17, 10, '不许放牛羊（打一唐代诗人）', '杜牧', '2018-02-27 00:00:00', '127.0.0.1'),
+(18, 10, '一人腰上挂把弓（猜一字）', '夷', '2018-02-27 00:00:00', '127.0.0.1'),
+(19, 10, '四季花开（打一地名）', '长春', '2018-02-27 00:00:00', '127.0.0.1'),
+(20, 10, '兄有债（猜一字）', '歌', '2018-02-27 00:00:00', '127.0.0.1'),
+(21, 10, '一边是红,一边是绿,一边怕风,一边怕雨（猜一字）', '秋', '2018-02-27 00:00:00', '127.0.0.1'),
+(22, 10, '爱好旅游（打一成语）', '喜出望外', '2018-02-27 00:00:00', '127.0.0.1'),
+(23, 10, '一块变九块（打一成语）', '四分五裂', '2018-02-27 00:00:00', '127.0.0.1'),
+(24, 10, '早不说晚不说（打一字）', '许', '2018-02-27 00:00:00', '127.0.0.1'),
+(25, 10, '举重比赛（打一成语）', '斤斤计较', '2018-02-27 00:00:00', '127.0.0.1'),
+(26, 10, '无底洞（打一成语）', '深不可测', '2018-02-27 00:00:00', '127.0.0.1'),
+(27, 10, '四个晚上（打一字)', '罗', '2018-02-27 00:00:00', '127.0.0.1'),
+(28, 10, '弹丸之地（打一字）', '尘', '2018-02-27 00:00:00', '127.0.0.1'),
+(29, 10, '久旱逢甘露（打水浒传人物绰号）', '及时雨', '2018-02-27 00:00:00', '127.0.0.1'),
+(30, 10, '纸老虎（打一成语）', '外强中干', '2018-02-27 00:00:00', '127.0.0.1'),
+(31, 10, '蜜饯黄连（打一成语）', '同甘共苦', '2018-02-27 00:00:00', '127.0.0.1'),
+(32, 10, '凤头虎尾（打一字）', '几', '2018-02-27 00:00:00', '127.0.0.1'),
+(33, 10, '顶破天（打一字）', '夫', '2018-02-27 00:00:00', '127.0.0.1'),
+(34, 10, '另有变动（打一字）', '加', '2018-02-27 00:00:00', '127.0.0.1'),
+(35, 10, '掌声经久不息（打一地名）', '延庆', '2018-02-27 00:00:00', '127.0.0.1'),
+(36, 10, '冰雪融化（打一地名）', '开封', '2018-02-27 00:00:00', '127.0.0.1'),
+(37, 10, '可喜可贺（打一地名）', '重庆', '2018-02-27 00:00:00', '127.0.0.1'),
+(38, 10, '十五的月亮(打一地名)', '太原', '2018-02-27 00:00:00', '127.0.0.1'),
+(39, 10, '北京午夜(打一动物)', '燕子', '2018-02-27 00:00:00', '127.0.0.1'),
+(40, 10, '善飞者必飞珠峰(打一句唐诗)', '会当凌绝顶', '2018-02-27 00:00:00', '127.0.0.1'),
+(41, 10, '木兰之子(打食物名)', '花生', '2018-02-27 00:00:00', '127.0.0.1'),
+(42, 10, '丰收（打一字）', '移', '2018-02-27 00:00:00', '127.0.0.1'),
+(43, 10, '两点天上来（打一字）', '关', '2018-02-27 00:00:00', '127.0.0.1'),
+(44, 10, '逆水划船（打一成语）', '激流勇进', '2018-02-27 00:00:00', '127.0.0.1'),
+(45, 10, '乖（打一成语）', '乘人不备', '2018-02-27 00:00:00', '127.0.0.1'),
+(46, 10, '书签（打一字）', '颊', '2018-02-27 00:00:00', '127.0.0.1'),
+(47, 10, '头上红冠不用栽，满身雪白走将来。平生不敢轻声语，一叫千门万户开。---（打一动物）', '公鸡', '2018-02-27 00:00:00', '127.0.0.1'),
+(48, 10, '两鼎足势成魏蜀吴(打数学名词) ', '三角形', '2018-02-27 00:00:00', '127.0.0.1'),
+(49, 10, '卷帘人道雨过天晴(打一七字常言)', '打开天窗说亮话', '2018-02-27 00:00:00', '127.0.0.1');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_event_question`
+--
+ALTER TABLE `adi_event_question`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_event_question`
+--
+ALTER TABLE `adi_event_question`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+
+
+--------------------------------------------------------
+
+
+  --
+  -- 表的结构 `adi_event_tmp_vip`
+  --
+
+  CREATE TABLE `adi_event_tmp_vip` (
+    `id` int(11) NOT NULL COMMENT '自增ID',
+    `event_id` int(11) NOT NULL COMMENT '活动ID',
+    `customer_id` int(11) NOT NULL COMMENT '用户ID',
+    `customer_name` varchar(64) DEFAULT NULL,
+    `customer_email` varchar(256) NOT NULL,
+    `customer_phone` varchar(16) DEFAULT NULL,
+    `added_date` datetime NOT NULL COMMENT '参加活动的时间',
+    `added_ip` varchar(15) DEFAULT NULL COMMENT '参加活动时的IP'
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  --
+  -- Indexes for dumped tables
+  --
+
+  --
+  -- Indexes for table `adi_event_tmp_vip`
+  --
+  ALTER TABLE `adi_event_tmp_vip`
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE KEY `customer_id` (`customer_id`);
+
+  --
+  -- 在导出的表使用AUTO_INCREMENT
+  --
+
+  --
+  -- 使用表AUTO_INCREMENT `adi_event_tmp_vip`
+  --
+  ALTER TABLE `adi_event_tmp_vip`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+
+    -- --------------------------------------------------------
+
+    --
+    -- 表的结构 `adi_event_customer_question`
+    --
+
+    CREATE TABLE `adi_event_customer_question` (
+      `id` int(11) NOT NULL,
+      `event_id` int(11) NOT NULL COMMENT '活动id',
+      `customer_id` int(11) NOT NULL COMMENT '用户id',
+      `question_id` int(11) NOT NULL COMMENT '灯谜id',
+      `answered_result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否回答正确：默认是0表示不正确，1表示正确',
+      `answered_date` datetime NOT NULL,
+      `answered_ip` varchar(15) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    --
+    -- Indexes for dumped tables
+    --
+
+    --
+    -- Indexes for table `adi_event_customer_question`
+    --
+    ALTER TABLE `adi_event_customer_question`
+      ADD PRIMARY KEY (`id`),
+      ADD KEY `customer_id_index` (`customer_id`);
+
+    --
+    -- 在导出的表使用AUTO_INCREMENT
+    --
+
+    --
+    -- 使用表AUTO_INCREMENT `adi_event_customer_question`
+    --
+    ALTER TABLE `adi_event_customer_question`
+      MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_event_customer_card`
+--
+
+CREATE TABLE `adi_event_customer_card` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL COMMENT '用户id',
+  `event_id` int(11) NOT NULL COMMENT '活动id',
+  `card_id` int(11) NOT NULL COMMENT '卡牌id',
+  `assigned_date` datetime NOT NULL,
+  `assigned_ip` varchar(15) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_event_customer_card`
+--
+ALTER TABLE `adi_event_customer_card`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id_index` (`customer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_event_customer_card`
+--
+ALTER TABLE `adi_event_customer_card`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+---------------------------------------退税相关----------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-03-19 11:00:25
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_tax_refund`
+--
+
+CREATE TABLE `adi_tax_refund` (
+  `id` int(11) NOT NULL,
+  `package_id` int(11) NOT NULL,
+  `package_pid` varchar(16) NOT NULL COMMENT '包裹编号',
+  `customer_id` int(11) NOT NULL COMMENT '用户ID',
+  `customer_name` varchar(64) NOT NULL COMMENT '用户姓名',
+  `warehouse_id` int(11) NOT NULL DEFAULT '1' COMMENT '仓库ID',
+  `warehouse_name` varchar(32) NOT NULL DEFAULT '法国仓库' COMMENT '仓库名称',
+  `transfer_id` int(11) DEFAULT NULL,
+  `transfer_tid` varchar(32) DEFAULT NULL,
+  `product_invoice_no` varchar(512) DEFAULT NULL COMMENT '退税发票号',
+  `product_invoice_file_name` varchar(128) NOT NULL COMMENT '商品发票文件名',
+  `refund_invoice_file_name` varchar(128) DEFAULT '' COMMENT '退税发票名称',
+  `delivery_letter_file_name` varchar(128) DEFAULT '' COMMENT '投递面单的文件名',
+  `delivery_evidence_file_name` varchar(128) DEFAULT '' COMMENT '投递证明文件名',
+  `delivery_invoice_file_name` varchar(128) DEFAULT '' COMMENT '投递发票文件名',
+  `currency_id` int(11) DEFAULT '2' COMMENT '货币ID',
+  `currency_name` varchar(32) DEFAULT '欧元' COMMENT '货币名称',
+  `currency_symbol` varchar(8) DEFAULT '€' COMMENT '货币符号',
+  `total` decimal(12,2) DEFAULT NULL COMMENT '退税总金额',
+  `cost` decimal(12,2) DEFAULT NULL COMMENT '退税成本（保留字段）',
+  `status_code` int(11) NOT NULL COMMENT '最新状态（编码）',
+  `status_name` varchar(32) NOT NULL COMMENT '最新状态（名称）',
+  `added_date` datetime NOT NULL COMMENT '到货预报的时间',
+  `added_ip` varchar(15) DEFAULT NULL COMMENT '到货预报的IP',
+  `last_updated_user_id` int(11) DEFAULT NULL COMMENT '最后修改人ID',
+  `last_updated_user_name` varchar(64) DEFAULT NULL COMMENT '最后修改人姓名',
+  `last_updated_date` datetime DEFAULT NULL COMMENT '最后修改时间',
+  `last_updated_ip` varchar(32) DEFAULT NULL COMMENT '最后修改IP',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_tax_refund`
+--
+ALTER TABLE `adi_tax_refund`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `pid` (`package_pid`),
+  ADD KEY `package_id` (`package_id`),
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `transfer_id` (`transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_tax_refund`
+--
+ALTER TABLE `adi_tax_refund`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+----------------------------------------------------------------------------------------------------
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-03-19 11:01:12
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_tax_product`
+--
+
+CREATE TABLE `adi_tax_product` (
+  `id` int(11) NOT NULL COMMENT '自增ID',
+  `tax_id` int(11) NOT NULL,
+  `category_id` int(11) DEFAULT NULL COMMENT '产品所属父分类ID',
+  `sub_category_id` int(11) DEFAULT NULL COMMENT '产品所属子分类ID',
+  `product_brand` varchar(256) DEFAULT NULL,
+  `product_name` varchar(256) NOT NULL COMMENT '产品名称',
+  `currency_id` int(11) NOT NULL DEFAULT '2' COMMENT '货币ID',
+  `currency_name` varchar(32) NOT NULL DEFAULT '欧元' COMMENT '货币名称',
+  `currency_symbol` varchar(8) NOT NULL DEFAULT '€' COMMENT '货币符号',
+  `price` decimal(12,2) DEFAULT NULL COMMENT '产品单价',
+  `cost` decimal(12,2) DEFAULT NULL COMMENT '产品成本',
+  `qty` int(11) NOT NULL DEFAULT '1' COMMENT '产品数量',
+  `comment` varchar(256) DEFAULT NULL COMMENT '备注',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_tax_product`
+--
+ALTER TABLE `adi_tax_product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_tax_product`
+--
+ALTER TABLE `adi_tax_product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+----------------------------------------------------------------------------------------------------
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-03-19 11:01:33
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_tax_history`
+--
+
+CREATE TABLE `adi_tax_history` (
+  `id` int(11) NOT NULL,
+  `tax_id` int(11) NOT NULL,
+  `status_code` int(11) NOT NULL,
+  `status_name` varchar(32) NOT NULL,
+  `comment` varchar(256) DEFAULT NULL,
+  `added_date` datetime NOT NULL,
+  `added_ip` varchar(15) NOT NULL,
+  `added_user_id` int(11) NOT NULL DEFAULT '0',
+  `added_user_name` varchar(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_tax_history`
+--
+ALTER TABLE `adi_tax_history`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_tax_history`
+--
+ALTER TABLE `adi_tax_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+----------------------------------------------------------------------------------------------------
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-03-19 11:02:08
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_tax_status`
+--
+
+CREATE TABLE `adi_tax_status` (
+  `id` int(11) NOT NULL,
+  `code` int(11) NOT NULL COMMENT '状态编码',
+  `next_code` int(11) DEFAULT NULL COMMENT '下一个状态的状态编码',
+  `name` varchar(64) NOT NULL COMMENT '状态名称',
+  `description` varchar(256) NOT NULL COMMENT '状态描述',
+  `display` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否显示'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `adi_tax_status`
+--
+
+INSERT INTO `adi_tax_status` (`id`, `code`, `next_code`, `name`, `description`, `display`) VALUES
+(11, 100, 130, '购物发票已上传，等待客服审核', '', 1),
+(12, 130, NULL, '购物发票审核不通过', '', 1),
+(13, 150, 200, '购物发票审核通过，等待退税', '', 1),
+(14, 200, 300, '开始退税', '', 1),
+(15, 300, NULL, '退税到账', '', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_tax_status`
+--
+ALTER TABLE `adi_tax_status`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_tax_status`
+--
+ALTER TABLE `adi_tax_status`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;

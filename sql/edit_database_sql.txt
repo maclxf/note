@@ -2140,3 +2140,59 @@ ALTER TABLE `adi_tax_status`
 --
 ALTER TABLE `adi_tax_status`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+
+---------------------------------------------------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-04-02 06:05:19
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: 2018-04-02 06:05:37
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.1.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `adi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `adi_customer_storage_expire_email`
+--
+
+CREATE TABLE `adi_customer_storage_expire_email` (
+  `customer_id` int(11) NOT NULL,
+  `customer_name` varchar(64) DEFAULT NULL,
+  `customer_email` varchar(256) NOT NULL,
+  `package_pid` varchar(16) NOT NULL,
+  `package_input_date` datetime NOT NULL COMMENT '入库日期',
+  `storage_days` int(11) NOT NULL COMMENT '仓储天数',
+  `overdue_date` datetime NOT NULL COMMENT '超期日期'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='注册用户邮箱表，用于发送邮件';
+
+
+----------------------------------------------------------
+ALTER TABLE `adi_batch_transfer` ADD `tax_refund_invoice_no` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '退税发票号' AFTER `tracking_no`;

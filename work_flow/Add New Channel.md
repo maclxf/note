@@ -48,7 +48,7 @@
     10. 渠道国家限制信息```config/channel```
     11. 开单信息设置：后台```config/channel```，issue/colib 的 channel_id
     12. 退税信息设置：前台 后台```config/channel```，issue/colib 的 channel_id
-
+    13. 支持直邮包税的渠道：前台```config/channel```
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
         - ```intro/html``` 添加静态页面链接（静态页面必须以intro-开头）

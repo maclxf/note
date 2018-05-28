@@ -277,7 +277,10 @@ transfer
 
 
 
+-----------------------------------让已分配人的优惠码，被分配人不能使用------------------------------------------------------
 
+adi_customer_coupon
+6108    9448    3366    2018-04-19 17:51:36    113.204.227.66    9    may    0    null    null   -> del
 
 
 
@@ -6305,3 +6308,339 @@ adi_tax_refund
 
 adi_tax_history
     43  400  退税取消  null  2018-04-13 14:04:33  113.204.227.66   37   lixiaofeng
+
+
+
+------------------------------------------------------
+王冬梅  13:38:50
+AT3149171635
+地址修改为：
+Ft G, 8/F, Blk 7,
+Centre Park Tower 2
+TIN SHUI WAI
+Hong Kong
+
+收件人：LUK YIN HING
+
+電話:61456674
+
+-----------------------------------------------------
+42892
+AT3149171635
+纪志丽
+纪志丽
+JiZhiLi
+15767757946                                                                                   61456674
+中国大陆                                                                                       香港特别行政区
+CN                                                                                            HK
+广东省                                                                                         新界
+GuangDongSheng                                                                                xinjie
+广州市                                                                                         NULL
+GuangZhouShi                                                                                  NULL
+天河区                                                                                         NULL
+TianHeQu                                                                                      NULL
+null                                                                                          NULL
+沙东街道沙太南路93号陶苑小区陶苑街6号703房之一                                                    Centre Park Tower 2 Ft G, 8/F, Blk 7
+Sha Dong Jie Dao Sha Tai Nan Lu 93 Hao Tao Yuan Xiao Qu Tao Yuan Jie 6 Hao 703 Fang Zhi Yi    Centre Park Tower 2 Ft G, 8/F, Blk 7
+510000                                                                                        999077
+1
+440882199007235023
+front4408821990072350232018-04-11-03-29-465951.jpg
+back4408821990072350232018-04-11-03-29-466046.jpg
+120
+已生成回国订单，等待打包称重
+
+----------------------------------------------------------------------------------------------
+黄玲  14:33:12
+AT3149157124   AT3149144502这两个的cn23面单遭传错了，我把正确的给你？还是你退回上一步？
+
+
+----------------------------------------------------------------------------------------------
+38
+AT3149157124
+DeliveryLetter-1524121607-474.pdf                              => NULL
+150
+购物发票审核通过，等待退税
+
+
+51
+AT3149144502
+DeliveryLetter-1524121655-377.pdf                              => NULL
+150
+购物发票审核通过，等待退税
+
+
+
+
+---------------------------------------------------------------------------------------------
+
+王冬梅 2018/4/19 17:55:59
+已发的优惠码能直接让失效吗、?
+SIOENCNE 优惠码
+
+----------------------------------------------------------------------------------------------
+
+adi_customer_coupon
+6108    9448    3366    2018-04-19 17:51:36    113.204.227.66    9    may    0    null    null   -> del
+
+----------------------------------------------------------------------------------------------
+王冬梅  17:30:52
+ 改跟踪号
+AT3149177823    D-018   EY379595015FR   阎绍婵 阎建平
+AT3149191230    A-295   EY379595029FR   崔圆圆
+AT3149157124    F-259   EY166748304FR   阎绍婵 张贵珍
+AT3149145781    D-371   EY166748335FR   仇进
+AT3149187625    F-173   EY166748352FR   陈晓萍
+AT3149146853    D-893   EY166748366FR   陈文芳
+
+----------------------------------------------------------------------------------------------
+                                    42954
+                                    AT3149177823
+EY379595015FR                       EY159682721FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY379595015FR                       EY159682721FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682721FR&includeCustomsDeclarations=true&x=0&y=0&signature=4bee61b93073ab3b2a7c351176ae4e102b6b9278649db0d4bfd29487d63f2ad5
+                                    84450d08d1b8ac965fa54f14039a0798
+                                    包裹已发运回国
+                                    2018-04-12 10:06:49
+
+=================================================================================
+
+                                    43088
+                                    AT3149191230
+EY379595029FR                       EY159682678FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY379595029FR                       EY159682678FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682678FR&includeCustomsDeclarations=true&x=0&y=0&signature=d19a96fa08f30fc82eb272c580888575f712a18b313545002a56babc544fe476
+                                    baa591ca1feb4abdb0a6e88bb7aeac33
+                                    包裹已发运回国
+                                    2018-04-16 09:30:59
+
+=================================================================================
+
+                                    42747
+                                    AT3149157124
+EY166748304FR                       EY159682505FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748304FR                       EY159682505FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682505FR&includeCustomsDeclarations=true&x=0&y=0&signature=d119dfd4a2bd7ac2513a9d115f0354327b4fa56600bdd7f44f5db0a55f4d6084
+                                    a571948a6361fd83987a8c277bd75642
+                                    包裹已发运回国
+                                    2018-04-07 13:52:05
+
+=================================================================================
+
+                                    42633
+                                    AT3149145781
+EY166748335FR                       EY159682474FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748335FR                       EY159682474FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682474FR&includeCustomsDeclarations=true&x=0&y=0&signature=bc47b41120fd398d74d5f7d4bdf4a6affa7b711b1109fc82b68771e07e1c8e3e
+                                    481a363879fea67df879b3e79e2fa661
+                                    包裹已发运回国
+                                    2018-04-05 06:57:41
+
+=================================================================================
+
+                                    43052
+                                    AT3149187625
+EY166748352FR                       EY159682545FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748352FR                       EY159682545FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682545FR&includeCustomsDeclarations=true&x=0&y=0&signature=5a436c5e33663fab26d4b5f77f4959bf2873e7857370c71a493cde8f098657eb
+                                    e26565935c2bfcd391f0d64a122af6b9
+                                    包裹已发运回国
+                                    2018-04-14 16:39:59
+
+=================================================================================
+
+                                    42644
+                                    AT3149146853
+EY166748366FR                       EY159682491FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748366FR                       EY159682491FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682491FR&includeCustomsDeclarations=true&x=0&y=0&signature=99a6a084046fdbdc91a64da8eead574c2cb03d27a3047411a18a2147fbbb936a
+                                    d8a4167642edca3255376a686980c728
+                                    包裹已发运回国
+                                    2018-04-05 12:57:35
+
+
+
+
+----------------------------------------------------------------------------------------------
+王冬梅  17:30:52
+ 改跟踪号
+ AT3149187721    F-325   EY166748383FR   吴希文
+ AT3149190457    G-706   EY166748406FR   黄中月
+ AT3149179240    D-942   EY166748410FR   刘韵
+ AT3149146359    D-470   EY166748445FR   曲卉  靳淑华
+ AT3149139542    C-931   EY166748468FR   刘夕萌
+ AT3149111230    F-042   EY166748499FR   张春霞 吴佳颖
+----------------------------------------------------------------------------------------------
+
+                                    43053
+                                    AT3149187721
+EY166748383FR                       EY159682531FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748383FR                       EY159682531FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682531FR&includeCustomsDeclarations=true&x=0&y=0&signature=e1e5d5e5ebab4f6b0a970a5b25f87dde558494e518170f49259af1bd1bb8f087
+                                    cbb8c1789e6dcaa3b0d11f7d02933b15
+                                    包裹已发运回国
+                                    2018-04-14 16:42:48
+
+
+
+                                    43080
+                                    AT3149190457
+EY166748406FR                       EY159682559FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748406FR                       EY159682559FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682559FR&includeCustomsDeclarations=true&x=0&y=0&signature=7a2adb191e552a749f5f94e79604b5d55261c3f336ac5cc80b936f2082d820f3
+                                    ea82d8b2dcd253eb8a3a580c2db3d001
+                                    包裹已发运回国
+                                    2018-04-15 12:35:16
+
+
+                                    42968
+                                    AT3149179240
+EY166748410FR                       EY159682528FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748410FR                       EY159682528FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682528FR&includeCustomsDeclarations=true&x=0&y=0&signature=6648448c25650e0f9488da07dd79240325c310fa6c1a8ce10120b6abc04fbbb1
+                                    82c93b474a90fdda9bc7055c6fc64572
+                                    包裹已发运回国
+                                    2018-04-12 17:33:51
+
+
+                                    42639
+                                    AT3149146359
+EY166748445FR                       EY159682488FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748445FR                       EY159682488FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682488FR&includeCustomsDeclarations=true&x=0&y=0&signature=f410752e3deda2c3c98823631fd75bbbf361afe45076bdcf45d53f513e14b435
+                                    aadb38c2e6e1016ebf9e5d29776dc0e9
+                                    包裹已发运回国
+                                    2018-04-05 10:42:25
+
+
+
+                                    42571
+                                    AT3149139542
+EY166748468FR                       EY159682465FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748468FR                       EY159682465FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY159682465FR&includeCustomsDeclarations=true&x=0&y=0&signature=41cf9e6b7acfb41ea296fe9c4cffd08529f5a1e483cbffbd1380de1619e57c44
+                                    2d9dd9c0e8850cc6cb1ebae06f09a48e
+                                    包裹已发运回国
+                                    2018-04-04 09:34:35
+
+
+                                    42387
+                                    AT3149111230
+EY166748499FR                       EY154801546FR
+                                    http://www.colissimo.fr
+                                    0
+                                    La requête a été traitée avec succès
+                                    INFOS
+EY166748499FR                       EY154801546FR
+                                    https://ws.colissimo.fr/sls-ws/GetLabel?parcelNumber=EY154801546FR&includeCustomsDeclarations=true&x=0&y=0&signature=6512ba986708760c3b09f2d456edeb87d07d8a9bf43badbcf243a66a7bb02979
+                                    c60210a6140002e896ed4bbcbf54d23c
+                                    包裹已发运回国
+                                    2018-03-31 21:39:33
+
+
+--------------------------------------------------------------
+jane  11:07:58
+AT3149210751 请帮忙修改下跟踪号，新的跟踪号EL291505514HK
+
+--------------------------------------------------------------
+
+43283
+AT3149210751
+EL291128954HK               EL291505514HK
+http://www.ems.com.cn
+
+
+-------------------------------------------------------------
+ane  13:53:48
+认领编号#124283，8n03862105968，麻烦退回成待完善状态，客户暂时还联系不到
+
+
+-------------------------------------------------------------
+124283
+website_order_no              ''                                           => NULL
+tracking_no                   8n03862105968                                => NULL
+firstname                     JiaJing                                      => NULL
+lastname                      Wedivoe                                      => NULL
+customer_id                   10994                                        => NULL
+customer_name                 贾静                                         => NULL
+optimize_date                 2018-04-28 10:52:10                          => NULL
+optimize_ip                   58.17.246.234                                => NULL
+optimize_user_id              46                                           => NULL
+optimize_user_name            jiajing                                      => NULL
+status                        0                                            => -1
+
+--------------------------------------------------------------
+王冬梅 2018/5/2 14:48:51
+2139052308
+------这个退税包裹能够恢复？
+
+299   74834   2139052308   400   退税取消   0   null   2018-05-02 14:34:02   113.124.245.50
+                           100   购物发票已上传，等待客服审核
+
+
+834   299   400   退税取消   null   2018-05-02 14:34:02   113.124.245.50   0   null ------------------------------->del
+828   299   130   购物发票审核不通过   预报与包裹清点内件不符   2018-05-02 10:14:52   58.17.246.234   49   huangling-->del
+773   299   100   购物发票已上传，等待客服审核   null   2018-04-28 11:13:56   113.124.246.44   0   null
+
+-------------------------------------------------------------
+王冬梅 2018/5/17 9:28:26
+2140090282----入库重量麻烦修改为4.45kg
+------------------------------------------------------------
+package：
+75415   2140090282   null   17933   尉鹏   120   已生成回国订单，等待打包称重   1250      4450
+transfer：
+44294   AT3149321936   17933   尉鹏   120   已生成回国订单，等待打包称重   1250      4450
+
+------------------------------------------------------------
+张俊明  2018-05-25 9:41:24
+晓峰，帮我改个信息
+AT3149349741
+电话改成这个  55792508    收件人 吕婷婷
+------------------------------------------------------------
+44572  AT3149349741  曾晓玲  ZengXiaoLing  92083713
+                     吕婷婷  Lv Ting Ting  55792508
+

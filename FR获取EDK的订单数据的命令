@@ -1,0 +1,18 @@
+// FR获取EDK的订单数据
+*/5 * * * * php /home/www/adiexpress.fr/index.php auto_task
+
+# */1 * * * * php /home/www/adiexpress.fr/index.php auto_edokey_order
+
+# */2 * * * * php /home/www/adiexpress.fr/index.php auto_edokey_order check_order_recreat_bill
+
+
+
+// 9点过1分执行
+01 09 * * * php /home/www/adi_v3/index.php auto_task
+
+// 10点30 11点30 分别执行
+30 10,11 * * * php /home/www/adi_v3/index.php auto_email send_storage_expire_notice
+
+
+// 每小时执行
+0 */1 * * * php /home/www/adiexpress.fr/index.php auto_task pay_transfers_cashback

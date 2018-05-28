@@ -2196,3 +2196,99 @@ CREATE TABLE `adi_customer_storage_expire_email` (
 
 ----------------------------------------------------------
 ALTER TABLE `adi_batch_transfer` ADD `tax_refund_invoice_no` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '退税发票号' AFTER `tracking_no`;
+
+
+----------------------------------------------------------
+ALTER TABLE `adi_package_history` ADD `comment` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态备注' AFTER `added_user_name`;
+
+
+
+
+----------------------FR 退钱 已执行-----------------------------
+--
+-- 表的结构 `adi_transfer_overview_cashback`
+--
+
+CREATE TABLE `adi_transfer_overview_cashback` (
+  `id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `customer_name` varchar(64) DEFAULT NULL,
+  `channel_id` int(11) NOT NULL,
+  `transfer_count` int(11) NOT NULL COMMENT '渠道订单数量',
+  `cashback_amout` decimal(12,2) NOT NULL COMMENT '应退金额',
+  `add_date` datetime NOT NULL COMMENT '统计日期',
+  `pay_back_date` datetime DEFAULT NULL COMMENT '返现时间',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '返现的状态：默认是0等待返现，1表示已返现'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单数量返现表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_transfer_overview_cashback`
+--
+ALTER TABLE `adi_transfer_overview_cashback`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_transfer_overview_cashback`
+--
+ALTER TABLE `adi_transfer_overview_cashback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+----------------------------------------------------------------
+ALTER TABLE `adi_package` ADD `comment` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '预报备注信息' AFTER `box_advice`;
+
+
+
+---------------------FR 对接入口 待执行---------------------------
+
+CREATE TABLE `adi_access_key` (
+  `id` int(11) NOT NULL COMMENT '自增ID',
+  `name` varchar(128) NOT NULL COMMENT '资源访问者主体名称',
+  `access_key_id` varchar(32) NOT NULL COMMENT '资源 Access Key ID',
+  `access_key_secret` varchar(64) NOT NULL COMMENT '资源 Access Key Secret',
+  `create_user_id` int(11) NOT NULL COMMENT '该access key的创建人ID',
+  `create_user_name` varchar(32) NOT NULL COMMENT '该access key的创建人名称',
+  `create_date` datetime NOT NULL COMMENT '该access key的创建时间',
+  `create_ip` varchar(16) NOT NULL COMMENT '该access key的创建时的IP',
+  `status` tinyint(4) NOT NULL COMMENT '状态标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='AccessKey 表(用于验证API调用权限)';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_access_key`
+--
+ALTER TABLE `adi_access_key`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`),
+  ADD UNIQUE KEY `access_key_id` (`access_key_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `plat_access_key`
+--
+ALTER TABLE `adi_access_key`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+/*****************************************************************************/
+ * 由于kuaidi100暂时不需要提供推送接口                                          *
+ * ## adi_kuaidi100_subscription"快递100订阅请求数据表"                        *
+ * ## adi_push_history_kuaidi100"对快递100的推送请求记录"                      *
+ * 所以以上二表不会上线                                                        *
+/****************************************************************************/

@@ -428,3 +428,42 @@ SELECT `customer_id` ,`event_id` ,COUNT(`question_id`) AS question_num FROM `adi
 
 // 可以的卡的用户
 SELECT `customer_id` ,`event_id` ,COUNT(`question_id`) AS question_num FROM `adi_event_customer_question` WHERE `event_id` = 10 and `answered_result` = 1 GROUP BY `customer_id` HAVING  question_num >= 3 ORDER BY question_num DESC, `customer_id`  DESC
+
+
+
+
+// 2016-01-01 至今奶粉数据
+SELECT t.id, t.tid, th.add_date AS payed_date, IFNULL(te.milk_brand, tp.`product_name`) as '品牌', IFNULL(te.milk_phase, '') as '段数', IFNULL(te.milk_weight, '') as '规格', c.name, c.qq, c.phone, c.email FROM adi_transfer t
+INNER JOIN adi_transfer_history th ON th.transfer_id = t.id AND th.status_id = 201
+INNER JOIN adi_customer c ON c.id = t.customer_id
+LEFT JOIN adi_transfer_product tp ON tp.transfer_id = t.id
+LEFT JOIN adi_transfer_extended te ON te.transfer_id = t.id
+WHERE
+  t.status_id IN( 220, 230, 231, 240, 241, 250, 251, 300 )
+AND th.add_date >= '2016-01-01 00:00:00'
+AND (tp.sub_category_id = 426 OR tp.product_name LIKE '%奶粉%')
+ORDER BY t.id DESC
+
+// 2016-01-01 至今奶粉订单总数
+SELECT t.id, t.tid, th.add_date AS payed_date, IFNULL(te.milk_brand, tp.`product_name`) as '品牌', IFNULL(te.milk_phase, '') as '段数', IFNULL(te.milk_weight, '') as '规格', c.name, c.qq, c.phone, c.email FROM adi_transfer t
+INNER JOIN adi_transfer_history th ON th.transfer_id = t.id AND th.status_id = 201
+INNER JOIN adi_customer c ON c.id = t.customer_id
+LEFT JOIN adi_transfer_product tp ON tp.transfer_id = t.id
+LEFT JOIN adi_transfer_extended te ON te.transfer_id = t.id
+WHERE
+  t.status_id IN( 220, 230, 231, 240, 241, 250, 251, 300 )
+AND th.add_date >= '2016-01-01 00:00:00'
+AND (tp.sub_category_id = 426 OR tp.product_name LIKE '%奶粉%')
+GROUP BY tp.`transfer_id`
+ORDER BY t.id DESC
+
+
+-------------------------------FR统计数据----------------------------------------------
+每月的消费金额汇总
+select date_format(trans_complete_date, '%Y-%m') as month, sum(amount) as eur_total, sum(amount_rmb) as rmb_total from adi_business_transaction WHERE `trans_complete_date` BETWEEN '2016-01-01' AND '2018-04-30' and trans_type in (12, 2) group by month order by month asc
+
+每月的充值金额汇总
+select date_format(trans_complete_date, '%Y-%m') as month, sum(amount) as eur_total, sum(amount_rmb) as rmb_total from adi_business_transaction WHERE `trans_complete_date` BETWEEN '2016-01-01' AND '2018-04-30' and trans_type in (1) group by month order by month asc
+
+每月订单数量汇总
+select date_format(added_date, '%Y-%m') as month, COUNT(*) from adi_batch_transfer WHERE `added_date` BETWEEN '2016-01-01' AND '2018-04-30' group by month order by month asc

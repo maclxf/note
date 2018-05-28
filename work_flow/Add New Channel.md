@@ -63,6 +63,7 @@
 * views/email/common/footer
 * views/common/contact(只有法国QQ群才改)
 * views/intro/warehouse_fr_footer(只有法国QQ群才改)
+* views/common/regsiter_ok
 
 
 

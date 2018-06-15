@@ -64,12 +64,17 @@
 
     SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2109744151'
 
+***************************************如果是认领的包裹修改入口重量*********************************************************
+1. package
+
+2. pending_package
 ***************************************修改已提交订单的重量*********************************************************
 1. package
 
     SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2109744151'
 
-    SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2109744151'
+2. transfer
+
 
 ***************************************取消订单***************************************************************
 
@@ -273,7 +278,16 @@ package_shelf
 transfer
     package_count
 
-
+storage_shelf_floor_cell
+    2674
+    72984
+    2136837497
+    NULL               认领包裹 2136837497 已入到退税包裹 2136067490
+    null               0
+    NULL               系统
+    null               2017-05-28 11:13:22
+    NULL               127.0.0.1
+    1                  0
 
 
 
@@ -6644,3 +6658,194 @@ AT3149349741
 44572  AT3149349741  曾晓玲  ZengXiaoLing  92083713
                      吕婷婷  Lv Ting Ting  55792508
 
+------------------------------------------------------------
+王冬梅 2018/5/28 9:26:00
+AT3149246655 -----里的2136837497记录可以删除么？
+------------------------------------------------------------
+
+package
+
+    72984  2136837497  19355  李成威   120  已生成回国订单，等待打包称重
+                                      402  取消包裹
+package_history +1条
+
+    72984  402  取消包裹  2017-05-28 11:13:22  127.0.0.1  0  null
+
+transfer_package
+
+    65283 43642 72984  -> del
+
+package_shelf
+    72984  U4366  2018-03-30 18:00:04   -> del
+
+如果是合并的包裹还要该
+transfer
+    43642  AT3149246655  19355  李成威  2 -> 1
+
+storage_shelf_floor_cell
+    2674
+    72984
+    2136837497
+    NULL               认领包裹 2136837497 已入到退税包裹 2136067490
+    null               0
+    NULL               系统
+    null               2017-05-28 11:13:22
+    NULL               127.0.0.1
+    1                  0
+-------------------------------------------------------
+
+jane  17:13:26
+注册邮箱： Keysee.shi@gmail.com，请重置下密码，她的注册邮箱登录不了，所以忘记密码了，也收不到验证嘛
+
+-------------------------------------------------------
+17088  1  Keysee.shi@gmail.com  710c4d259e63612d13905e690c31d176 -> e10adc3949ba59abbe56e057f20f883e
+
+-------------------------------------------------------
+
+王冬梅 2018/5/30 11:27:10
+待提交包裹 2141727666 ，重量修改为0.7kg
+
+-------------------------------------------------------
+
+pending_package
+    124783   7000   U6304   76794   2141727666
+             700
+1. package
+    SELECT id,pid,parent_id,customer_id,customer_name,status_code,status_name, ori_weight FROM `adi_package` where pid = '2141727666'
+
+    76794   2141727666   null   115   关倩莹   110   已全部入库，等待提交回国订单   7000
+                                                                                 700
+-------------------------------------------------------
+
+FR重复称重支付订单
+71530 BT1525247249 814502698120
+
+-------------------------------------------------------
+batch_transfer
+    71530
+    BT1525247249
+    0
+    Order received :{"tracking_number":"814502697927","comment":"100-119-312"}                       814502698120
+    INFOS
+    814502697927                                                                                     814502698120
+    http://www.adiexpress.fr/download_pic/download_milk_channel_pdf_url?parcel_number=814502697927   814502698120
+    8fca6a2f36189a8d7b1d2272ccda5d88
+    81450269792                                                                                      814502698120
+
+transfer_history
+
+    185890   71530   710   已生成订单，等待称重   2018-05-29 11:31:56   NULL   NULL   NULL
+
+    186005   71530   720   已称重，等待付款   2018-05-29 16:47:45   37   accueil   NULL               ->del
+    186006   71530   730   已付款，等待发运回国   2018-05-29 16:47:53   37   accueil   NULL           ->del
+
+    186021   71530   720   已称重，等待付款   2018-05-29 17:09:13   37   accueil   NULL
+    186022   71530   730   已付款，等待发运回国   2018-05-29 17:09:19   37   accueil   NULL
+
+transfer_total
+
+    169140  71530  freight  物流费用  34.00                                                           ->del
+    169141  71530  insurance  保险费  0.00                                                            ->del
+    169142  71530  valued_service_fee  增值服务费  0.00                                               ->del
+
+    169164  71530  freight  物流费用  29.00
+    169165  71530  insurance  保险费  0.00
+    169166  71530  valued_service_fee  增值服务费  0.00
+
+transfer_payment
+    59855   71530   8   未付款   34.00   2018-05-29 16:47:53   176.178.87.105   37   accueil         ->del
+
+    59863   71530   6  ADI账户扣款  29.00  2018-05-29 17:09:19  90.63.209.84  37  accueil
+
+
+
+    1765     71530     BT1525247249     814502698120     100-119-312     9     17     2     05     CNY     255     夏丙辉     132201198210056817     夏丙辉     18010191790     北京市     北京市     通州区通州北苑杨庄北街19号院1号楼3单元401     000000     [{"title":"Gallia 4\u6bb5900g","ean":"3041090734700","quantity":"6","link":""}]     0.0000     CD     yang bin     0617503132     la courneuve  7 rue du berry     milk     2018-05-29     1527605274     2018-05-29 04:47:54     0
+
+
+    1768    71530    BT1525247249    814502697927    100-119-312    9    17    2    05    CNY    218    夏丙辉    132201198210056817    夏丙辉    18010191790    北京市    北京市    通州区通州北苑杨庄北街19号院1号楼3单元401    000000    [{"title":"Gallia 4\u6bb5900g","ean":"3041090734700","quantity":"6","link":""}]    0.0000    CD    yang bin    0617503132    la courneuve  7 rue du berry    milk    2018-05-29    1527606560    2018-05-29 05:09:20    0  =》 -1
+------------------------------------------------------------
+jane  16:31:11
+另外AT3149379946请设为没有开单的状态
+------------------------------------------------------------
+44874  AT3149379946  1
+
+------------------------------------------------------------
+
+王冬梅 2018/6/11 10:17:33
+AT3149440956 地址区那里修改为天涯区
+
+------------------------------------------------------------
+45385   AT3149440956   27722   孙洁   16412   孙洁   海南省   三亚市   [陵水黎族自治县   LingShuiLiZuZiZhiXian] -> [天涯区 Tian Ya Qu]
+
+
+------------------------------------------------------------
+
+王冬梅  10:37:52
+AT3149320359、 AT3149320457、 AT3149296956----订单麻烦改成香港地址：九龍觀塘興業街15號中美中心A座9樓A室 寄给WILLIAM LAI  Cell:(852) 6386 0912
+
+------------------------------------------------------------
+
+44278
+AT3149320359
+25922
+王晶晶
+15947
+王晶晶                                                          => WILLIAM LAI
+WangJingJing                                                   => WILLIAM LAI
+13511004503                                                     => (852) 6386 0912
+中国大陆                                                        => 香港特别行政区
+CN                                                              => HK
+北京市                                                          => 九龙
+BeiJingShi                                                      => JiuLong
+北京市                                                          => NULL
+BeiJingShi                                                      => NULL
+通州区                                                          => NULL
+TongZhouQu                                                      => NULL
+NULL                                                            => null
+于家务乡首开缇香郡8号楼一单元101                                   => 九龍觀塘興業街15號中美中心A座9樓A室
+Yu Jia Wu Xiang Shou Kai Ti Xiang Jun 8 Hao Lou Yi Dan Yuan 101  => Jiu Long Guan Tang Xing Ye Jie 15 Hao Zhong Mei Zhong Xin A Zuo 9 Lou A Shi
+101127                                                           => 999077
+
+
+44279
+AT3149320457
+25922
+王晶晶
+15947
+王晶晶                                                            => WILLIAM LAI
+WangJingJing                                                     => WILLIAM LAI
+13511004503                                                      => (852) 6386 0912
+中国大陆                                                          => 香港特别行政区
+CN                                                               => HK
+北京市                                                            => 九龙
+BeiJingShi                                                        => JiuLong
+北京市
+BeiJingShi
+通州区
+TongZhouQu
+null
+于家务乡首开缇香郡8号楼一单元101                                      => 九龍觀塘興業街15號中美中心A座9樓A室
+Yu Jia Wu Xiang Shou Kai Ti Xiang Jun 8 Hao Lou Yi Dan Yuan 101     => Jiu Long Guan Tang Xing Ye Jie 15 Hao Zhong Mei Zhong Xin A Zuo 9 Lou A Shi
+101127                                                             => 999077
+
+
+44044
+AT3149296956
+25922
+王晶晶
+15947
+王晶晶                                                                => WILLIAM LAI
+WangJingJing                                                         => WILLIAM LAI
+13511004503                                                          => (852) 6386 0912
+中国大陆                                                              => 香港特别行政区
+CN                                                                   => HK
+北京市                                                                => 九龙
+BeiJingShi                                                           => JiuLong
+北京市
+BeiJingShi
+通州区
+TongZhouQu
+null
+于家务乡首开缇香郡8号楼一单元101                                      => 九龍觀塘興業街15號中美中心A座9樓A室
+Yu Jia Wu Xiang Shou Kai Ti Xiang Jun 8 Hao Lou Yi Dan Yuan 101    => Jiu Long Guan Tang Xing Ye Jie 15 Hao Zhong Mei Zhong Xin A Zuo 9 Lou A Shi
+101127                                                              => 999077

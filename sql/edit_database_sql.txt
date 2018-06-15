@@ -2248,6 +2248,18 @@ ALTER TABLE `adi_transfer_overview_cashback`
 ALTER TABLE `adi_package` ADD `comment` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '预报备注信息' AFTER `box_advice`;
 
 
+--------------------FR 收件人发件人公司名称 已执行---------------------------
+
+ALTER TABLE `adi_batch_transfer` ADD `sender_company` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '发件人所在公司名称' AFTER `sender_zipcode`, ADD `receiver_company` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收件人所在公司名称' AFTER `receiver_id_image_back`;
+
+
+--------------------------COM 记录保单号 已执行----------------------------
+
+
+ALTER TABLE `adi_doushabao` ADD `insurance_no` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '推送成功后返回的保单号（2018-06-04）' AFTER `return_msg`;
+
+
+--------------------------------------------------------------------------
 
 ---------------------FR 对接入口 待执行---------------------------
 
@@ -2284,6 +2296,20 @@ ALTER TABLE `adi_access_key`
 --
 ALTER TABLE `adi_access_key`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+
+
+
+
+
+
+adi_batch_transfer_logistics // 订单物流对应表
+adi_logistics_information // 物流详情表
+adi_pending_invoke_kuaidi100 // 需要自动任务调用快递100查询物流记录的表
+adi_stable_invoke_kuaidi100 // 转存物流记录已完结的表
+
+
+
+
 
 
 /*****************************************************************************/

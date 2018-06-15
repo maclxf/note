@@ -467,3 +467,46 @@ select date_format(trans_complete_date, '%Y-%m') as month, sum(amount) as eur_to
 
 每月订单数量汇总
 select date_format(added_date, '%Y-%m') as month, COUNT(*) from adi_batch_transfer WHERE `added_date` BETWEEN '2016-01-01' AND '2018-04-30' group by month order by month asc
+
+
+
+
+--------------------------------每日调用kuaidi100次数--------------------------------------------
+SELECT DATE_FORMAT( added_date, "%Y-%m-%d") as date, COUNT(id) as num FROM `adi_invoke_histroy` where DATE_FORMAT( added_date, "%Y-%m-%d") >= '2018-01-01' and DATE_FORMAT( added_date, "%Y-%m-%d") < '2018-06-01' group by  DATE_FORMAT( added_date, "%Y-%m-%d")
+ ORDER BY `id` DESC
+
+
+
+ SELECT DATE_FORMAT( added_date, "%Y-%m-%d") as date, COUNT(id) as num FROM `adi_batch_transfer` where DATE_FORMAT( added_date, "%Y-%m-%d") >= '2018-01-01' and DATE_FORMAT( added_date, "%Y-%m-%d") < '2018-05-01' group by  DATE_FORMAT( added_date, "%Y-%m-%d")
+ ORDER BY `id` DESC
+
+
+
+
+
+SELECT t.tid, th.add_date as 'payed_date',
+ (SELECT GROUP_CONCAT(tp.product_name, ' ', tp.currency_symbol, tp.price, ' * ', tp.qty, ' = ', tp.price * tp.qty SEPARATOR ' | ')
+   FROM adi_transfer_product AS tp where tp.`transfer_id` = t.`id` GROUP BY tp.`transfer_id` ) AS product_info, c.name, c.email, t.receiver_city
+FROM adi_transfer AS t
+LEFT JOIN adi_customer AS c ON c.id = t.customer_id
+LEFT JOIN adi_transfer_history th ON th.transfer_id = t.id AND th.status_id = 201
+where th.add_date >= '2018-01-01 00:00:00' and th.add_date <= '2018-05-31 23:59:59'
+
+
+SELECT comment, date_format(trans_complete_date, '%Y-%m-%d') as day, count(`id`)  FROM `adi_transaction`
+where  `comment` LIKE '%充值返现%' group by day
+
+
+----------------------------端午节活动
+
+
+抽奖次数分别
+SELECT event_id, customer_id , count(id) FROM `adi_event_customer` WHERE `event_id` = 11 GROUP BY `customer_id`  ORDER BY count(id) DESC
+
+红包发送金额
+SELECT `trans_name` , SUM(`amount_rmb`)  FROM `adi_transaction` WHERE `trans_name` = '2018年端午节活动红包'
+
+下单返现金额总绩
+SELECT `trans_name` , SUM(`amount_rmb`)  FROM `adi_transaction` WHERE `trans_name` = '下单立返运费5%'
+下单返现金额分别
+SELECT id, `customer_id`, `order_id` ,`trans_name` ,`amount_rmb`  FROM `adi_transaction` WHERE `trans_name` = '下单立返运费5%'

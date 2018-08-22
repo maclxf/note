@@ -19,6 +19,7 @@
     3. 仓库配置``` config/warehouse```
 
 
+
 * 页面添加
     1. 在用户的dashboard页面添加新的仓库模块
 
@@ -31,24 +32,25 @@
 
 
 * 添加配置信息
-    1. 渠道是否需要证件信息配置```config/channel```
-    2. 体积附加费的配置```config/channel```
-    3. 奶粉渠道的配置```config/channel```
-    4. 渠道简称```config/channel```
+    1. 渠道是否需要证件信息配置```config/channel/check_identity_channels```
+    2. 体积附加费的配置```config/channel/volume_surcharge_channels```
+    3. 奶粉渠道的配置```config/channel/milk_channels```
+    4. 渠道简称：前台 后台```config/channel/channel_abbr```
     5. 渠道数据导出设置的配置```config/channel```
         - 若需要导出需要导出模板
         - 根据模板编写导出代码
         - 导出权限配置```config/oprt_privilege```
         - 若订单导出的渠道支持转运支持直邮，那么导出页面要做导出的限制（详情参考奶粉导出页面）
 
-    6. 点击更新状态配置```config/transporting_status_msg```
-    7. 渠道对应的快递公司配置```config/kuaidi100_status```
-    8. 渠道限制的配置```config/channel```
-    9. 渠道不支持的增值服务```config/channel```
-    10. 渠道国家限制信息```config/channel```
+    6. 点击更新状态配置：后台```config/transporting_status_msg```
+    7. 渠道对应的快递公司配置：前台```config/kuaidi100_status```
+    8. 渠道限制的配置：前台 后台```config/channel/channels_restriction```
+    9. 渠道不支持的增值服务：前台```config/channel/channel_unapplicable_vs```
+    10. 渠道国家限制信息：前台```config/channel/ channel_support_countries || receiver_country_need_help```
     11. 开单信息设置：后台```config/channel```，issue/colib 的 channel_id
-    12. 退税信息设置：前台 后台```config/channel```，issue/colib 的 channel_id
+    12. 退税信息设置：前台 后台```config/channel```
     13. 支持直邮包税的渠道：前台```config/channel```
+    14. 企业订单支持渠道配置：后台```corportate_support/channels ```
 * 页面添加
     1. 在```common/header```中，导航栏添加【仓库】以及下拉框【渠道】、【攻略】
         - ```intro/html``` 添加静态页面链接（静态页面必须以intro-开头）
@@ -78,4 +80,13 @@
     - 渠道供应商需要直接修改数据库字段```channel_supplier```
     - 若是只支持商城需要修改字段```only_for_mall```
     - 与仓库进行绑定
+
+
+## 新增国家
+1. 发件 收件国家配置```api/from_country || to_country```
+2. 渠道国家限制信息：前台```config/channel/ channel_support_countries || receiver_country_need_help```
+3. 企业订单支持国家配置：后台```corportate_support/countries ```
+
+
+
 

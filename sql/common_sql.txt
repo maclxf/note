@@ -503,10 +503,74 @@ where  `comment` LIKE '%充值返现%' group by day
 抽奖次数分别
 SELECT event_id, customer_id , count(id) FROM `adi_event_customer` WHERE `event_id` = 11 GROUP BY `customer_id`  ORDER BY count(id) DESC
 
-红包发送金额
+红包发送金额总计
 SELECT `trans_name` , SUM(`amount_rmb`)  FROM `adi_transaction` WHERE `trans_name` = '2018年端午节活动红包'
+
+红包每天总计
+SELECT `trans_name` , SUM(`amount_rmb`), date_format(trans_complete_date, '%Y-%m-%d') as day FROM `adi_transaction` WHERE `trans_name` = '2018年端午节活动红包' GROUP BY day
+
+
+SELECT `customer_id` , `trans_name` , AVG(`amount_rmb`) as av  FROM `adi_transaction` WHERE `trans_name` = '2018年端午节活动红包' group by customer_id ORDER BY av desc
+
+红包分别
+SELECT `customer_id` , `trans_name` , amount_rmb, trans_complete_date, date_format(trans_complete_date, '%Y-%m-%d') as day FROM `adi_transaction` WHERE `trans_name` = '2018年端午节活动红包'
 
 下单返现金额总绩
 SELECT `trans_name` , SUM(`amount_rmb`)  FROM `adi_transaction` WHERE `trans_name` = '下单立返运费5%'
 下单返现金额分别
 SELECT id, `customer_id`, `order_id` ,`trans_name` ,`amount_rmb`  FROM `adi_transaction` WHERE `trans_name` = '下单立返运费5%'
+
+
+注册人信息
+SELECT `email` , `firstname` , `lastname` ,phone, qq, `refer_name`, `refer_id` ,`reg_date`  FROM `adi_customer` where reg_date >= '2018-06-15 00:00:00' AND reg_date <= '2018-07-10 23:59:59' AND `refer_id`  IS NOT NULL
+
+邀请人信息
+SELECT c_z.refer_id,
+       c_z.refer_name,
+       c_y.lastname,
+       c_y.`email` ,
+       COUNT(c_z.id) as reg_num
+  FROM `adi_customer` as c_z
+LEFT JOIN `adi_customer` as c_y ON c_z.`refer_id` = c_y.id
+ where c_z.reg_date>= '2018-06-15 00:00:00'
+   AND c_z.reg_date<= '2018-07-15 23:59:59'
+   AND c_z.`refer_id` IS NOT NULL
+ GROUP BY c_z.refer_id
+ ORDER BY reg_num desc
+
+
+ 消费最多统计
+ SELECT t.`customer_id`,
+        c.`name`
+       SUM(t.`amount_rmb`) as sum_total
+  FROM `adi_transaction` as t
+  LEFT JOIN `adi_customer` as c ON c.`id` = t.customer_id
+ where t.`trans_name` in ('商品直邮', '转运消费', '商品代采购')
+   and t.`trans_type`= '2'
+   and t.`trans_complete_date`>= '2018-06-15 00:00:00'
+   and t.`trans_complete_date`<= '2018-07-15 23:59:59'
+ GROUP BY t.`customer_id`
+ORDER BY sum_total DESC
+
+
+ 消费最多明细
+ SELECT t.`customer_id`,
+        c.`name`,
+        t.trans_name,
+        t.`amount_rmb`
+  FROM `adi_transaction` as t
+  LEFT JOIN `adi_customer` as c ON c.`id` = t.customer_id
+ where t.`trans_name` in ('商品直邮', '转运消费', '商品代采购')
+   and t.`trans_type`= '2'
+   and t.`trans_complete_date`>= '2018-06-15 00:00:00'
+   and t.`trans_complete_date`<= '2018-07-15 23:59:59'
+ GROUP BY t.`customer_id`
+ORDER BY sum_total DESC
+
+
+
+
+ 测试邮件
+insert `adi_customer_email`(`customer_id`,`customer_name`,`customer_email`) values(1,'lxf','46905313@qq.com');
+insert `adi_customer_email`(`customer_id`,`customer_name`,`customer_email`) values(2,'wdm','283364786@qq.com');
+insert `adi_customer_email`(`customer_id`,`customer_name`,`customer_email`) values(3,'zjm','964859717@qq.com');

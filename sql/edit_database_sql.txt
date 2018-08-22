@@ -2261,7 +2261,17 @@ ALTER TABLE `adi_doushabao` ADD `insurance_no` VARCHAR(64) CHARACTER SET utf8 CO
 
 --------------------------------------------------------------------------
 
----------------------FR 对接入口 待执行---------------------------
+---------------------FR 对接入口 已执行---------------------------
+
+adi_access_key
+adi_batch_transfer_logistics // 订单物流对应表
+adi_logistics_information // 物流详情表
+adi_pending_invoke_kuaidi100 // 需要自动任务调用快递100查询物流记录的表
+adi_stable_invoke_kuaidi100 // 转存物流记录已完结的表
+
+--
+-- 表的结构 `adi_access_key`
+--
 
 CREATE TABLE `adi_access_key` (
   `id` int(11) NOT NULL COMMENT '自增ID',
@@ -2274,6 +2284,14 @@ CREATE TABLE `adi_access_key` (
   `create_ip` varchar(16) NOT NULL COMMENT '该access key的创建时的IP',
   `status` tinyint(4) NOT NULL COMMENT '状态标识'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='AccessKey 表(用于验证API调用权限)';
+
+--
+-- 转存表中的数据 `adi_access_key`
+--
+
+INSERT INTO `adi_access_key` (`id`, `name`, `access_key_id`, `access_key_secret`, `create_user_id`, `create_user_name`, `create_date`, `create_ip`, `status`) VALUES
+(1, 'kuaidi100', 'dTYMNWlYZDZjYT0M', 'JYOjljTiZhTNTNhkzNAWNgN2yZTAFzW2YmMhTkYZZDYZzjBN', 1, 'admin', '2018-05-08 10:01:56', '127.0.0.1', 1),
+(2, 'test_new', 'gMgD1gONUMO0E1Tj', 'TWOBZ1NWGQm14JUgNNTzRM2TyNMZmYWYYQFMmWzZWNQzYzYD', 1, 'admin', '2018-05-09 04:12:39', '127.0.0.1', 1);
 
 --
 -- Indexes for dumped tables
@@ -2292,20 +2310,271 @@ ALTER TABLE `adi_access_key`
 --
 
 --
--- 使用表AUTO_INCREMENT `plat_access_key`
+-- 使用表AUTO_INCREMENT `adi_access_key`
 --
 ALTER TABLE `adi_access_key`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID', AUTO_INCREMENT=3;
+
+
+
+--
+-- 表的结构 `adi_pending_invoke_kuaidi100`
+--
+
+CREATE TABLE `adi_pending_invoke_kuaidi100` (
+  `id` int(11) NOT NULL,
+  `transfer_id` int(11) NOT NULL,
+  `tid` varchar(16) NOT NULL,
+  `tracking_no` varchar(32) NOT NULL COMMENT '物流单号对应nu',
+  `output_date` datetime NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0' COMMENT '执行调用次数',
+  `sticky` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否置顶：优先查看该条记录的数据，默认是0表示不置顶，1表示置顶',
+  `add_date` datetime NOT NULL,
+  `add_from` varchar(128) NOT NULL DEFAULT 'adi' COMMENT '添加人',
+  `update_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_pending_invoke_kuaidi100`
+--
+ALTER TABLE `adi_pending_invoke_kuaidi100`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `transfer_id_2` (`transfer_id`),
+  ADD KEY `transfer_id` (`transfer_id`),
+  ADD KEY `tracking_no` (`tracking_no`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_pending_invoke_kuaidi100`
+--
+ALTER TABLE `adi_pending_invoke_kuaidi100`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+--
+-- 表的结构 `adi_stable_invoke_kuaidi100`
+--
+
+CREATE TABLE `adi_stable_invoke_kuaidi100` (
+  `id` int(11) NOT NULL,
+  `transfer_id` int(11) NOT NULL,
+  `tid` varchar(16) NOT NULL,
+  `tracking_no` varchar(32) NOT NULL COMMENT '物流单号对应nu',
+  `output_date` datetime NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0' COMMENT '执行调用次数',
+  `sticky` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否置顶：优先查看该条记录的数据，默认是0表示不置顶，1表示置顶',
+  `add_date` datetime NOT NULL,
+  `add_from` varchar(128) NOT NULL DEFAULT 'adi' COMMENT '添加人',
+  `update_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_stable_invoke_kuaidi100`
+--
+ALTER TABLE `adi_stable_invoke_kuaidi100`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `transfer_id_2` (`transfer_id`),
+  ADD KEY `transfer_id` (`transfer_id`),
+  ADD KEY `tracking_no` (`tracking_no`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_stable_invoke_kuaidi100`
+--
+ALTER TABLE `adi_stable_invoke_kuaidi100`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- 表的结构 `adi_batch_transfer_logistics`
+--
+
+CREATE TABLE `adi_batch_transfer_logistics` (
+  `id` int(11) NOT NULL,
+  `transfer_id` int(11) NOT NULL,
+  `tid` varchar(16) NOT NULL,
+  `tracking_no` varchar(32) DEFAULT NULL COMMENT '物流单号对应nu',
+  `message` varchar(256) DEFAULT NULL,
+  `is_check` tinyint(4) DEFAULT NULL,
+  `logistics_condition` varchar(32) DEFAULT NULL,
+  `company` varchar(128) DEFAULT NULL COMMENT '物流公司编号',
+  `status` int(11) DEFAULT NULL COMMENT '查询结果状态：  0：物流单暂无结果，  1：查询成功，  2：接口出现异常',
+  `state` tinyint(4) DEFAULT NULL COMMENT '快递单当前的状态 ：　  0：在途，即货物处于运输过程中； 1：揽件，货物已由快递公司揽收并且产生了第一条跟踪信息； 2：疑难，货物寄送过程出了问题； 3：签收，收件人已签收； 4：退签，即货物由于用户拒签、超区等原因退回，而且发件人已经签收； 5：派件，即快递正在进行同城派件； 6：退回，货物正处于退回发件人的途中；',
+  `origin_json` text COMMENT '原始json',
+  `last_status` text NOT NULL COMMENT '最新的物流信息',
+  `last_status_date` datetime NOT NULL COMMENT '最新的物流的时间',
+  `add_date` datetime NOT NULL,
+  `update_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_batch_transfer_logistics`
+--
+ALTER TABLE `adi_batch_transfer_logistics`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `transfer_id_2` (`transfer_id`),
+  ADD KEY `transfer_id` (`transfer_id`),
+  ADD KEY `tracking_no` (`tracking_no`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_batch_transfer_logistics`
+--
+ALTER TABLE `adi_batch_transfer_logistics`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- 表的结构 `adi_logistics_information`
+--
+
+CREATE TABLE `adi_logistics_information` (
+  `id` int(11) NOT NULL,
+  `transfer_logistics_id` int(11) NOT NULL COMMENT '订单物流表id',
+  `context` text NOT NULL COMMENT '每条跟综信息的描述',
+  `location` varchar(256) DEFAULT NULL,
+  `time` datetime NOT NULL COMMENT '每条跟踪信息的时间',
+  `add_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_logistics_information`
+--
+ALTER TABLE `adi_logistics_information`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `transfer_logistics_id` (`transfer_logistics_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_logistics_information`
+--
+ALTER TABLE `adi_logistics_information`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+------------------- 溯源码数据表 待执行-------------------------------
+
+--
+-- 表的结构 `adi_ccic_source_code`
+--
+
+CREATE TABLE `adi_ccic_source_code` (
+  `id` int(11) NOT NULL,
+  `source_order_no` varchar(32) NOT NULL,
+  `source_ecode` varchar(64) NOT NULL,
+  `transfer_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `tid` varchar(32) DEFAULT NULL COMMENT '订单号',
+  `src` varchar(128) NOT NULL COMMENT '该跟踪号来自哪个文件',
+  `added_user_id` int(11) NOT NULL COMMENT '该跟踪号的添加人ID',
+  `added_user_name` varchar(32) NOT NULL COMMENT '该跟踪号的添加人姓名',
+  `added_date` datetime NOT NULL COMMENT '添加时间',
+  `added_ip` varchar(16) NOT NULL COMMENT '添加时的IP',
+  `updated_user_id` int(11) DEFAULT NULL COMMENT '更新人id',
+  `updated_user_name` varchar(32) DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL COMMENT '更新到转运订单表的时间',
+  `updated_ip` varchar(16) DEFAULT NULL,
+  `push_json` text,
+  `push_date` datetime DEFAULT NULL,
+  `return_json` text,
+  `return_retstatus` varchar(256) DEFAULT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '该溯源码的状态：0待分配（默认），1已分配，待推送，2推送成功， -1推送失败'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='溯源码信息';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_ccic_source_code`
+--
+ALTER TABLE `adi_ccic_source_code`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `tid` (`tid`),
+  ADD UNIQUE KEY `transfer_id` (`transfer_id`),
+  ADD KEY `transfer_id_2` (`transfer_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_ccic_source_code`
+--
+ALTER TABLE `adi_ccic_source_code`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+
+
+----------------------- 邮件模板id 待执行-----------------------
+
+ALTER TABLE `adi_customer_email` ADD `template_id` INT NOT NULL COMMENT '模板id' AFTER `customer_email`;
+
+ALTER TABLE adi_customer_email DROP INDEX customer_id;
+
+alter table adi_customer_email add primary key (customer_email,template_id);
 
 
 
 
 
 
-adi_batch_transfer_logistics // 订单物流对应表
-adi_logistics_information // 物流详情表
-adi_pending_invoke_kuaidi100 // 需要自动任务调用快递100查询物流记录的表
-adi_stable_invoke_kuaidi100 // 转存物流记录已完结的表
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2318,3 +2587,86 @@ adi_stable_invoke_kuaidi100 // 转存物流记录已完结的表
  * ## adi_push_history_kuaidi100"对快递100的推送请求记录"                      *
  * 所以以上二表不会上线                                                        *
 /****************************************************************************/
+
+
+--
+-- 表的结构 `adi_kuaidi100_subscription`
+--
+
+CREATE TABLE `adi_kuaidi100_subscription` (
+  `id` int(11) NOT NULL,
+  `company` varchar(128) NOT NULL COMMENT '快递公司名称',
+  `order_no` varchar(128) NOT NULL COMMENT '查询单号',
+  `operator` varchar(128) NOT NULL COMMENT '本次订阅需要快递公司执行的动作：order表示正常订阅， repush表示全量推送',
+  `callback_url` varchar(128) NOT NULL COMMENT '回调参数，快递100需要的附加参数，在推送时需提供',
+  `watchstatus` varchar(64) NOT NULL DEFAULT 'normal' COMMENT '表示包裹的跟踪状态:normal:跟踪，stop:结束，abort:中止(3无结果)',
+  `trans_status` tinyint(4) DEFAULT NULL COMMENT '包裹运输状态，0在途、1揽收、2疑难、3签收、4退签、5派件、6退回、7转单、8结算',
+  `ori_sub_str` text NOT NULL COMMENT 'kuaidi100原始的订阅数据',
+  `add_date` datetime NOT NULL COMMENT 'kuaidi100添加订阅时间',
+  `respond_ori_data` text COMMENT 'ADI应答的数据',
+  `respond_date` datetime DEFAULT NULL COMMENT 'ADI应答日期',
+  `process_date` datetime DEFAULT NULL COMMENT '订阅处理时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='快递100订阅请求数据表';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_kuaidi100_subscription`
+--
+ALTER TABLE `adi_kuaidi100_subscription`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_kuaidi100_subscription`
+--
+ALTER TABLE `adi_kuaidi100_subscription`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- 表的结构 `adi_push_history_kuaidi100`
+--
+
+CREATE TABLE `adi_push_history_kuaidi100` (
+  `id` int(11) NOT NULL,
+  `kd_sub_id` int(11) NOT NULL COMMENT '快递100订阅记录',
+  `operation` varchar(128) NOT NULL COMMENT '推送操作状态:append:扩展，override:覆盖',
+  `detail` text COMMENT '路由信息，json',
+  `reason_code` int(11) DEFAULT NULL COMMENT '未推送路由信息的状态',
+  `reason_message` varchar(256) DEFAULT NULL COMMENT '未推送路由信息的原因',
+  `add_date` datetime NOT NULL COMMENT '添加时间',
+  `push_data` text COMMENT 'ADI推送的内容',
+  `push_date` datetime DEFAULT NULL COMMENT 'ADI推送时间',
+  `respond_result` varchar(128) DEFAULT NULL COMMENT 'kuaidi100推送应答的结果：true表示成功收到，false表示失败',
+  `respond_return_code` int(11) DEFAULT NULL COMMENT 'kuaidi100推送的结果状态',
+  `respond_message` varchar(256) DEFAULT NULL COMMENT 'kuaidi100对应状态的文本描述',
+  `respond_ori_data` text COMMENT 'kuaidi100应答的原始数据',
+  `respond_date` datetime DEFAULT NULL COMMENT 'kuaidi100应答日期'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='对快递100的推送请求记录';
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `adi_push_history_kuaidi100`
+--
+ALTER TABLE `adi_push_history_kuaidi100`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kd_sub_id` (`kd_sub_id`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `adi_push_history_kuaidi100`
+--
+ALTER TABLE `adi_push_history_kuaidi100`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

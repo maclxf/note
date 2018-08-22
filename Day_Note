@@ -2,7 +2,1043 @@ file_exists()在认领的时候有时可以有时不可以
 思考今天认领上传BUG的原因
 问题包裹不是应该解决问题后 才能入口吗？
 
-选看旧iphone
+------------8.16----------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+
+
+上午：
+    七夕活动
+
+    观察http升级的内容
+    刘师傅的需求 关联日志
+    溯源码限制中国才有，香港等地没得城市要用省代替
+    入库时间
+
+
+下午：
+    codereview
+    入库时间
+
+
+------------8.16----------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+
+
+上午：
+    0、要从 github 上拉取 adi-v3 和 adi-v-admin 最新代码
+    1、测试前台改为 https 后，各个功能是否能正常工作
+        base.js调整
+
+    3、后台如果有和前台交互的地方，测试能否正常工作
+    # 执行入库操作（来自 adi_v3_admin）
+    */3 * * * * php /mnt/www/adi_v3_admin/index.php auto_task package_input
+
+    # 执行称重操作（来自 adi_v3_admin）
+    */5 * * * * php /mnt/www/adi_v3_admin/index.php auto_task order_weight
+
+    # 调用豆沙包保险API，每一个小时执行一次
+    0 */1 * * * php /home/www/adi_v3/index.php auto_task auto_api_doushabao
+
+    # 自动添加豆沙包待买的订单，每三小时执行一次
+    0 */4 * * * php /home/www/adi_v3/index.php auto_task add_doushabao_insurance
+
+    # 营销活动邮件(即：notice那封邮件, 来自 adi_v3, 新)
+    */1 * * * * php /home/www/adi_v3/index.php auto_email
+
+    # 发放佣金(来自 adi_v3, 新)
+    */30 * * * * php /home/www/adi_v3/index.php auto_task release_commission
+
+    # 调用推送中检溯源码，每一个小时执行一次
+    0 */1 * * * php /home/www/adi_v3/index.php auto_task pushSourceCode
+
+    # 设置仓储到期包裹的用户信息用于发送邮件
+    01 09 * * * php /home/www/adi_v3/index.php auto_task set_storage_expire_mail
+
+        # 发送仓储到期通知邮件
+        30 10,11 * * * php /home/www/adi_v3/index.php auto_email end_storage_expire_not
+
+        # 亿起发推送API，每10分钟执行一次
+        */10 * * * * php /home/www/adi_v3/index.php auto_task auto_push_track_order
+
+
+
+    4、文件同步功能是否受影响
+        正常
+    5、测试亿起发，一是能否正常跟踪；二是告知对方我们已经实施了 https，是否需要调整请求接口
+    6、其他未提及的地方...
+
+    2、把页面上写死的 http://www.adiexpress.com 调整为 https://www.adiexpress.com（使用搜索来找，注意邮件里面的URL）
+    modified:   application/views/email/common/footer.php
+    modified:   application/views/email/common/header.php
+    modified:   application/views/email/findpswd.php
+            modified:   application/views/email/input_with_package_broken.php
+            modified:   application/views/email/milk.php
+    modified:   application/views/email/register.php
+            modified:   application/views/email/ship.php
+            modified:   application/views/email/signin.php
+            modified:   application/views/email/split.php
+            modified:   application/views/email/split_result.php
+            modified:   application/views/email/ticket.php
+            modified:   application/views/email/unclaimed.php
+            modified:   application/views/email/vip.php
+            modified:   application/views/event/christmas_2016.php
+            modified:   application/views/event/christmas_2017.php
+            modified:   application/views/event/dragon_boat_festival_2017.php
+            modified:   application/views/event/lantern_2017.php
+            modified:   application/views/event/lantern_2018.php
+    modified:   application/views/intro/economy-package.php
+            modified:   application/views/intro/fr-shipping.php(弃用)
+    modified:   application/views/intro/milk-powder-tax-free.php
+            modified:   application/views/landing_page/en_coupon.php
+            modified:   application/views/landing_page/for_love_2018_520.php
+            modified:   application/views/landing_page/fr_milk_powder_combo.php
+            modified:   application/views/landing_page/preferential_2017_618.php
+    modified:   application/views/package/package_photo.php
+    modified:   application/views/static/compensation_policy.php
+
+
+
+
+        modified:   application/views/email/common/footer.php
+        modified:   application/views/email/common/header.php
+                modified:   application/views/email/findpswd.php
+        modified:   application/views/email/input_with_package_broken.php
+                modified:   application/views/email/milk.php
+        modified:   application/views/email/notice.php
+                modified:   application/views/email/register.php
+        modified:   application/views/email/ship.php
+        modified:   application/views/email/signin.php
+                modified:   application/views/email/split.php
+                modified:   application/views/email/split_result.php
+                modified:   application/views/email/tax_refund_back.php
+                modified:   application/views/email/tax_refund_status.php
+                modified:   application/views/email/ticket.php(无)
+                modified:   application/views/email/unclaimed.php(无)
+                modified:   application/views/email/vip.php
+        modified:   application/views/order/entry/print_address_test.php
+                modified:   application/views/recommend_products/view.php
+
+
+下午：
+    入库时间
+
+
+------------8.14----------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+
+
+上午：
+    入库时间
+
+下午：
+    入库时间
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------8.13--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+
+
+上午：
+    EDK 测试安排
+    安平 测试安排
+
+    监控列表搭建
+    入库时间
+
+下午：
+    入库时间
+
+
+
+
+-------------8.10--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+
+
+上午：
+    文件同步监控程序上线
+    jane 非大陆提示建议英文
+    黄玲改数据
+    秋秋 第三方订单号导出
+    kuaifr 样式
+
+    准备codereview
+
+
+
+下午：
+
+    余林上线检查
+
+
+
+-------------8.9--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+    jane 企业订单支持开香港
+    edk 任务分配
+    冬梅 拍照不能发邮件的问题
+
+
+下午：
+    小明 导出
+    冬梅 充值
+    冬梅 拍照不能发邮件的问题
+    黄玲 改数据
+
+
+
+-------------8.8--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+    jane 企业订单支持开香港
+
+下午：
+    jane 企业订单支持开香港
+    EDK测试
+
+
+-------------8.7--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+    冬梅
+    黄玲
+    jane
+
+下午：
+
+-------------8.6--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+    绩效沟通 with boss(提前整理)
+    国外的包裹是否需要溯源？
+    fr,edk是否需要溯源，不溯源展示什么？
+
+下午：
+
+
+-------------7.30--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+        罗鑫沟通
+        李彬功能沟通
+        上线筛选功能
+        自动任务数据观察
+
+        出库邮件带入二维码
+下午：
+        改版 kuai.fr
+        com 对接 kuai.fr
+
+
+-------------7.30--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+        EDK任务检查，安排
+
+        李彬功能沟通
+        余林进度了解
+
+        自动任务数据观察
+
+下午：
+        待称重的筛选功能
+        被税险套餐，体验版、尊享版、豪华版，三选一
+
+
+
+------------------7.20--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+        罗鑫问题解决
+        EDK任务确认
+        fr数据观察
+        codereview
+
+下午：
+        沟通 with 惜哥
+            李彬 导出的问题
+        对接中检
+
+
+
+-------------7.17--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+        安平
+            关于加班完成的内容如何计算时效
+        陈喆
+            之前导出有问题的内容如何处理
+
+上午：
+        自动通知邮件
+
+下午：
+        自动通知邮件
+        对接中检
+
+
+-------------7.16--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+
+上午：
+        罗鑫功能
+        端午活动下线
+        端午活动统计
+        jane 订单跟踪号处理
+
+下午：
+        自动通知邮件
+        EDK 功能检查
+
+
+
+-------------7.13--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+
+
+上午：
+        罗鑫功能
+        需求 with 陈喆
+
+下午：
+        需求 with 李彬
+        需求 with 罗鑫
+        功能检查
+
+
+
+
+
+-------------7.9--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        绩效 with EDK
+
+下午：
+        自动购买指定保险 设置
+        冬梅调整跟踪号
+        取消英国仓 比邮和特惠包 的体积重限制条件
+
+
+
+        构建二维码的方法
+
+
+
+
+-------------7.6--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        绩效陈喆
+
+下午：
+        自动购买指定保险
+        上线测试保险记录观察
+        余林工作确认
+
+        构建二维码的方法
+
+-------------7.5--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        上线保险自动
+        了解二维码生成
+
+下午：
+        沟通 惜哥 绩效
+
+
+-------------7.3--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        安平沟通绩效事宜
+        自动保险
+        快递100可以首页模糊查询
+
+下午：
+        沟通 惜哥
+            安事通 需求 新加产品表和分类表，分类取两级
+            37证件图片通过获取连接，跑程序下载，按订单存储
+        沟通 余林和明哥
+            安事通 需求
+        修改通知邮件
+        统计数据
+            邀请人数
+            360383710@qq.com 6.20至今的账户明细
+
+
+
+
+
+
+
+-------------6.29--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        EDK部分页面
+        kuaidi100 对接进度 ---> 是否可以用自己的单号 ---> 可以用自己的单号 ---> 何时开通
+        自动购买保险
+
+下午：
+        自动购买保险
+-------------6.27--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        kuaidi100 对接进度 --> 是否可以用自己的单号 -----> 可以用自己的单号
+        奶粉渠道不能选原箱寄回 --> 已处理
+        自动购买保险
+        处理返现的问题
+
+
+下午：
+        自动购买保险
+
+-------------6.26--------------------------
+待完成：
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+上午：
+        用户梦梦充值3万协商返1000充值操作
+        余林 签收记录上线后 kuai.fr要可以查询
+        kuaidi100 对接进度 --> 签名已经正确
+
+        自动购买保险 ---> 等豆沙包确定是否他们要做限制
+
+下午：
+        自动购买保险
+
+
+-------------6.25--------------------------
+待完成：
+        自动购买保险（出库的订单只要符合的就自动提交）
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            周会发邮件的邮箱地址
+            余林 签收那段代码 or_where 构造如何重构
+
+
+上午：
+        FR入库功能上线的问题
+        罗鑫 图片切换的问题
+
+
+
+下午：
+        用户梦梦充值3万协商返1000充值操作
+        EDK工作确认
+        处理本地仓库物流信息和快递公司物流信息时间顺序混乱的问题
+
+        自动购买保险 ---> 等豆沙包确定是否他们要做限制
+        余林 签收记录上线后 kuai.fr要可以查询
+        kuaidi100 对接进度 --> 签名已经正确
+
+
+
+-------------6.22--------------------------
+待完成：
+        自动购买保险（出库的订单只要符合的就自动提交）
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            安平:沟通
+                设计页面的进度
+            下拉样式统一，另外两端交由李彬和罗鑫分别处理
+            罗鑫:hide, prop hidden 的区别
+                 为何andriod和ios效果不同
+                 考虑绩效每月有5周每月有4周的问题
+
+
+上午：
+        余林任务复审 45M
+        快递100沟通 30M
+        会议准备    1H
+
+
+
+下午：
+
+
+-------------------------------------------
+6.20-6.21对接快递100
+-------------6.19--------------------------
+待完成：
+        自动购买保险（出库的订单只要符合的就自动提交）
+        尝试整理一个退税包裹功能的文档
+
+        绩效的统计整理
+        绩效的任务归类
+
+        每周一
+            EDK本周开发审核
+
+        每周五
+            上午整理会议内容（关注每周提交的用户量）
+            旧功能（出错不会体现粗回来的）回顾检查
+            下周EDK下周工作安排
+
+            周会codereview内容
+
+        每日
+            备份FR EDK数据库
+
+        注意
+            安平:沟通
+                设计页面的进度
+            下拉样式统一，另外两端交由李彬和罗鑫分别处理
+            罗鑫:hide, prop hidden 的区别
+                 为何andriod和ios效果不同
+                 考虑绩效每月有5周每月有4周的问题
+
+
+上午：
+        假
+
+
+
+下午：
+        fr kuaidi100 对接
+
 -------------6.12--------------------------
 待完成：
         自动购买保险（出库的订单只要符合的就自动提交）
